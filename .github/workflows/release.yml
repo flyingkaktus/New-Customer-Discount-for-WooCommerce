@@ -1,0 +1,256 @@
+name: Version Management and Release
+
+permissions:
+  contents: write
+  packages: write
+  issues: write
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'v*'
+      - '*.zip'
+      - '*.md'
+      - 'newcustomer-discount.php'
+      - 'readme.txt'
+
+jobs:
+  update-patch-version:
+    name: Update Patch Version
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'chore: update version') && !contains(github.event.head_commit.message, 'MINOR:') && !contains(github.event.head_commit.message, 'MAJOR:')"
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get current version
+        id: current_version
+        run: |
+          CURRENT_VERSION=$(grep -Po "Version: \K[0-9]+\.[0-9]+\.[0-9]+" newcustomer-discount.php)
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Aktuelle Version: $CURRENT_VERSION"
+
+      - name: Calculate new version
+        id: new_version
+        run: |
+          CURRENT=${{ steps.current_version.outputs.CURRENT_VERSION }}
+          MAJOR=$(echo $CURRENT | cut -d. -f1)
+          MINOR=$(echo $CURRENT | cut -d. -f2)
+          PATCH=$(echo $CURRENT | cut -d. -f3)
+          NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Neue Version: $NEW_VERSION"
+
+      - name: Update version in files
+        run: |
+          VERSION=${{ steps.new_version.outputs.NEW_VERSION }}
+          echo "Aktualisiere Version auf: $VERSION"
+          
+          # Update Plugin-Datei
+          sed -i "s/Version: .*$/Version: $VERSION/" newcustomer-discount.php
+          sed -i "s/define('NCD_VERSION'.*/define('NCD_VERSION', '$VERSION');/" newcustomer-discount.php
+          
+          # Update readme.txt falls vorhanden
+          if [ -f "readme.txt" ]; then
+            sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" readme.txt
+          fi
+
+      - name: Commit version update
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add newcustomer-discount.php
+          git add readme.txt || true
+          git commit -m "chore: update version to ${{ steps.new_version.outputs.NEW_VERSION }}"
+          git push
+
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'chore: update version') && (contains(github.event.head_commit.message, 'MINOR:') || contains(github.event.head_commit.message, 'MAJOR:'))"
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, xml
+          tools: composer:v2
+
+      - name: Get current version
+        id: current_version
+        run: |
+          CURRENT_VERSION=$(grep -Po "Version: \K[0-9]+\.[0-9]+\.[0-9]+" newcustomer-discount.php)
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Aktuelle Version: $CURRENT_VERSION"
+
+      - name: Calculate new version
+        id: new_version
+        run: |
+          CURRENT=${{ steps.current_version.outputs.CURRENT_VERSION }}
+          MAJOR=$(echo $CURRENT | cut -d. -f1)
+          MINOR=$(echo $CURRENT | cut -d. -f2)
+          PATCH=$(echo $CURRENT | cut -d. -f3)
+          
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          if [[ $COMMIT_MSG == *"MAJOR:"* ]]; then
+            NEW_VERSION="$((MAJOR + 1)).0.0"
+          elif [[ $COMMIT_MSG == *"MINOR:"* ]]; then
+            NEW_VERSION="$MAJOR.$((MINOR + 1)).0"
+          fi
+          
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "Neue Version: $NEW_VERSION"
+
+      - name: Update version in files
+        run: |
+          VERSION=${{ steps.new_version.outputs.NEW_VERSION }}
+          echo "Aktualisiere Version auf: $VERSION"
+          
+          sed -i "s/Version: .*$/Version: $VERSION/" newcustomer-discount.php
+          sed -i "s/define('NCD_VERSION'.*/define('NCD_VERSION', '$VERSION');/" newcustomer-discount.php
+          
+          if [ -f "readme.txt" ]; then
+            sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" readme.txt
+          fi
+
+      - name: PHP Lint
+        run: |
+          find . -name "*.php" -exec php -l {} \;
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          
+          if [ -n "$PREVIOUS_TAG" ]; then
+            if [[ $COMMIT_MSG == *"MAJOR:"* ]]; then
+              # Für MAJOR: Hole alle Commits seit dem letzten MAJOR
+              LAST_MAJOR=$(git tag --list "v*" --sort=-version:refname | grep -E "v[0-9]+\.0\.0" | head -n1 || echo "")
+              if [ -n "$LAST_MAJOR" ]; then
+                echo "### Breaking Changes (MAJOR):" > changelog.md
+                git log -1 --pretty=format:"%b" >> changelog.md
+                echo -e "\n\n### Feature Updates (MINOR):" >> changelog.md
+                git log ${LAST_MAJOR}..HEAD --grep="MINOR:" --pretty=format:"* %b" >> changelog.md
+                echo -e "\n\n### Patches and Fixes:" >> changelog.md
+                git log ${LAST_MAJOR}..HEAD --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
+              else
+                # Falls es noch kein MAJOR Tag gibt
+                echo "### Breaking Changes (MAJOR):" > changelog.md
+                git log -1 --pretty=format:"%b" >> changelog.md
+                echo -e "\n\n### Feature Updates (MINOR):" >> changelog.md
+                git log --grep="MINOR:" --pretty=format:"* %b" >> changelog.md
+                echo -e "\n\n### Patches and Fixes:" >> changelog.md
+                git log --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
+              fi
+            elif [[ $COMMIT_MSG == *"MINOR:"* ]]; then
+              # Für MINOR: Hole alle Commits seit dem letzten MINOR oder MAJOR
+              LAST_VERSION=$(git tag --list "v*" --sort=-version:refname | head -n1 || echo "")
+              if [ -n "$LAST_VERSION" ]; then
+                echo "### Feature Updates (MINOR):" > changelog.md
+                git log -1 --pretty=format:"%b" >> changelog.md
+                echo -e "\n\n### Patches and Fixes:" >> changelog.md
+                git log ${LAST_VERSION}..HEAD --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
+              else
+                echo "### Feature Updates (MINOR):" > changelog.md
+                git log -1 --pretty=format:"%b" >> changelog.md
+                echo -e "\n\n### Patches and Fixes:" >> changelog.md
+                git log --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
+              fi
+            fi
+          else
+            # Falls es noch gar keine Tags gibt
+            echo "### Initial Release" > changelog.md
+            git log --pretty=format:"* %s (%h)" --no-merges >> changelog.md
+          fi
+          
+          CHANGELOG=$(cat changelog.md)
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          rm changelog.md
+
+      - name: Create ZIP archive
+        run: |
+          mkdir -p temp/newcustomer-discount
+          
+          rsync -av \
+            --exclude='.git*' \
+            --exclude='.github' \
+            --exclude='temp' \
+            --exclude='tests' \
+            --exclude='node_modules' \
+            --exclude='*.zip' \
+            --exclude='README.md' \
+            --exclude='.DS_Store' \
+            --exclude='*.log' \
+            --exclude='*.sql' \
+            --exclude='*.tar.gz' \
+            --exclude='*.bak' \
+            --exclude='*.swp' \
+            . temp/newcustomer-discount/
+          
+          cd temp
+          zip -r ../release.zip newcustomer-discount
+          cd ..
+          
+          rm -rf temp
+
+      - name: Commit version update
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          git add newcustomer-discount.php
+          git add readme.txt || true
+          
+          git commit -m "chore: update version to ${{ steps.new_version.outputs.NEW_VERSION }}"
+          git tag "v${{ steps.new_version.outputs.NEW_VERSION }}"
+          git push
+          git push --tags
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: release.zip
+          tag_name: v${{ steps.new_version.outputs.NEW_VERSION }}
+          name: Release ${{ steps.new_version.outputs.NEW_VERSION }}
+          body: |
+            ${{ steps.changelog.outputs.CHANGELOG }}
+            
+            ### Automatisch generierter Release
+            
+            Diese Version enthält:
+            * Plugin Version: ${{ steps.new_version.outputs.NEW_VERSION }}
+            * Generiert am: ${{ steps.new_version.outputs.DATE }}
+            
+            ### Installation
+            1. Laden Sie die ZIP-Datei herunter
+            2. Gehen Sie in Ihrem WordPress-Dashboard zu Plugins > Installieren
+            3. Klicken Sie auf "Plugin hochladen"
+            4. Wählen Sie die heruntergeladene ZIP-Datei aus
+            5. Klicken Sie auf "Jetzt installieren"
+            6. Aktivieren Sie das Plugin
+          draft: false
+          prerelease: false
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f release.zip

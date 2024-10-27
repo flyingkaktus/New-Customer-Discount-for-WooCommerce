@@ -1,0 +1,74 @@
+.ncd-template-editor-wrapper {
+    margin-top: 20px;
+    max-width: 1200px;
+}
+
+.ncd-template-toolbar {
+    margin-bottom: 20px;
+}
+
+#ncd_template_editor {
+    width: 100%;
+    margin-bottom: 20px;
+    font-family: monospace;
+}
+
+.ncd-variables-list table {
+    margin-top: 15px;
+}
+
+.ncd-variables-list code {
+    background: #f0f0f1;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.ncd-modal {
+    position: fixed;
+    z-index: 100000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.ncd-modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.ncd-modal-close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.ncd-preview-frame {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+    padding: 20px;
+    overflow: auto;
+    background: #fff;
+}
+
+.submit {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.button {
+    margin-right: 10px;
+}
