@@ -147,7 +147,7 @@ class NCD_Admin
         if (strpos($hook, 'new-customers') === false) {
             return;
         }
-
+    
         // Basis Admin CSS
         wp_enqueue_style(
             'ncd-admin',
@@ -155,18 +155,42 @@ class NCD_Admin
             [],
             NCD_VERSION
         );
-
-        // Template-spezifisches CSS
+    
+        // Template-spezifisches CSS und JS
         if (strpos($hook, 'new-customers-templates') !== false) {
+            // WordPress Color Picker
+            wp_enqueue_style('wp-color-picker');
+            
+            // Template Admin CSS
             wp_enqueue_style(
                 'ncd-admin-templates',
                 NCD_PLUGIN_URL . 'assets/css/admin-templates.css',
                 [],
                 NCD_VERSION
             );
+    
+            // Template Admin JS
+            wp_enqueue_script(
+                'ncd-admin-templates',
+                NCD_PLUGIN_URL . 'assets/js/admin-templates.js',
+                ['jquery', 'wp-color-picker'],
+                NCD_VERSION,
+                true
+            );
+    
+            // Template JS Lokalisierung
+            wp_localize_script('ncd-admin-templates', 'ncdTemplates', [
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('ncd_template_nonce'),
+                'messages' => [
+                    'save_success' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
+                    'save_error' => __('Fehler beim Speichern der Einstellungen.', 'newcustomer-discount'),
+                    'preview_error' => __('Fehler beim Generieren der Vorschau.', 'newcustomer-discount')
+                ]
+            ]);
         }
-
-        // Admin JavaScript
+    
+        // Allgemeines Admin JS
         wp_enqueue_script(
             'ncd-admin',
             NCD_PLUGIN_URL . 'assets/js/admin.js',
@@ -174,8 +198,8 @@ class NCD_Admin
             NCD_VERSION,
             true
         );
-
-        // JavaScript Lokalisierung
+    
+        // Allgemeine JS Lokalisierung
         wp_localize_script('ncd-admin', 'ncdAdmin', [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ncd-admin-nonce'),
@@ -619,9 +643,9 @@ class NCD_Admin
         if (WP_DEBUG) {
             error_log('======= Starting coupon statistics calculation =======');
         }
-    
+
         $coupons = $this->coupon_generator->get_generated_coupons();
-    
+
         $stats = [
             'total' => count($coupons),
             'used' => 0,
@@ -629,7 +653,7 @@ class NCD_Admin
             'active' => 0,
             'total_amount' => 0
         ];
-    
+
         foreach ($coupons as $coupon) {
             if (!$coupon['status']['valid']) {
                 if ($coupon['status']['is_expired']) {
@@ -642,17 +666,17 @@ class NCD_Admin
             }
             $stats['total_amount'] += floatval($coupon['discount_amount']);
         }
-    
+
         // Berechne durchschnittlichen Bestellwert
         $avg_order_value = $this->calculate_average_order_value();
         $stats['avg_order_value'] = $avg_order_value;
-    
+
         if (WP_DEBUG) {
             error_log('Coupon statistics calculated:');
             error_log(print_r($stats, true));
             error_log('======= End coupon statistics calculation =======');
         }
-    
+
         return $stats;
     }
 
@@ -815,15 +839,15 @@ class NCD_Admin
     {
         global $wpdb;
         $tracking_table = NCD_Customer_Tracker::get_table_name();
-    
+
         if (WP_DEBUG) {
             error_log('======= Starting average order value calculation =======');
             error_log('Tracking table: ' . $tracking_table);
-            
+
             // Log the tracking table contents
             $tracking_contents = $wpdb->get_results("SELECT * FROM {$tracking_table}");
             error_log('Tracking table contents: ' . print_r($tracking_contents, true));
-            
+
             // Log orders with used coupons
             $used_coupons = $wpdb->get_results("
                 SELECT * FROM {$wpdb->prefix}wc_orders_meta 
@@ -831,7 +855,7 @@ class NCD_Admin
             ");
             error_log('Orders with used coupons: ' . print_r($used_coupons, true));
         }
-    
+
         $results = $wpdb->get_row("
             SELECT COUNT(*) as order_count, COALESCE(AVG(o.total_amount), 0) as avg_total
             FROM {$wpdb->prefix}wc_orders o
@@ -842,7 +866,7 @@ class NCD_Admin
             AND om.meta_key = '_used_coupon_code'
             AND t.status = 'used'
         ");
-    
+
         if (WP_DEBUG) {
             error_log('Query executed: ' . $wpdb->last_query);
             error_log('Results: ' . print_r($results, true));
@@ -851,11 +875,11 @@ class NCD_Admin
             }
             error_log('======= End average order value calculation =======');
         }
-    
+
         if (!$results || $results->order_count == 0) {
             return 0;
         }
-    
+
         return floatval($results->avg_total);
     }
 
@@ -1085,97 +1109,171 @@ class NCD_Admin
     /**
      * Initialisiert die AJAX Handler
      */
-    private function init_ajax_handlers() {
+    private function init_ajax_handlers()
+    {
         add_action('wp_ajax_ncd_preview_template', [$this, 'ajax_preview_template']);
-        add_action('wp_ajax_ncd_reset_template', [$this, 'ajax_reset_template']);
-    }
-
-    /**
-     * Rendert die Templates-Verwaltungsseite
-     */
-    public function render_templates_page() {
-        if (isset($_POST['save_template']) && isset($_POST['template_content'])) {
-            check_admin_referer('ncd_save_template', 'ncd_template_nonce');
-            
-            $template_content = wp_unslash($_POST['template_content']);
-            $result = $this->email_sender->save_template($template_content);
-            
-            if (is_wp_error($result)) {
-                add_settings_error(
-                    'ncd_template',
-                    'template_error',
-                    $result->get_error_message(),
-                    'error'
-                );
-            } else {
-                add_settings_error(
-                    'ncd_template',
-                    'template_updated',
-                    __('Template erfolgreich gespeichert.', 'newcustomer-discount'),
-                    'success'
-                );
-            }
-        }
-
-        // Hole aktuelles Template
-        $current_template = get_option('ncd_email_template', '');
-        if (empty($current_template)) {
-            $current_template = $this->email_sender->load_predefined_template();
-            if (is_wp_error($current_template)) {
-                $current_template = '';
-            }
-        }
-
-        // Hole verfügbare Variablen
-        $available_variables = $this->email_sender->get_available_variables();
-
-        // Template laden
-        include NCD_PLUGIN_DIR . 'templates/admin/templates-page.php';
+        add_action('wp_ajax_ncd_switch_template', [$this, 'ajax_switch_template']);
+        add_action('wp_ajax_ncd_save_template_settings', [$this, 'ajax_save_template_settings']);
     }
 
     /**
      * AJAX Handler für Template Preview
      */
     public function ajax_preview_template() {
-        check_ajax_referer('ncd_save_template', 'nonce');
+        check_ajax_referer('ncd_template_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'newcustomer-discount')]);
         }
 
-        $template = isset($_POST['template']) ? wp_unslash($_POST['template']) : '';
+        $data = $_POST['data'];
+        parse_str($data, $form_data);
         
-        // Validiere Template
-        $validation = $this->email_sender->validate_template($template);
-        if (is_wp_error($validation)) {
-            wp_send_json_error(['message' => $validation->get_error_message()]);
+        $template_id = isset($form_data['template_id']) ? sanitize_text_field($form_data['template_id']) : 'modern';
+        $settings = isset($form_data['settings']) ? $form_data['settings'] : [];
+        $sanitized_settings = $this->sanitize_template_settings($settings);
+
+        try {
+            $preview = $this->email_sender->render_preview($template_id, $sanitized_settings);
+            wp_send_json_success(['html' => $preview]);
+        } catch (Exception $e) {
+            wp_send_json_error(['message' => $e->getMessage()]);
         }
-
-        // Parse Template mit Test-Daten
-        $test_data = [
-            'coupon_code' => 'TESTCODE123',
-            'expiry_date' => date('Y-m-d', strtotime('+30 days'))
-        ];
-
-        $html = $this->email_sender->parse_template($template, $test_data);
-        wp_send_json_success(['html' => $html]);
     }
 
     /**
-     * AJAX Handler für Template Reset
+     * AJAX Handler für Template Switch
      */
-    public function ajax_reset_template() {
+    public function ajax_switch_template()
+    {
         check_ajax_referer('ncd_save_template', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Keine Berechtigung.', 'newcustomer-discount')]);
         }
 
-        $default_template = $this->email_sender->load_predefined_template();
-        if (is_wp_error($default_template)) {
-            wp_send_json_error(['message' => $default_template->get_error_message()]);
+        $template_id = isset($_POST['template_id']) ? sanitize_text_field($_POST['template_id']) : 'modern';
+
+        try {
+            // Versuche das Template zu laden (wirft Exception wenn nicht gefunden)
+            $this->email_sender->load_template($template_id);
+
+            // Speichere aktives Template
+            update_option('ncd_active_template', $template_id);
+
+            wp_send_json_success([
+                'message' => __('Template erfolgreich gewechselt.', 'newcustomer-discount')
+            ]);
+        } catch (Exception $e) {
+            wp_send_json_error(['message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Sanitize Template Settings
+     *
+     * @param array $settings Rohe Einstellungen
+     * @return array Sanitized settings
+     */
+    private function sanitize_template_settings($settings) {
+        $sanitized = [];
+        
+        if (is_array($settings)) {
+            // Farben
+            $color_keys = ['primary_color', 'secondary_color', 'text_color', 'background_color'];
+            foreach ($color_keys as $key) {
+                if (isset($settings[$key])) {
+                    $sanitized[$key] = sanitize_hex_color($settings[$key]) ?: '#000000';
+                }
+            }
+
+            // Schriftart
+            if (isset($settings['font_family'])) {
+                $allowed_fonts = [
+                    'Arial, sans-serif',
+                    "'Helvetica Neue', Helvetica, sans-serif",
+                    "'Segoe UI', Tahoma, Geneva, sans-serif",
+                    'Roboto, sans-serif',
+                    'Georgia, serif'
+                ];
+                $sanitized['font_family'] = in_array($settings['font_family'], $allowed_fonts)
+                    ? $settings['font_family']
+                    : 'Arial, sans-serif';
+            }
+
+            // Button Style
+            if (isset($settings['button_style'])) {
+                $sanitized['button_style'] = in_array($settings['button_style'], ['rounded', 'square', 'pill'])
+                    ? $settings['button_style']
+                    : 'rounded';
+            }
+
+            // Layout Type
+            if (isset($settings['layout_type'])) {
+                $sanitized['layout_type'] = in_array($settings['layout_type'], ['centered', 'full-width'])
+                    ? $settings['layout_type']
+                    : 'centered';
+            }
         }
 
-        wp_send_json_success(['template' => $default_template]);
+        return $sanitized;
+    }
+
+    /**
+     * Rendert die Templates-Verwaltungsseite
+     */
+    public function render_templates_page() {
+        if (isset($_POST['save_template']) && isset($_POST['template_id'])) {
+            check_admin_referer('ncd_save_template', 'ncd_template_nonce');
+            
+            $template_id = sanitize_text_field($_POST['template_id']);
+            $settings = isset($_POST['settings']) ? $_POST['settings'] : [];
+            $sanitized_settings = $this->sanitize_template_settings($settings);
+            
+            $this->email_sender->save_template_settings($template_id, $sanitized_settings);
+            
+            $this->add_admin_notice(
+                __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
+                'success'
+            );
+        }
+
+        // Hole aktives Template und Einstellungen
+        $available_templates = $this->email_sender->get_template_list();
+        $current_template_id = get_option('ncd_active_template', 'modern');
+        $current_template = $this->email_sender->load_template($current_template_id);
+
+        // Template laden
+        include NCD_PLUGIN_DIR . 'templates/admin/templates-page.php';
+    }
+
+    /**
+     * AJAX Handler für Template Settings Speichern
+     */
+    public function ajax_save_template_settings()
+    {
+        check_ajax_referer('ncd_save_template', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Keine Berechtigung.', 'newcustomer-discount')]);
+        }
+
+        $template_id = isset($_POST['template_id']) ? sanitize_text_field($_POST['template_id']) : 'modern';
+        $settings = isset($_POST['settings']) ? $this->sanitize_template_settings($_POST['settings']) : [];
+
+        try {
+            // Speichere Einstellungen
+            $this->email_sender->save_template_settings($template_id, $settings);
+
+            // Generiere neue Vorschau
+            $preview = $this->email_sender->render_preview($template_id);
+
+            wp_send_json_success([
+                'message' => __('Einstellungen gespeichert.', 'newcustomer-discount'),
+                'html' => $preview
+            ]);
+        } catch (Exception $e) {
+            wp_send_json_error(['message' => $e->getMessage()]);
+        }
     }
 }

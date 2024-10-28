@@ -14,6 +14,13 @@ if (!defined('ABSPATH')) {
 
 class NCD_Email_Sender {
     /**
+     * Template Verzeichnis
+     *
+     * @var string
+     */
+    private $template_directory;
+
+    /**
      * Default E-Mail-Einstellungen
      *
      * @var array
@@ -22,17 +29,78 @@ class NCD_Email_Sender {
         'from_name' => '',
         'from_email' => '',
         'subject' => 'Ihr Rabattgutschein',
-        'template' => 'default'
+        'template' => 'modern'
     ];
 
     /**
      * Constructor
      */
     public function __construct() {
+        $this->template_directory = NCD_PLUGIN_DIR . 'templates/email/base/';
         $this->default_settings['from_name'] = get_bloginfo('name');
         $this->default_settings['from_email'] = get_option('admin_email');
 
         add_filter('wp_mail_content_type', [$this, 'set_html_content_type']);
+    }
+
+    /**
+     * Gibt verfügbare Templates zurück
+     *
+     * @return array
+     */
+    public function get_template_list() {
+        return [
+            'modern' => [
+                'file' => $this->template_directory . 'modern.php',
+                'preview' => NCD_PLUGIN_URL . 'templates/email/previews/modern.jpg'
+            ],
+            'classic' => [
+                'file' => $this->template_directory . 'classic.php',
+                'preview' => NCD_PLUGIN_URL . 'templates/email/previews/classic.jpg'
+            ],
+            'minimal' => [
+                'file' => $this->template_directory . 'minimal.php',
+                'preview' => NCD_PLUGIN_URL . 'templates/email/previews/minimal.jpg'
+            ]
+        ];
+    }
+
+    /**
+     * Lädt ein Template
+     *
+     * @param string $template_id Template ID
+     * @return array Template-Daten
+     */
+    public function load_template($template_id = 'modern') {
+        $templates = $this->get_template_list();
+        
+        if (!isset($templates[$template_id])) {
+            // Fallback zum Standard-Template
+            error_log("Template '$template_id' nicht gefunden, verwende 'modern'");
+            $template_id = 'modern';
+        }
+        
+        $template_file = $templates[$template_id]['file'];
+        if (!file_exists($template_file)) {
+            error_log("Template-Datei nicht gefunden: $template_file");
+            
+            // Wenn modern.php auch nicht existiert, zeige einen deutlicheren Fehler
+            if ($template_id === 'modern') {
+                throw new Exception(sprintf(
+                    __('Basis-Template-Dateien fehlen. Bitte stellen Sie sicher, dass %s existiert.', 'newcustomer-discount'),
+                    'templates/email/base/modern.php'
+                ));
+            }
+            
+            // Fallback zu modern
+            return $this->load_template('modern');
+        }
+        
+        $template = include $template_file;
+        $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
+        $template['settings'] = wp_parse_args($saved_settings, $template['settings']);
+        
+        return $template;
     }
 
     /**
@@ -52,7 +120,7 @@ class NCD_Email_Sender {
             $settings = wp_parse_args($settings, $this->default_settings);
             
             // E-Mail Inhalt generieren
-            $content = $this->generate_email_content($data);
+            $content = $this->render_template($settings['template'], $data);
             if (is_wp_error($content)) {
                 throw new Exception($content->get_error_message());
             }
@@ -83,63 +151,29 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Holt das aktive Template
+     * Rendert ein Template
      *
-     * @return string
-     */
-    private function get_active_template() {
-        $template = get_option('ncd_email_template');
-        
-        if (empty($template)) {
-            // Lade Standard-Template aus der Datei
-            $template_file = NCD_PLUGIN_DIR . 'templates/email/default.php';
-            if (file_exists($template_file)) {
-                $template = include $template_file;
-            }
-            
-            if (empty($template)) {
-                // Fallback zum eingebauten Template
-                $template = $this->load_predefined_template('default');
-            }
-        }
-
-        return $template;
-    }
-
-    /**
-     * Lädt ein vordefiniertes Template
-     *
-     * @param string $template_name Name des Templates
-     * @return string|WP_Error
-     */
-    public function load_predefined_template($template_name = 'default') {
-        $template_file = NCD_PLUGIN_DIR . 'templates/email/' . $template_name . '.php';
-        
-        if (!file_exists($template_file)) {
-            return new WP_Error(
-                'template_not_found',
-                sprintf(__('Template "%s" nicht gefunden', 'newcustomer-discount'), $template_name)
-            );
-        }
-
-        return include $template_file;
-    }
-
-    /**
-     * Generiert den E-Mail-Inhalt
-     *
+     * @param string $template_id Template ID
      * @param array $data Template-Daten
-     * @return string|WP_Error
+     * @return string Gerendertes Template
      */
-    private function generate_email_content($data) {
-        $template = $this->get_active_template();
-        if (empty($template)) {
-            if (WP_DEBUG) {
-                error_log('NCD: Kein Template gefunden oder geladen');
-            }
-            return new WP_Error('no_template', __('Kein E-Mail-Template verfügbar', 'newcustomer-discount'));
-        }
-        return $this->parse_template($template, $data);
+    public function render_template($template_id, $data) {
+        $template = $this->load_template($template_id);
+        
+        // Replace CSS variables with actual values
+        $styles = strtr($template['styles'], [
+            'var(--primary-color)' => $template['settings']['primary_color'],
+            'var(--secondary-color)' => $template['settings']['secondary_color'],
+            'var(--text-color)' => $template['settings']['text_color'],
+            'var(--background-color)' => $template['settings']['background_color'],
+            'var(--font-family)' => $template['settings']['font_family']
+        ]);
+
+        // Combine styles and HTML
+        $html = "<style>{$styles}</style>" . $template['html'];
+        
+        // Replace template variables
+        return $this->parse_template($html, $data);
     }
 
     /**
@@ -166,24 +200,6 @@ class NCD_Email_Sender {
             '{min_order_amount}' => $min_order_text,
             '{currency_symbol}' => get_woocommerce_currency_symbol()
         ];
-
-        // Filter für zusätzliche Variablen
-        $replacements = apply_filters('ncd_email_template_variables', $replacements, $data);
-
-        // Text für Mindestbestellwert
-        $min_order_text = $min_order_amount > 0 ? 
-            sprintf('Mindestbestellwert: %s', $min_order_text) : 
-            'Kein Mindestbestellwert';
-
-        // Fix für PHP-Code in Template
-        $template = str_replace(
-            [
-                '. (get_option(\'ncd_min_order_amount\', 0) >0) ? \'',
-                '\' : \'\''
-            ], 
-            $min_order_text,
-            $template
-        );
 
         return str_replace(array_keys($replacements), array_values($replacements), $template);
     }
@@ -216,73 +232,41 @@ class NCD_Email_Sender {
      * Sendet eine Test-E-Mail
      *
      * @param string $email Test-Empfänger
+     * @param string $template_id Template ID
      * @return bool|WP_Error
      */
-    public function send_test_email($email) {
+    public function send_test_email($email, $template_id = 'modern') {
         $test_data = [
             'coupon_code' => 'TESTCODE123',
             'expiry_date' => date('Y-m-d', strtotime('+30 days'))
         ];
 
         return $this->send_discount_email($email, $test_data, [
-            'subject' => '[TEST] ' . $this->default_settings['subject']
+            'subject' => '[TEST] ' . $this->default_settings['subject'],
+            'template' => $template_id
         ]);
     }
 
     /**
-     * Validiert ein E-Mail-Template
+     * Speichert Template-Einstellungen
      *
-     * @param string $template Template-Inhalt
-     * @return bool|WP_Error
+     * @param string $template_id Template ID
+     * @param array $settings Einstellungen
+     * @return bool
      */
-    public function validate_template($template) {
-        if (empty($template)) {
-            return new WP_Error(
-                'template_empty',
-                __('Template-Inhalt ist leer', 'newcustomer-discount')
-            );
-        }
-
-        // Prüfe auf erforderliche Variablen
-        $required_vars = [
-            '{coupon_code}',
-            '{shop_name}',
-            '{discount_amount}',
-            '{expiry_date}'
-        ];
-
-        foreach ($required_vars as $var) {
-            if (strpos($template, $var) === false) {
-                return new WP_Error(
-                    'missing_variable',
-                    sprintf(__('Pflicht-Variable %s fehlt', 'newcustomer-discount'), $var)
-                );
-            }
-        }
-
-        return true;
+    public function save_template_settings($template_id, $settings) {
+        return update_option('ncd_template_' . $template_id . '_settings', $settings);
     }
 
     /**
-     * Speichert ein Template in der Datenbank
+     * Holt Template-Einstellungen
      *
-     * @param string $template Template-Inhalt
-     * @return bool|WP_Error
+     * @param string $template_id Template ID
+     * @return array
      */
-    public function save_template($template) {
-        $validation = $this->validate_template($template);
-        if (is_wp_error($validation)) {
-            return $validation;
-        }
-
-        if (update_option('ncd_email_template', $template)) {
-            return true;
-        }
-
-        return new WP_Error(
-            'save_failed',
-            __('Template konnte nicht gespeichert werden', 'newcustomer-discount')
-        );
+    public function get_template_settings($template_id) {
+        $template = $this->load_template($template_id);
+        return $template['settings'];
     }
 
     /**
@@ -415,5 +399,36 @@ class NCD_Email_Sender {
                 json_encode($context)
             ));
         }
+    }
+
+    /**
+     * Rendert eine Template-Vorschau
+     *
+     * @param string $template_id Template ID
+     * @param array $settings Temporäre Einstellungen
+     * @return string HTML der Vorschau
+     */
+    public function render_preview($template_id, $settings = []) {
+        $test_data = [
+            'coupon_code' => 'TESTCODE123',
+            'expiry_date' => date('Y-m-d', strtotime('+30 days'))
+        ];
+
+        // Temporäre Einstellungen für die Vorschau
+        if (!empty($settings)) {
+            $option_name = 'ncd_template_' . $template_id . '_settings';
+            $original_settings = get_option($option_name);
+            update_option($option_name, wp_parse_args($settings, $original_settings));
+            
+            // Template rendern
+            $preview = $this->render_template($template_id, $test_data);
+            
+            // Originaleinstellungen wiederherstellen
+            update_option($option_name, $original_settings);
+            
+            return $preview;
+        }
+
+        return $this->render_template($template_id, $test_data);
     }
 }
