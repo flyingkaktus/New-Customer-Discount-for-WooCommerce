@@ -72,6 +72,29 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
             'sanitize_callback' => [$this, 'sanitize_min_order_amount']
         ]);
         register_setting('ncd_customer_settings', 'ncd_excluded_categories');
+
+        // Email Text Settings
+        register_setting('ncd_email_settings', 'ncd_email_texts', [
+            'type' => 'array',
+            'sanitize_callback' => [$this, 'sanitize_email_texts']
+        ]);
+    }
+
+    public function sanitize_email_texts($texts) {
+        $sanitized = [];
+        $allowed_html = [
+            'p' => [],
+            'br' => [],
+            'strong' => [],
+            'em' => [],
+            'span' => []
+        ];
+        
+        foreach ($texts as $key => $text) {
+            $sanitized[$key] = wp_kses($text, $allowed_html);
+        }
+        
+        return $sanitized;
     }
 
     /**
@@ -160,8 +183,41 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
      * @return bool
      */
     private function handle_email_settings() {
-        update_option('ncd_email_subject', sanitize_text_field($_POST['email_subject']));
-        return true;
+        try {
+            // E-Mail-Betreff speichern
+            update_option('ncd_email_subject', sanitize_text_field($_POST['email_subject']));
+
+            // E-Mail-Texte speichern
+            if (isset($_POST['email_texts']) && is_array($_POST['email_texts'])) {
+                $email_texts = [
+                    'greeting' => isset($_POST['email_texts']['greeting']) ? 
+                        wp_kses_post($_POST['email_texts']['greeting']) : '',
+                    'intro' => isset($_POST['email_texts']['intro']) ? 
+                        wp_kses_post($_POST['email_texts']['intro']) : '',
+                    'coupon_info' => isset($_POST['email_texts']['coupon_info']) ? 
+                        wp_kses_post($_POST['email_texts']['coupon_info']) : '',
+                    'footer' => isset($_POST['email_texts']['footer']) ? 
+                        wp_kses_post($_POST['email_texts']['footer']) : ''
+                ];
+
+                // Speichere die E-Mail-Texte über den Email Sender
+                $this->email_sender->save_email_texts($email_texts);
+            }
+
+            if (WP_DEBUG) {
+                error_log('E-Mail-Einstellungen gespeichert:');
+                error_log('Betreff: ' . $_POST['email_subject']);
+                error_log('E-Mail-Texte: ' . print_r($email_texts, true));
+            }
+
+            return true;
+
+        } catch (Exception $e) {
+            if (WP_DEBUG) {
+                error_log('Fehler beim Speichern der E-Mail-Einstellungen: ' . $e->getMessage());
+            }
+            return false;
+        }
     }
 
     /**
@@ -356,4 +412,6 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     public function sanitize_min_order_amount($value) {
         return max(floatval($value), 0);
     }
+
+    
 }

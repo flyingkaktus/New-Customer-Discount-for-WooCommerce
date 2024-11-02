@@ -179,7 +179,7 @@ class NCD_Admin_Base {
         return isset($components[$component]) ? $components[$component] : null;
     }
 
-        /**
+    /**
      * Überprüft AJAX-Anfragen
      *
      * @param string $action Optional. Die Nonce-Action.

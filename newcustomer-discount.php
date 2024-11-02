@@ -36,6 +36,7 @@ require_once NCD_INCLUDES_DIR . 'class-ncd-updater.php';
 // Admin-Klassen in richtiger Reihenfolge laden
 require_once NCD_INCLUDES_DIR . 'admin/core/class-ncd-admin-base.php';
 require_once NCD_INCLUDES_DIR . 'admin/core/class-ncd-admin-menu.php';
+require_once NCD_INCLUDES_DIR . 'admin/core/class-ncd-admin-tab-manager.php';
 require_once NCD_INCLUDES_DIR . 'admin/class-ncd-admin.php';
 require_once NCD_INCLUDES_DIR . 'admin/settings/class-ncd-admin-settings.php';
 require_once NCD_INCLUDES_DIR . 'admin/templates/class-ncd-admin-templates.php';

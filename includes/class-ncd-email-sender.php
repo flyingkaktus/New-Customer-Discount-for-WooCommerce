@@ -33,6 +33,18 @@ class NCD_Email_Sender {
     ];
 
     /**
+     * Default E-Mail-Texte
+     *
+     * @var array
+     */
+    private $default_email_texts = [
+        'greeting' => 'Sehr geehrter Kunde,',
+        'intro' => 'vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt.',
+        'coupon_info' => 'Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein.',
+        'footer' => 'Dies ist eine automatisch generierte E-Mail.'
+    ];
+
+    /**
      * Constructor
      */
     public function __construct() {
@@ -41,6 +53,10 @@ class NCD_Email_Sender {
         $this->default_settings['from_email'] = get_option('admin_email');
 
         add_filter('wp_mail_content_type', [$this, 'set_html_content_type']);
+
+        if (!get_option('ncd_email_texts')) {
+            add_option('ncd_email_texts', $this->default_email_texts);
+        }
     }
 
     /**
@@ -75,7 +91,6 @@ class NCD_Email_Sender {
         $templates = $this->get_template_list();
         
         if (!isset($templates[$template_id])) {
-            // Fallback zum Standard-Template
             error_log("Template '$template_id' nicht gefunden, verwende 'modern'");
             $template_id = 'modern';
         }
@@ -84,7 +99,6 @@ class NCD_Email_Sender {
         if (!file_exists($template_file)) {
             error_log("Template-Datei nicht gefunden: $template_file");
             
-            // Wenn modern.php auch nicht existiert, zeige einen deutlicheren Fehler
             if ($template_id === 'modern') {
                 throw new Exception(sprintf(
                     __('Basis-Template-Dateien fehlen. Bitte stellen Sie sicher, dass %s existiert.', 'newcustomer-discount'),
@@ -92,7 +106,6 @@ class NCD_Email_Sender {
                 ));
             }
             
-            // Fallback zu modern
             return $this->load_template('modern');
         }
         
@@ -119,25 +132,19 @@ class NCD_Email_Sender {
 
             $settings = wp_parse_args($settings, $this->default_settings);
             
-            // E-Mail Inhalt generieren
             $content = $this->render_template($settings['template'], $data);
             if (is_wp_error($content)) {
                 throw new Exception($content->get_error_message());
             }
 
-            // E-Mail Header
             $headers = $this->generate_email_headers($settings);
-
-            // E-Mail senden
             $sent = wp_mail($email, $settings['subject'], $content, $headers);
 
             if (!$sent) {
                 throw new Exception(__('E-Mail konnte nicht gesendet werden', 'newcustomer-discount'));
             }
 
-            // Log erfolgreichen Versand
             $this->log_email_sent($email, $data);
-
             return true;
 
         } catch (Exception $e) {
@@ -160,7 +167,6 @@ class NCD_Email_Sender {
     public function render_template($template_id, $data) {
         $template = $this->load_template($template_id);
         
-        // Replace CSS variables with actual values
         $styles = strtr($template['styles'], [
             'var(--primary-color)' => $template['settings']['primary_color'],
             'var(--secondary-color)' => $template['settings']['secondary_color'],
@@ -169,10 +175,8 @@ class NCD_Email_Sender {
             'var(--font-family)' => $template['settings']['font_family']
         ]);
 
-        // Combine styles and HTML
         $html = "<style>{$styles}</style>" . $template['html'];
         
-        // Replace template variables
         return $this->parse_template($html, $data);
     }
 
@@ -186,6 +190,19 @@ class NCD_Email_Sender {
     private function parse_template($template, $data) {
         $min_order_amount = get_option('ncd_min_order_amount', 0);
         $min_order_text = $min_order_amount > 0 ? wc_price($min_order_amount) : '0,00 €';
+        $email_texts = get_option('ncd_email_texts', $this->default_email_texts);
+
+        foreach ($email_texts as $key => $text) {
+            $email_texts[$key] = strtr($text, [
+                '{shop_name}' => get_bloginfo('name'),
+                '{coupon_code}' => $data['coupon_code'],
+                '{discount_amount}' => get_option('ncd_discount_amount', 20),
+                '{expiry_date}' => isset($data['expiry_date']) ? 
+                    date_i18n(get_option('date_format'), strtotime($data['expiry_date'])) : 
+                    date_i18n(get_option('date_format'), strtotime('+30 days')),
+                '{min_order_amount}' => $min_order_text
+            ]);
+        }
 
         $replacements = [
             '{coupon_code}' => $data['coupon_code'],
@@ -198,7 +215,11 @@ class NCD_Email_Sender {
             '{logo_url}' => NCD_Logo_Manager::get_logo(),
             '{current_year}' => date('Y'),
             '{min_order_amount}' => $min_order_text,
-            '{currency_symbol}' => get_woocommerce_currency_symbol()
+            '{currency_symbol}' => get_woocommerce_currency_symbol(),
+            '{email_greeting}' => $email_texts['greeting'],
+            '{email_intro}' => $email_texts['intro'],
+            '{email_coupon_info}' => $email_texts['coupon_info'],
+            '{email_footer}' => $email_texts['footer']
         ];
 
         return str_replace(array_keys($replacements), array_values($replacements), $template);
@@ -267,6 +288,25 @@ class NCD_Email_Sender {
     public function get_template_settings($template_id) {
         $template = $this->load_template($template_id);
         return $template['settings'];
+    }
+
+    /**
+     * Speichert E-Mail-Texte
+     *
+     * @param array $texts Die zu speichernden Texte
+     * @return bool
+     */
+    public function save_email_texts($texts) {
+        return update_option('ncd_email_texts', wp_parse_args($texts, $this->default_email_texts));
+    }
+
+    /**
+     * Gibt die aktuellen E-Mail-Texte zurück
+     *
+     * @return array
+     */
+    public function get_email_texts() {
+        return get_option('ncd_email_texts', $this->default_email_texts);
     }
 
     /**
@@ -360,75 +400,75 @@ class NCD_Email_Sender {
         $table = $wpdb->prefix . 'ncd_email_log';
         
         return $wpdb->get_results($wpdb->prepare("
-            SELECT *
-            FROM $table
-            ORDER BY {$args['orderby']} {$args['order']}
-            LIMIT %d OFFSET %d
-        ", $args['limit'], $args['offset']));
-    }
+        SELECT *
+        FROM $table
+        ORDER BY {$args['orderby']} {$args['order']}
+        LIMIT %d OFFSET %d
+    ", $args['limit'], $args['offset']));
+}
 
-    /**
-     * Bereinigt alte Log-Einträge
-     *
-     * @param int $days Alter in Tagen
-     * @return int Anzahl der gelöschten Einträge
-     */
-    public function cleanup_logs($days = 90) {
-        global $wpdb;
+/**
+ * Bereinigt alte Log-Einträge
+ *
+ * @param int $days Alter in Tagen
+ * @return int Anzahl der gelöschten Einträge
+ */
+public function cleanup_logs($days = 90) {
+    global $wpdb;
+    
+    $table = $wpdb->prefix . 'ncd_email_log';
+    
+    return $wpdb->query($wpdb->prepare("
+        DELETE FROM $table
+        WHERE sent_date < DATE_SUB(NOW(), INTERVAL %d DAY)
+    ", $days));
+}
+
+/**
+ * Loggt Fehler für Debugging
+ *
+ * @param string $message Fehlermeldung
+ * @param array $context Zusätzliche Kontext-Informationen
+ * @return void
+ */
+private function log_error($message, $context = []) {
+    if (WP_DEBUG) {
+        error_log(sprintf(
+            '[NewCustomerDiscount] Email Sender Error: %s | Context: %s',
+            $message,
+            json_encode($context)
+        ));
+    }
+}
+
+/**
+ * Rendert eine Template-Vorschau
+ *
+ * @param string $template_id Template ID
+ * @param array $settings Temporäre Einstellungen
+ * @return string HTML der Vorschau
+ */
+public function render_preview($template_id, $settings = []) {
+    $test_data = [
+        'coupon_code' => 'TESTCODE123',
+        'expiry_date' => date('Y-m-d', strtotime('+30 days'))
+    ];
+
+    // Temporäre Einstellungen für die Vorschau
+    if (!empty($settings)) {
+        $option_name = 'ncd_template_' . $template_id . '_settings';
+        $original_settings = get_option($option_name);
+        update_option($option_name, wp_parse_args($settings, $original_settings));
         
-        $table = $wpdb->prefix . 'ncd_email_log';
+        // Template rendern
+        $preview = $this->render_template($template_id, $test_data);
         
-        return $wpdb->query($wpdb->prepare("
-            DELETE FROM $table
-            WHERE sent_date < DATE_SUB(NOW(), INTERVAL %d DAY)
-        ", $days));
+        // Originaleinstellungen wiederherstellen
+        update_option($option_name, $original_settings);
+        
+        return $preview;
     }
 
-    /**
-     * Loggt Fehler für Debugging
-     *
-     * @param string $message Fehlermeldung
-     * @param array $context Zusätzliche Kontext-Informationen
-     * @return void
-     */
-    private function log_error($message, $context = []) {
-        if (WP_DEBUG) {
-            error_log(sprintf(
-                '[NewCustomerDiscount] Email Sender Error: %s | Context: %s',
-                $message,
-                json_encode($context)
-            ));
-        }
-    }
-
-    /**
-     * Rendert eine Template-Vorschau
-     *
-     * @param string $template_id Template ID
-     * @param array $settings Temporäre Einstellungen
-     * @return string HTML der Vorschau
-     */
-    public function render_preview($template_id, $settings = []) {
-        $test_data = [
-            'coupon_code' => 'TESTCODE123',
-            'expiry_date' => date('Y-m-d', strtotime('+30 days'))
-        ];
-
-        // Temporäre Einstellungen für die Vorschau
-        if (!empty($settings)) {
-            $option_name = 'ncd_template_' . $template_id . '_settings';
-            $original_settings = get_option($option_name);
-            update_option($option_name, wp_parse_args($settings, $original_settings));
-            
-            // Template rendern
-            $preview = $this->render_template($template_id, $test_data);
-            
-            // Originaleinstellungen wiederherstellen
-            update_option($option_name, $original_settings);
-            
-            return $preview;
-        }
-
-        return $this->render_template($template_id, $test_data);
-    }
+    return $this->render_template($template_id, $test_data);
+}
 }

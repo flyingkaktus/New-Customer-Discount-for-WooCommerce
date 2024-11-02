@@ -64,6 +64,9 @@ class NCD_Admin {
        // Menu Manager initialisieren
        $this->menu = new NCD_Admin_Menu();
 
+       // Tab Manager initialisieren
+       $this->tab_manager = new NCD_Admin_Tab_Manager();
+        
        // Admin Seiten initialisieren
        $this->init_pages();
 
@@ -119,6 +122,15 @@ class NCD_Admin {
            error_log('Admin hooks initialized');
        }
    }
+
+    /**
+     * Gibt den Tab Manager zurück
+     *
+     * @return NCD_Admin_Tab_Manager
+     */
+    public function get_tab_manager() {
+        return $this->tab_manager;
+    }
 
    /**
     * Lädt gemeinsame Admin Assets

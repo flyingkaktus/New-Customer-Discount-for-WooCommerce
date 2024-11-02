@@ -176,9 +176,9 @@ return [
             <div class="content">
                 <h1>Exklusiver Rabattgutschein</h1>
                 
-                <p>Sehr geehrter Kunde,</p>
+                <p>{email_greeting}</p>
                 
-                <p>vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt.</p>
+                <p>{email_intro}</p>
 
                 <div class="coupon-code">
                     {coupon_code}
@@ -198,13 +198,13 @@ return [
                 </center>
 
                 <p style="text-align: center;">
-                    Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein.
+                    {email_coupon_info}
                 </p>
             </div>
 
             <div class="footer">
                 <p>&copy; {current_year} {shop_name}. Alle Rechte vorbehalten.</p>
-                <p>Dies ist eine automatisch generierte E-Mail.</p>
+                <p>{email_footer}</p>
             </div>
         </div>
     </div>

@@ -190,9 +190,65 @@
         }
     }
 
+    class NCDTabManager {
+        constructor() {
+            this.$tabs = $('.ncd-tabs');
+            this.$tabButtons = $('.nav-tab-wrapper .nav-tab');
+            this.$tabContents = $('.ncd-tab-content');
+            this.initialize();
+        }
+
+        initialize() {
+            this.bindEvents();
+            this.initializeActiveTab();
+        }
+
+        bindEvents() {
+            this.$tabButtons.on('click', (e) => {
+                e.preventDefault();
+                const $target = $(e.currentTarget);
+                const tabId = $target.attr('href');
+                this.activateTab(tabId);
+            });
+
+            // Handle browser back/forward
+            $(window).on('popstate', () => {
+                this.initializeActiveTab();
+            });
+        }
+
+        initializeActiveTab() {
+            const activeTabId = window.location.hash || `#${ncdTabs.defaultTab}`;
+            this.activateTab(activeTabId, false);
+        }
+
+        activateTab(tabId, updateHistory = true) {
+            this.$tabButtons.removeClass('nav-tab-active');
+            this.$tabContents.removeClass('active');
+
+            this.$tabButtons.filter(`[href="${tabId}"]`).addClass('nav-tab-active');
+            $(tabId).addClass('active');
+
+            if (updateHistory) {
+                history.pushState(null, null, tabId);
+            }
+
+            $(document).trigger('ncd_tab_changed', [tabId.replace('#', '')]);
+            
+            // Smooth scroll to top
+            $('html, body').animate({ scrollTop: 0 }, 300);
+        }
+    }
+
     // Initialize on document ready
     $(document).ready(() => {
-        new NCDAdmin();
+        // Initialisiere Admin
+        window.ncdAdmin = new NCDAdmin();
+
+        // Initialisiere Tab Manager nur auf Settings-Seiten
+        if ($('.ncd-tabs').length > 0) {
+            window.ncdTabManager = new NCDTabManager();
+        }
     });
 
 })(jQuery);

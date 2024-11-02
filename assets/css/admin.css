@@ -286,3 +286,37 @@
 .ncd-reset-form .form-table th {
     color: #dc3232;
 }
+
+/* Tab Navigation Styles */
+.ncd-tab-content {
+    display: none;
+    padding: 20px 0;
+}
+
+.ncd-tab-content.active {
+    display: block;
+}
+
+.nav-tab-wrapper {
+    margin-bottom: 20px;
+}
+
+.nav-tab {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-tab-active {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+/* Animation für Tab-Wechsel */
+.ncd-tab-content {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ncd-tab-content.active {
+    opacity: 1;
+}
