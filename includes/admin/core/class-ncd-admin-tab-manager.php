@@ -29,13 +29,6 @@ class NCD_Admin_Tab_Manager {
     private $active_tab;
 
     /**
-     * Constructor
-     */
-    public function __construct() {
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
-    }
-
-    /**
      * Registriert einen neuen Tab
      *
      * @param string $id Tab ID
@@ -90,36 +83,6 @@ class NCD_Admin_Tab_Manager {
             <?php endforeach; ?>
         </div>
         <?php
-    }
-
-    /**
-     * Lädt die benötigten Assets
-     *
-     * @param string $hook Der aktuelle Admin-Seiten-Hook
-     */
-    public function enqueue_assets($hook) {
-        if (strpos($hook, 'new-customers') === false) {
-            return;
-        }
-
-        wp_enqueue_style(
-            'ncd-admin-tabs',
-            NCD_PLUGIN_URL . 'assets/css/admin-tabs.css',
-            [],
-            NCD_VERSION
-        );
-
-        wp_enqueue_script(
-            'ncd-admin-tabs',
-            NCD_PLUGIN_URL . 'assets/js/admin-tabs.js',
-            ['jquery'],
-            NCD_VERSION,
-            true
-        );
-
-        wp_localize_script('ncd-admin-tabs', 'ncdTabs', [
-            'defaultTab' => $this->active_tab
-        ]);
     }
 
     /**

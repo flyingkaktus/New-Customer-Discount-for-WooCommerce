@@ -24,6 +24,8 @@ define('NCD_VERSION', '0.0.3');
 define('NCD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('NCD_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('NCD_INCLUDES_DIR', NCD_PLUGIN_DIR . 'includes/');
+define('NCD_ASSETS_URL', NCD_PLUGIN_URL . 'assets/');
+define('NCD_CSS_URL', NCD_ASSETS_URL . 'css/admin/');
 define('NEWCUSTOMER_CUTOFF_DATE', '2024-01-01 00:00:00');
 
 // Basis-Klassen laden
@@ -49,10 +51,9 @@ define('NCD_ADMIN_DIR', NCD_INCLUDES_DIR . 'admin/');
 
 // GitHub Updater initialisieren
 if (is_admin()) {
-    error_log('Attempting to initialize NCD_Updater');  // Neuer Debug-Log
     $updater = new NCD_Updater(__FILE__);
-    error_log('NCD_Updater initialized');  // Neuer Debug-Log
 }
+
 
 /**
  * Plugin Initialisierung
@@ -73,7 +74,10 @@ function ncd_init() {
     
     // Initialisiere Admin Bereich
     if (is_admin()) {
-        new NCD_Admin();
+        $admin = new NCD_Admin();
+        
+        // Hook für Asset Loading registrieren
+        add_action('admin_enqueue_scripts', [$admin, 'enqueue_common_assets']);
     }
 }
 add_action('plugins_loaded', 'ncd_init');
@@ -117,32 +121,58 @@ function ncd_activate() {
         if ($role) {
             $role->add_cap('manage_customer_discounts');
         }
-        
-        // Erstelle Upload-Verzeichnis falls nötig
+
+        // Hole Upload Verzeichnis
         $upload_dir = wp_upload_dir();
-        $plugin_upload_dir = $upload_dir['basedir'] . '/newcustomer-discount';
-        if (!file_exists($plugin_upload_dir)) {
-            if (!wp_mkdir_p($plugin_upload_dir)) {
-                throw new Exception('Failed to create upload directory: ' . $plugin_upload_dir);
+        
+        // Erstelle Verzeichnisstruktur
+        $directories = [
+            // Plugin Verzeichnisse
+            NCD_PLUGIN_DIR . 'assets',
+            NCD_PLUGIN_DIR . 'assets/css',
+            NCD_PLUGIN_DIR . 'assets/css/admin',
+            NCD_PLUGIN_DIR . 'assets/images',
+            
+            // Admin Verzeichnisse
+            NCD_ADMIN_DIR . 'core',
+            NCD_ADMIN_DIR . 'settings',
+            NCD_ADMIN_DIR . 'templates',
+            NCD_ADMIN_DIR . 'statistics',
+            NCD_ADMIN_DIR . 'customers',
+            NCD_ADMIN_DIR . 'ajax',
+            
+            // Upload Verzeichnis
+            $upload_dir['basedir'] . '/newcustomer-discount'
+        ];
+
+        foreach ($directories as $dir) {
+            if (!file_exists($dir)) {
+                if (!wp_mkdir_p($dir)) {
+                    throw new Exception(sprintf(
+                        'Failed to create directory: %s (Permission: %s)', 
+                        $dir,
+                        substr(sprintf('%o', fileperms(dirname($dir))), -4)
+                    ));
+                }
             }
         }
- 
-        // Erstelle Admin-Verzeichnisstruktur
-        $admin_dirs = [
-            'core',
-            'settings',
-            'templates',
-            'statistics',
-            'customers',
-            'ajax'
-        ];
-        
-        foreach ($admin_dirs as $dir) {
-            $dir_path = NCD_ADMIN_DIR . $dir;
-            if (!file_exists($dir_path)) {
-                if (!wp_mkdir_p($dir_path)) {
-                    throw new Exception('Failed to create admin directory: ' . $dir_path);
-                }
+
+        // Setze Berechtigungen für die Verzeichnisse
+        foreach ($directories as $dir) {
+            if (file_exists($dir)) {
+                chmod($dir, 0755);
+            }
+        }
+
+        if (WP_DEBUG) {
+            error_log('Created plugin directories successfully');
+            foreach ($directories as $dir) {
+                error_log(sprintf(
+                    'Directory %s exists: %s (Permission: %s)',
+                    $dir,
+                    file_exists($dir) ? 'yes' : 'no',
+                    file_exists($dir) ? substr(sprintf('%o', fileperms($dir)), -4) : 'n/a'
+                ));
             }
         }
  
@@ -197,9 +227,20 @@ function ncd_activate() {
     } catch (Exception $e) {
         if (WP_DEBUG) {
             error_log('NCD plugin activation failed: ' . $e->getMessage());
+            
+            // Zusätzliche Debug-Informationen
+            error_log('Plugin Directory: ' . NCD_PLUGIN_DIR);
+            error_log('Current user: ' . get_current_user());
+            error_log('PHP process user: ' . (function_exists('posix_getpwuid') ? 
+                posix_getpwuid(posix_geteuid())['name'] : 'unknown'));
+            
+            if (file_exists(NCD_PLUGIN_DIR)) {
+                error_log('Plugin directory permissions: ' . 
+                    substr(sprintf('%o', fileperms(NCD_PLUGIN_DIR)), -4));
+            }
         }
         
-        // Füge Admin-Hinweis hinzu
+        // Admin-Hinweis mit detaillierten Informationen
         add_action('admin_notices', function() use ($e) {
             ?>
             <div class="notice notice-error">
@@ -209,11 +250,19 @@ function ncd_activate() {
                         esc_html($e->getMessage())
                     ); ?>
                 </p>
+                <?php if (current_user_can('manage_options')): ?>
+                    <p>
+                        <strong><?php _e('Debug-Informationen:', 'newcustomer-discount'); ?></strong><br>
+                        Plugin-Verzeichnis: <?php echo esc_html(NCD_PLUGIN_DIR); ?><br>
+                        Berechtigungen: <?php echo file_exists(NCD_PLUGIN_DIR) ? 
+                            substr(sprintf('%o', fileperms(NCD_PLUGIN_DIR)), -4) : 'n/a'; ?>
+                    </p>
+                <?php endif; ?>
             </div>
             <?php
         });
     }
- }
+}
 register_activation_hook(__FILE__, 'ncd_activate');
 
 /**

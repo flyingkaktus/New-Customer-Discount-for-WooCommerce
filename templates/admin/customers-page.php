@@ -24,16 +24,37 @@ $stats = $this->customer_tracker->get_statistics();
     <!-- Info Boxes -->
     <div class="ncd-info-boxes">
         <div class="ncd-info-box">
-            <h3><?php _e('Gesamt', 'newcustomer-discount'); ?></h3>
-            <p class="ncd-big-number"><?php echo esc_html($stats['total']); ?></p>
+            <div class="ncd-info-box-inner">
+                <div class="ncd-info-icon">
+                    <span class="dashicons dashicons-groups"></span>
+                </div>
+                <div class="ncd-info-content">
+                    <span class="ncd-info-label"><?php _e('Gesamt', 'newcustomer-discount'); ?></span>
+                    <span class="ncd-info-value"><?php echo esc_html($stats['total']); ?></span>
+                </div>
+            </div>
         </div>
         <div class="ncd-info-box">
-            <h3><?php _e('Ausstehend', 'newcustomer-discount'); ?></h3>
-            <p class="ncd-big-number"><?php echo esc_html($stats['pending']); ?></p>
+            <div class="ncd-info-box-inner">
+                <div class="ncd-info-icon">
+                    <span class="dashicons dashicons-clock"></span>
+                </div>
+                <div class="ncd-info-content">
+                    <span class="ncd-info-label"><?php _e('Ausstehend', 'newcustomer-discount'); ?></span>
+                    <span class="ncd-info-value"><?php echo esc_html($stats['pending']); ?></span>
+                </div>
+            </div>
         </div>
         <div class="ncd-info-box">
-            <h3><?php _e('Rabatt gesendet', 'newcustomer-discount'); ?></h3>
-            <p class="ncd-big-number"><?php echo esc_html($stats['sent']); ?></p>
+            <div class="ncd-info-box-inner">
+                <div class="ncd-info-icon">
+                    <span class="dashicons dashicons-email-alt"></span>
+                </div>
+                <div class="ncd-info-content">
+                    <span class="ncd-info-label"><?php _e('Rabatt gesendet', 'newcustomer-discount'); ?></span>
+                    <span class="ncd-info-value"><?php echo esc_html($stats['sent']); ?></span>
+                </div>
+            </div>
         </div>
     </div>
 

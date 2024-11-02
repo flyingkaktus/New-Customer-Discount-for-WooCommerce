@@ -1,0 +1,83 @@
+/* Statistics Page Styles */
+.ncd-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.ncd-stats-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ncd-stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.ncd-stats-numbers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+}
+
+.ncd-stat-item {
+    text-align: center;
+}
+
+.ncd-stat-label {
+    color: #646970;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.ncd-stat-value {
+    color: #1e1e1e;
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* Performance Section */
+.ncd-performance-section {
+    margin: 2.5rem 0;
+}
+
+.ncd-big-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e1e1e;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.ncd-stats-description {
+    color: #646970;
+    text-align: center;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Export Section */
+.ncd-export-section {
+    margin: 2rem 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Responsive Statistics */
+@media screen and (max-width: 782px) {
+    .ncd-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ncd-stats-numbers {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

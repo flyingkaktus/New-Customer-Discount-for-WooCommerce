@@ -70,46 +70,17 @@ class NCD_Admin_Base {
      * Initialisiert die WordPress Hooks
      */
     protected function init_hooks() {
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('admin_notices', [$this, 'display_admin_notices']);
     }
 
-
     /**
-     * Lädt die Admin Assets
+     * Lädt seitenspezifische Assets
      *
      * @param string $hook Der aktuelle Admin-Seiten-Hook
      */
     public function enqueue_assets($hook) {
-        if (strpos($hook, 'new-customers') === false) {
-            return;
-        }
-
-        wp_enqueue_style(
-            'ncd-admin',
-            NCD_PLUGIN_URL . 'assets/css/admin.css',
-            [],
-            NCD_VERSION
-        );
-
-        wp_enqueue_script(
-            'ncd-admin',
-            NCD_PLUGIN_URL . 'assets/js/admin.js',
-            ['jquery'],
-            NCD_VERSION,
-            true
-        );
-
-        wp_localize_script('ncd-admin', 'ncdAdmin', [
-            'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('ncd-admin-nonce'),
-            'messages' => [
-                'confirm_send' => __('Möchten Sie wirklich einen Rabattcode an diesen Kunden senden?', 'newcustomer-discount'),
-                'confirm_test' => __('Möchten Sie eine Test-E-Mail an diese Adresse senden?', 'newcustomer-discount'),
-                'error' => __('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', 'newcustomer-discount'),
-                'email_required' => __('Bitte geben Sie eine E-Mail-Adresse ein.', 'newcustomer-discount')
-            ]
-        ]);
+        // Diese Methode kann von Unterklassen überschrieben werden
+        // um seitenspezifische Assets zu laden
     }
 
     /**
@@ -228,5 +199,22 @@ class NCD_Admin_Base {
             ['message' => $message],
             $data
         ));
+    }
+
+    /**
+     * Debug-Ausgabe der geladenen Stylesheets
+     */
+    protected function debug_loaded_styles() {
+        if (!WP_DEBUG) {
+            return;
+        }
+
+        global $wp_styles;
+        error_log('Loaded NCD Admin Styles:');
+        foreach ($wp_styles->queue as $handle) {
+            if (strpos($handle, 'ncd-admin') !== false) {
+                error_log(' - ' . $handle);
+            }
+        }
     }
 }

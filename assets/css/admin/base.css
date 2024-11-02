@@ -1,0 +1,88 @@
+/* Base Admin Styles */
+.ncd-wrap {
+    margin: 20px 0;
+}
+
+/* Card Base Styles */
+.ncd-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.ncd-card h2 {
+    margin-top: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Form Elements Base */
+.ncd-form-table {
+    margin-top: 20px;
+}
+
+.ncd-form-table th {
+    padding: 20px 10px 20px 0;
+    width: 200px;
+}
+
+.ncd-form-table td {
+    padding: 15px 10px;
+}
+
+.ncd-textarea {
+    width: 100%;
+    min-height: 100px;
+    font-family: monospace;
+}
+
+/* Notice Base Styles */
+.ncd-notice {
+    padding: 12px;
+    margin: 15px 0;
+    background: #fff;
+    border-left: 4px solid #46b450;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.ncd-notice.ncd-notice-error {
+    border-left-color: #dc3232;
+}
+
+.ncd-notice.ncd-notice-info {
+    border-left-color: #00a0d2;
+}
+
+/* Loading States */
+.ncd-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes ncd-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.ncd-fade {
+    animation: ncd-fade 0.3s ease-in-out;
+}
+
+/* Responsive Base */
+@media screen and (max-width: 782px) {
+    .ncd-form-table th {
+        width: 100%;
+        display: block;
+        padding-bottom: 0;
+    }
+    
+    .ncd-form-table td {
+        width: 100%;
+        display: block;
+        padding-top: 5px;
+    }
+}
