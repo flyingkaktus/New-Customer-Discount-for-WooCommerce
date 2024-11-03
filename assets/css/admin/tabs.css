@@ -5,18 +5,7 @@
     opacity: 0;
     transition: opacity 0.3s ease;
 }
-/* Tab Navigation Styles */
-.ncd-tab-content {
-    display: none;
-    padding: 20px 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
 
-.ncd-tab-content.active {
-    display: block;
-    opacity: 1;
-}
 .ncd-tab-content.active {
     display: block;
     opacity: 1;

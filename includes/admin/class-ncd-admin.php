@@ -142,10 +142,10 @@ class NCD_Admin {
         if (strpos($hook, 'new-customers') === false) {
             return;
         }
-
+    
         // Definiere Version für Assets
         $asset_version = WP_DEBUG ? time() : NCD_VERSION;
-
+    
         // Base styles immer laden
         wp_enqueue_style(
             'ncd-admin-base', 
@@ -153,7 +153,7 @@ class NCD_Admin {
             [],
             $asset_version
         );
-
+    
         // Tab styles immer laden
         wp_enqueue_style(
             'ncd-admin-tabs', 
@@ -161,7 +161,7 @@ class NCD_Admin {
             ['ncd-admin-base'],
             $asset_version
         );
-
+    
         // Seitenspezifische Styles laden
         if (isset($_GET['page'])) {
             switch ($_GET['page']) {
@@ -173,7 +173,7 @@ class NCD_Admin {
                         $asset_version
                     );
                     break;
-
+    
                 case 'new-customers-templates':
                     wp_enqueue_style(
                         'ncd-admin-templates', 
@@ -182,7 +182,7 @@ class NCD_Admin {
                         $asset_version
                     );
                     break;
-
+    
                 case 'new-customers-settings':
                     wp_enqueue_style(
                         'ncd-admin-settings', 
@@ -191,7 +191,7 @@ class NCD_Admin {
                         $asset_version
                     );
                     break;
-
+    
                 case 'new-customers-statistics':
                     wp_enqueue_style(
                         'ncd-admin-statistics', 
@@ -202,22 +202,68 @@ class NCD_Admin {
                     break;
             }
         }
-
+    
         // Dashicons werden für die Icons benötigt
         wp_enqueue_style('dashicons');
-
-        // Gemeinsames JavaScript
+    
+        // JavaScript Core und Module laden
+        // Base JS immer laden
         wp_enqueue_script(
-            'ncd-admin-common',
-            NCD_ASSETS_URL . 'js/admin.js',
+            'ncd-admin-base',
+            NCD_ASSETS_URL . 'js/core/admin-base.js',
             ['jquery'],
             $asset_version,
             true
         );
-
+    
+        // Tab Manager laden wenn Tabs vorhanden
+        // Prüfe ob die aktuelle Seite Tabs verwendet
+        $has_tabs = isset($_GET['page']) && in_array($_GET['page'], [
+            'new-customers-settings',
+            'new-customers-templates'
+        ]);
+    
+        if ($has_tabs) {
+            wp_enqueue_script(
+                'ncd-tab-manager',
+                NCD_ASSETS_URL . 'js/modules/tab-manager.js',
+                ['ncd-admin-base'],
+                $asset_version,
+                true
+            );
+        }
+    
+        // Customer Manager laden wenn auf der Kunden-Seite
+        if (isset($_GET['page']) && $_GET['page'] === 'new-customers') {
+            wp_enqueue_script(
+                'ncd-customer-manager',
+                NCD_ASSETS_URL . 'js/modules/customer-manager.js',
+                ['ncd-admin-base'],
+                $asset_version,
+                true
+            );
+        }
+    
+        // Dynamische Abhängigkeiten für admin.js erstellen
+        $admin_deps = ['jquery', 'ncd-admin-base'];
+        if ($has_tabs) {
+            $admin_deps[] = 'ncd-tab-manager';
+        }
+        if (isset($_GET['page']) && $_GET['page'] === 'new-customers') {
+            $admin_deps[] = 'ncd-customer-manager';
+        }
+    
+        // Admin Script mit allen Abhängigkeiten laden
+        wp_enqueue_script(
+            'ncd-admin',
+            NCD_ASSETS_URL . 'js/admin.js',
+            $admin_deps,
+            $asset_version,
+            true
+        );
+    
         // Lokalisierung für JavaScript
-
-        wp_localize_script('ncd-admin-common', 'ncdAdmin', [
+        wp_localize_script('ncd-admin', 'ncdAdmin', [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ncd-admin-nonce'),
             'messages' => [
@@ -232,7 +278,18 @@ class NCD_Admin {
                 'sent' => __('Gesendet!', 'newcustomer-discount')
             ]
         ]);
-
+    
+        // Template-spezifische Lokalisierung
+        if (isset($_GET['page']) && $_GET['page'] === 'new-customers-templates') {
+            wp_localize_script('ncd-admin', 'ncdTemplates', [
+                'messages' => [
+                    'save_success' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
+                    'save_error' => __('Fehler beim Speichern der Einstellungen.', 'newcustomer-discount'),
+                    'preview_error' => __('Fehler beim Generieren der Vorschau.', 'newcustomer-discount')
+                ]
+            ]);
+        }
+    
         // Debug-Ausgabe wenn aktiviert
         if (WP_DEBUG) {
             $this->debug_loaded_styles();

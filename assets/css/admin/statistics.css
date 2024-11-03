@@ -1,18 +1,27 @@
 /* Modern Statistics Page Styles */
-.ncd-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin: 1.5rem 0 2.5rem;
+
+/* Base Layout */
+.ncd-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
+/* Stats Grid */
+.ncd-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+/* Stats Card */
 .ncd-stats-card {
     background: #fff;
     border-radius: 12px;
     padding: 1.75rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
 }
 
 .ncd-stats-card:hover {
@@ -21,28 +30,31 @@
 }
 
 .ncd-stats-card h2 {
-    font-size: 1.1rem;
-    font-weight: 500;
     color: #64748b;
+    font-size: 1rem;
+    font-weight: 600;
     margin: 0 0 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
 }
 
+/* Stats Numbers */
 .ncd-stats-numbers {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 1.25rem;
 }
 
 .ncd-stat-item {
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .ncd-stat-label {
     color: #94a3b8;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    margin-bottom: 0.5rem;
-    display: block;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -56,30 +68,35 @@
 
 /* Performance Section */
 .ncd-performance-section {
-    margin: 2.5rem 0;
+    margin: 3rem 0;
+}
+
+.ncd-performance-section h2 {
+    color: #1e293b;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .ncd-big-number {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #1e293b;
     text-align: center;
-    margin: 1.5rem 0;
+    margin: 1.5rem 0 0.75rem;
 }
 
 .ncd-stats-description {
     color: #64748b;
     text-align: center;
     font-size: 0.875rem;
-    margin: 0.75rem 0;
-    line-height: 1.5;
+    margin-top: 0.5rem;
 }
 
 /* Export Section */
 .ncd-export-section {
-    margin: 2rem 0;
     display: flex;
     justify-content: flex-end;
+    margin: 2rem 0;
 }
 
 .ncd-export-section .button {
@@ -88,34 +105,46 @@
     height: auto;
     line-height: 1.5;
     font-weight: 500;
+    border-radius: 6px;
 }
 
 /* Monthly Trends Table */
 .ncd-trends-section {
-    margin-top: 2.5rem;
+    margin-top: 3rem;
 }
 
 .ncd-trends-section .widefat {
-    border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-spacing: 0;
+    width: 100%;
 }
 
 .ncd-trends-section .widefat th {
     background: #f8fafc;
     padding: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     color: #64748b;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .ncd-trends-section .widefat td {
     padding: 1rem;
     color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ncd-trends-section .widefat tr:last-child td {
+    border-bottom: none;
 }
 
 /* Responsive Design */
 @media screen and (max-width: 782px) {
+    .ncd-wrap {
+        padding: 1rem;
+    }
+    
     .ncd-stats-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -123,14 +152,6 @@
     
     .ncd-stats-card {
         padding: 1.25rem;
-    }
-    
-    .ncd-stats-numbers {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .ncd-stat-value {
-        font-size: 1.5rem;
     }
     
     .ncd-big-number {
