@@ -78,9 +78,18 @@ class NCD_Admin_Ajax extends NCD_Admin_Base {
      * @return mixed|false
      */
     private function delegate_ajax_request($handler_class, $method, $data) {
+        if (WP_DEBUG) {
+            error_log("Delegating to $handler_class::$method");
+            error_log("Data: " . print_r($data, true));
+        }
+
         if (class_exists($handler_class) && method_exists($handler_class, $method)) {
             $handler = new $handler_class();
             return call_user_func([$handler, $method], $data);
+        }
+
+        if (WP_DEBUG) {
+            error_log("Handler class or method not found: $handler_class::$method");
         }
         return false;
     }

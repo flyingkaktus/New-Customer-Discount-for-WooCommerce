@@ -89,58 +89,75 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
      * @param array $data Die POST-Daten
      */
     public function handle_send_discount($data) {
+        if (WP_DEBUG) {
+            error_log('Starting handle_send_discount');
+            error_log('Posted data: ' . print_r($data, true));
+        }
+    
         if (!$this->check_ajax_request()) {
+            error_log('AJAX request check failed');
             return;
         }
-
+    
         $email = sanitize_email($data['email']);
         $first_name = sanitize_text_field($data['first_name']);
         $last_name = sanitize_text_field($data['last_name']);
-
-       try {
-           // Prüfe ob Kunde ein Neukunde ist
-           if (!$this->customer_tracker->is_new_customer($email)) {
-               throw new Exception(__('Der Kunde ist kein Neukunde.', 'newcustomer-discount'));
-           }
-
-           // Erstelle Gutschein
-           $coupon = $this->coupon_generator->create_coupon($email);
-           if (is_wp_error($coupon)) {
-               throw new Exception($coupon->get_error_message());
-           }
-
-           // Sende E-Mail
-           $result = $this->email_sender->send_discount_email($email, [
-               'coupon_code' => $coupon['code'],
-               'first_name' => $first_name,
-               'last_name' => $last_name
-           ]);
-
-           if (is_wp_error($result)) {
-               // Lösche Gutschein bei E-Mail-Fehler
-               $this->coupon_generator->deactivate_coupon($coupon['code']);
-               throw new Exception($result->get_error_message());
-           }
-
-           // Aktualisiere Tracking
-           $this->customer_tracker->update_customer_status($email, 'sent', $coupon['code']);
-
-           wp_send_json_success([
-               'message' => sprintf(
-                   __('Rabattcode %s wurde an %s gesendet.', 'newcustomer-discount'),
-                   $coupon['code'],
-                   $email
-               )
-           ]);
-
-       } catch (Exception $e) {
-           $this->log_error('Discount email sending failed', [
-               'email' => $email,
-               'error' => $e->getMessage()
-           ]);
-           wp_send_json_error(['message' => $e->getMessage()]);
-       }
-   }
+    
+        try {
+            if (WP_DEBUG) {
+                error_log('Checking if new customer: ' . $email);
+            }
+    
+            if (!$this->customer_tracker->is_new_customer($email)) {
+                error_log('Not a new customer: ' . $email);
+                throw new Exception(__('Der Kunde ist kein Neukunde.', 'newcustomer-discount'));
+            }
+    
+            if (WP_DEBUG) {
+                error_log('Creating coupon for: ' . $email);
+            }
+    
+            $coupon = $this->coupon_generator->create_coupon($email);
+            if (is_wp_error($coupon)) {
+                error_log('Coupon creation failed: ' . $coupon->get_error_message());
+                throw new Exception($coupon->get_error_message());
+            }
+    
+            if (WP_DEBUG) {
+                error_log('Sending email with coupon: ' . print_r($coupon, true));
+            }
+    
+            $result = $this->email_sender->send_discount_email($email, [
+                'coupon_code' => $coupon['code'],
+                'first_name' => $first_name,
+                'last_name' => $last_name
+            ]);
+    
+            if (is_wp_error($result)) {
+                error_log('Email sending failed: ' . $result->get_error_message());
+                $this->coupon_generator->deactivate_coupon($coupon['code']);
+                throw new Exception($result->get_error_message());
+            }
+    
+            if (WP_DEBUG) {
+                error_log('Updating customer status');
+            }
+    
+            $this->customer_tracker->update_customer_status($email, 'sent', $coupon['code']);
+    
+            wp_send_json_success([
+                'message' => sprintf(
+                    __('Rabattcode %s wurde an %s gesendet.', 'newcustomer-discount'),
+                    $coupon['code'],
+                    $email
+                )
+            ]);
+    
+        } catch (Exception $e) {
+            error_log('Discount email sending failed: ' . $e->getMessage());
+            wp_send_json_error(['message' => $e->getMessage()]);
+        }
+    }
 
     /**
      * Überprüft AJAX-Anfragen

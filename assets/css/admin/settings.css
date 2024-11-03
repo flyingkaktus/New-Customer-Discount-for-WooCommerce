@@ -1,0 +1,30 @@
+/* Settings Page Styles */
+.ncd-warning-box {
+    background-color: #fff8e5;
+    border-left: 4px solid #ffb900;
+    padding: 12px;
+    margin: 20px 0;
+}
+
+.ncd-confirmation-box {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+}
+
+/* Settings Buttons */
+.button-danger {
+    background: #dc3232 !important;
+    border-color: #ba2020 !important;
+    color: #fff !important;
+}
+
+.button-danger:hover {
+    background: #ba2020 !important;
+}
+
+.ncd-reset-form .form-table th {
+    color: #dc3232;
+}
+

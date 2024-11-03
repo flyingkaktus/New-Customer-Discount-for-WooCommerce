@@ -143,12 +143,6 @@ class NCD_Admin {
             return;
         }
 
-        // Debug-Ausgabe
-        if (WP_DEBUG) {
-            error_log('Loading admin assets on hook: ' . $hook);
-            error_log('CSS URL: ' . NCD_PLUGIN_URL . 'assets/css/admin.css');
-        }
-
         // Definiere Version für Assets
         $asset_version = WP_DEBUG ? time() : NCD_VERSION;
 
@@ -222,6 +216,7 @@ class NCD_Admin {
         );
 
         // Lokalisierung für JavaScript
+
         wp_localize_script('ncd-admin-common', 'ncdAdmin', [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ncd-admin-nonce'),
@@ -232,7 +227,9 @@ class NCD_Admin {
                 'saved' => __('Gespeichert!', 'newcustomer-discount'),
                 'email_required' => __('Bitte geben Sie eine E-Mail-Adresse ein.', 'newcustomer-discount'),
                 'confirm_test' => __('Möchten Sie eine Test-E-Mail an diese Adresse senden?', 'newcustomer-discount'),
-                'confirm_send' => __('Möchten Sie wirklich einen Rabattcode an diesen Kunden senden?', 'newcustomer-discount')
+                'confirm_send' => __('Möchten Sie wirklich einen Rabattcode an diesen Kunden senden?', 'newcustomer-discount'),
+                'sending' => __('Sende...', 'newcustomer-discount'),
+                'sent' => __('Gesendet!', 'newcustomer-discount')
             ]
         ]);
 

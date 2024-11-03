@@ -54,17 +54,61 @@
             this.submitForm($form);
         }
 
+        // In admin.js:
         handleDiscountSend(e) {
             e.preventDefault();
             const $button = $(e.currentTarget);
             const email = $button.data('email');
 
-            if (!confirm(`Möchten Sie wirklich einen Rabattcode an ${email} senden?`)) {
+            console.log('Attempting to send discount to:', email); // Debug logging
+
+            // Prüfe ob ncdAdmin.messages existiert
+            if (!ncdAdmin || !ncdAdmin.messages) {
+                console.error('ncdAdmin.messages is not defined');
                 return;
             }
 
-            const $form = $button.closest('form');
-            this.submitForm($form);
+            if (!confirm(ncdAdmin.messages.confirm_send)) {
+                return;
+            }
+
+            $button.prop('disabled', true)
+                .addClass('updating-message')
+                .text(ncdAdmin.messages.sending);
+
+            $.post(ajaxurl, {
+                action: 'ncd_send_discount',
+                nonce: ncdAdmin.nonce,
+                email: email,
+                first_name: $button.data('first-name'),
+                last_name: $button.data('last-name')
+            })
+            .done(function(response) {
+                console.log('Discount send response:', response);
+                if (response.success) {
+                    this.showNotice(ncdAdmin.messages.sent, 'success');
+                    location.reload();
+                } else {
+                    this.showNotice(response.data.message || ncdAdmin.messages.error, 'error');
+                    $button.prop('disabled', false)
+                        .removeClass('updating-message')
+                        .text(this.originalButtonText);
+                }
+            }.bind(this))
+            .fail(function(xhr, status, error) {
+                console.error('Discount send failed:', status, error);
+                this.showNotice(ncdAdmin.messages.error, 'error');
+                $button.prop('disabled', false)
+                    .removeClass('updating-message')
+                    .text(this.originalButtonText);
+            }.bind(this));
+        }
+
+        // Speichere den ursprünglichen Button-Text beim Initialisieren
+        constructor() {
+            this.initializeComponents();
+            this.bindEvents();
+            this.originalButtonText = $('.ncd-send-discount').text();
         }
 
         handleFilterChange() {

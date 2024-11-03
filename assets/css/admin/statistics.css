@@ -1,45 +1,55 @@
-/* Statistics Page Styles */
+/* Modern Statistics Page Styles */
 .ncd-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    margin: 1.5rem 0 2.5rem;
 }
 
 .ncd-stats-card {
     background: #fff;
     border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 1.75rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .ncd-stats-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.ncd-stats-card h2 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #64748b;
+    margin: 0 0 1.5rem;
 }
 
 .ncd-stats-numbers {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 1.25rem;
 }
 
 .ncd-stat-item {
-    text-align: center;
+    text-align: left;
 }
 
 .ncd-stat-label {
-    color: #646970;
-    font-size: 0.85rem;
+    color: #94a3b8;
+    font-size: 0.8rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
     display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .ncd-stat-value {
-    color: #1e1e1e;
-    font-size: 1.8rem;
+    color: #1e293b;
+    font-size: 1.75rem;
     font-weight: 600;
     line-height: 1.2;
 }
@@ -50,18 +60,19 @@
 }
 
 .ncd-big-number {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
     font-weight: 700;
-    color: #1e1e1e;
+    color: #1e293b;
     text-align: center;
     margin: 1.5rem 0;
 }
 
 .ncd-stats-description {
-    color: #646970;
+    color: #64748b;
     text-align: center;
-    font-size: 0.9rem;
-    margin: 0;
+    font-size: 0.875rem;
+    margin: 0.75rem 0;
+    line-height: 1.5;
 }
 
 /* Export Section */
@@ -71,13 +82,64 @@
     justify-content: flex-end;
 }
 
-/* Responsive Statistics */
+.ncd-export-section .button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    height: auto;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Monthly Trends Table */
+.ncd-trends-section {
+    margin-top: 2.5rem;
+}
+
+.ncd-trends-section .widefat {
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.ncd-trends-section .widefat th {
+    background: #f8fafc;
+    padding: 1rem;
+    font-weight: 500;
+    color: #64748b;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.ncd-trends-section .widefat td {
+    padding: 1rem;
+    color: #1e293b;
+}
+
+/* Responsive Design */
 @media screen and (max-width: 782px) {
     .ncd-stats-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .ncd-stats-card {
+        padding: 1.25rem;
     }
     
     .ncd-stats-numbers {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .ncd-stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .ncd-big-number {
+        font-size: 2rem;
+    }
+    
+    .ncd-trends-section .widefat {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
