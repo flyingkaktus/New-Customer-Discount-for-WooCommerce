@@ -36,6 +36,13 @@ class NCD_Admin {
    private $ajax;
 
    /**
+    * Tab Manager Instanz
+    *
+    * @var NCD_Admin_Tab_Manager
+    */
+   private $tab_manager;
+
+   /**
     * Constructor
     */
    public function __construct() {
@@ -142,29 +149,68 @@ class NCD_Admin {
         if (strpos($hook, 'new-customers') === false) {
             return;
         }
-    
+
+        if (WP_DEBUG) {
+            error_log('Loading admin assets for hook: ' . $hook);
+        }
+
         // Definiere Version für Assets
         $asset_version = WP_DEBUG ? time() : NCD_VERSION;
-    
-        // Base styles immer laden
+
+        // Base Script registrieren
+        wp_register_script(
+            'ncd-admin-base',
+            NCD_ASSETS_URL . 'js/core/admin-base.js',
+            ['jquery'],
+            $asset_version,
+            true
+        );
+
+        // Globale Admin Lokalisierung
+        wp_localize_script('ncd-admin-base', 'ncdAdmin', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('ncd-admin-nonce'),
+            'currentPage' => isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '',
+            'debug' => WP_DEBUG,
+            'messages' => [
+                'error' => __('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', 'newcustomer-discount'),
+                'email_required' => __('Bitte geben Sie eine E-Mail-Adresse ein.', 'newcustomer-discount'),
+                'confirm_test' => __('Möchten Sie eine Test-E-Mail an diese Adresse senden?', 'newcustomer-discount'),
+                'confirm_send' => __('Möchten Sie einen Rabattcode senden?', 'newcustomer-discount'),
+                'sending' => __('Sende...', 'newcustomer-discount'),
+                'success' => __('Erfolgreich gespeichert.', 'newcustomer-discount'),
+                'loading' => __('Laden...', 'newcustomer-discount')
+            ]
+        ]);
+
+        // Base Script laden
+        wp_enqueue_script('ncd-admin-base');
+
+        // Base styles laden
         wp_enqueue_style(
             'ncd-admin-base', 
             NCD_ASSETS_URL . 'css/admin/base.css',
             [],
             $asset_version
         );
-    
-        // Tab styles immer laden
+
+        // Tab styles laden
         wp_enqueue_style(
             'ncd-admin-tabs', 
             NCD_ASSETS_URL . 'css/admin/tabs.css',
             ['ncd-admin-base'],
             $asset_version
         );
-    
-        // Seitenspezifische Styles laden
+
+        // Dashicons werden für die Icons benötigt
+        wp_enqueue_style('dashicons');
+
+        // Seitenspezifische Assets laden
         if (isset($_GET['page'])) {
-            switch ($_GET['page']) {
+            $current_page = $_GET['page'];
+
+            // Seitenspezifische Styles
+            switch ($current_page) {
                 case 'new-customers':
                     wp_enqueue_style(
                         'ncd-admin-customers', 
@@ -173,7 +219,7 @@ class NCD_Admin {
                         $asset_version
                     );
                     break;
-    
+
                 case 'new-customers-templates':
                     wp_enqueue_style(
                         'ncd-admin-templates', 
@@ -182,7 +228,7 @@ class NCD_Admin {
                         $asset_version
                     );
                     break;
-    
+
                 case 'new-customers-settings':
                     wp_enqueue_style(
                         'ncd-admin-settings', 
@@ -191,7 +237,7 @@ class NCD_Admin {
                         $asset_version
                     );
                     break;
-    
+
                 case 'new-customers-statistics':
                     wp_enqueue_style(
                         'ncd-admin-statistics', 
@@ -201,29 +247,52 @@ class NCD_Admin {
                     );
                     break;
             }
+
+            // Seitenspezifische Scripts
+            if ($current_page === 'new-customers') {
+                wp_enqueue_script(
+                    'ncd-customer-manager',
+                    NCD_ASSETS_URL . 'js/modules/customer-manager.js',
+                    ['jquery', 'ncd-admin-base'],
+                    $asset_version,
+                    true
+                );
+            }
+
+            if ($current_page === 'new-customers-templates') {
+                wp_localize_script('ncd-admin-base', 'ncdTemplates', [
+                    'messages' => [
+                        'save_success' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
+                        'save_error' => __('Fehler beim Speichern der Einstellungen.', 'newcustomer-discount'),
+                        'preview_error' => __('Fehler beim Generieren der Vorschau.', 'newcustomer-discount')
+                    ]
+                ]);
+
+                wp_enqueue_script(
+                    'ncd-template-manager',
+                    NCD_ASSETS_URL . 'js/modules/template-manager.js',
+                    ['jquery', 'ncd-admin-base'],
+                    $asset_version,
+                    true
+                );
+            }
         }
-    
-        // Dashicons werden für die Icons benötigt
-        wp_enqueue_style('dashicons');
-    
-        // JavaScript Core und Module laden
-        // Base JS immer laden
-        wp_enqueue_script(
-            'ncd-admin-base',
-            NCD_ASSETS_URL . 'js/core/admin-base.js',
-            ['jquery'],
-            $asset_version,
-            true
-        );
-    
-        // Tab Manager laden wenn Tabs vorhanden
-        // Prüfe ob die aktuelle Seite Tabs verwendet
+
+        // Prüfe ob Tabs benötigt werden
         $has_tabs = isset($_GET['page']) && in_array($_GET['page'], [
             'new-customers-settings',
             'new-customers-templates'
         ]);
-    
+
         if ($has_tabs) {
+            wp_localize_script('ncd-admin-base', 'ncdTabs', [
+                'defaultTab' => 'logo-settings',
+                'messages' => [
+                    'loading' => __('Laden...', 'newcustomer-discount'),
+                    'error' => __('Fehler beim Laden des Tabs', 'newcustomer-discount')
+                ]
+            ]);
+
             wp_enqueue_script(
                 'ncd-tab-manager',
                 NCD_ASSETS_URL . 'js/modules/tab-manager.js',
@@ -232,19 +301,8 @@ class NCD_Admin {
                 true
             );
         }
-    
-        // Customer Manager laden wenn auf der Kunden-Seite
-        if (isset($_GET['page']) && $_GET['page'] === 'new-customers') {
-            wp_enqueue_script(
-                'ncd-customer-manager',
-                NCD_ASSETS_URL . 'js/modules/customer-manager.js',
-                ['ncd-admin-base'],
-                $asset_version,
-                true
-            );
-        }
-    
-        // Dynamische Abhängigkeiten für admin.js erstellen
+
+        // Admin Script Dependencies sammeln
         $admin_deps = ['jquery', 'ncd-admin-base'];
         if ($has_tabs) {
             $admin_deps[] = 'ncd-tab-manager';
@@ -252,8 +310,8 @@ class NCD_Admin {
         if (isset($_GET['page']) && $_GET['page'] === 'new-customers') {
             $admin_deps[] = 'ncd-customer-manager';
         }
-    
-        // Admin Script mit allen Abhängigkeiten laden
+
+        // Haupt Admin Script laden
         wp_enqueue_script(
             'ncd-admin',
             NCD_ASSETS_URL . 'js/admin.js',
@@ -261,49 +319,29 @@ class NCD_Admin {
             $asset_version,
             true
         );
-    
-        // Lokalisierung für JavaScript
-        wp_localize_script('ncd-admin', 'ncdAdmin', [
-            'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('ncd-admin-nonce'),
-            'messages' => [
-                'error' => __('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', 'newcustomer-discount'),
-                'confirm' => __('Sind Sie sicher?', 'newcustomer-discount'),
-                'saving' => __('Speichern...', 'newcustomer-discount'),
-                'saved' => __('Gespeichert!', 'newcustomer-discount'),
-                'email_required' => __('Bitte geben Sie eine E-Mail-Adresse ein.', 'newcustomer-discount'),
-                'confirm_test' => __('Möchten Sie eine Test-E-Mail an diese Adresse senden?', 'newcustomer-discount'),
-                'confirm_send' => __('Möchten Sie wirklich einen Rabattcode an diesen Kunden senden?', 'newcustomer-discount'),
-                'sending' => __('Sende...', 'newcustomer-discount'),
-                'sent' => __('Gesendet!', 'newcustomer-discount')
-            ]
-        ]);
-    
-        // Template-spezifische Lokalisierung
-        if (isset($_GET['page']) && $_GET['page'] === 'new-customers-templates') {
-            wp_localize_script('ncd-admin', 'ncdTemplates', [
-                'messages' => [
-                    'save_success' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
-                    'save_error' => __('Fehler beim Speichern der Einstellungen.', 'newcustomer-discount'),
-                    'preview_error' => __('Fehler beim Generieren der Vorschau.', 'newcustomer-discount')
-                ]
-            ]);
-        }
-    
-        // Debug-Ausgabe wenn aktiviert
+
         if (WP_DEBUG) {
-            $this->debug_loaded_styles();
+            error_log('Admin assets loaded with nonce: ' . wp_create_nonce('ncd-admin-nonce'));
+            $this->debug_loaded_assets();
         }
     }
 
     /**
-     * Debug-Ausgabe der geladenen Stylesheets
+     * Debug-Ausgabe der geladenen Assets
      */
-    private function debug_loaded_styles() {
-        global $wp_styles;
+    private function debug_loaded_assets() {
+        global $wp_scripts, $wp_styles;
+        
+        error_log('Loaded NCD Admin Scripts:');
+        foreach ($wp_scripts->queue as $handle) {
+            if (strpos($handle, 'ncd-') !== false) {
+                error_log(' - ' . $handle);
+            }
+        }
+        
         error_log('Loaded NCD Admin Styles:');
         foreach ($wp_styles->queue as $handle) {
-            if (strpos($handle, 'ncd-admin') !== false) {
+            if (strpos($handle, 'ncd-') !== false) {
                 error_log(' - ' . $handle);
             }
         }

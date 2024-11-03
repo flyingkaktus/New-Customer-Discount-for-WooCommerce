@@ -167,6 +167,14 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
      * @return bool
      */
     protected function check_ajax_request($action = 'ncd-admin-nonce', $nonce_field = 'nonce') {
+        // Logging für Debugging
+        if (WP_DEBUG) {
+            error_log('AJAX request check:');
+            error_log('Nonce: ' . (isset($_POST[$nonce_field]) ? 'set' : 'not set'));
+            error_log('Action: ' . $action);
+        }
+
+        // Nonce Validierung
         if (!check_ajax_referer($action, $nonce_field, false)) {
             wp_send_json_error([
                 'message' => __('Sicherheitsüberprüfung fehlgeschlagen.', 'newcustomer-discount')
@@ -174,6 +182,7 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
             return false;
         }
 
+        // Berechtigungsprüfung
         if (!current_user_can('manage_options')) {
             wp_send_json_error([
                 'message' => __('Keine Berechtigung.', 'newcustomer-discount')
