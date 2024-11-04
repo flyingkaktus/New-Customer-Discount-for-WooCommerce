@@ -114,7 +114,7 @@ $stats = $this->customer_tracker->get_statistics();
         <p>
             <?php printf(
                 __('Als Neukunden werden alle Kunden gezählt, die vor dem %s noch keine Bestellung aufgegeben haben.', 'newcustomer-discount'),
-                date_i18n(get_option('date_format'), strtotime(NEWCUSTOMER_CUTOFF_DATE))
+                date_i18n(get_option('date_format'), strtotime(get_option('ncd_cutoff_date', '2024-01-01')))
             ); ?>
         </p>
     </div>
