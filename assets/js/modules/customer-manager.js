@@ -31,7 +31,7 @@
                 confirm_send: 'Möchten Sie einen Rabattcode senden?',
                 sending: 'Sende...'
             };
-
+            this.$customerTable.off('click', '.ncd-send-discount');
             this.bindEvents();
             
             if (window.console && window.console.log) {
