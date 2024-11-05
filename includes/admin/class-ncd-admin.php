@@ -170,8 +170,8 @@ class NCD_Admin {
         wp_localize_script('ncd-admin-base', 'ncdAdmin', [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ncd-admin-nonce'),
-            'currentPage' => isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '',
             'debug' => WP_DEBUG,
+            'currentPage' => isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '',
             'messages' => [
                 'error' => __('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', 'newcustomer-discount'),
                 'email_required' => __('Bitte geben Sie eine E-Mail-Adresse ein.', 'newcustomer-discount'),

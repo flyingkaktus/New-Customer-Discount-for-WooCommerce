@@ -30,6 +30,8 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
    public function enqueue_assets($hook) {
        parent::enqueue_assets($hook);
 
+       $asset_version = WP_DEBUG ? time() : NCD_VERSION;
+
        if (strpos($hook, 'new-customers-templates') !== false) {
            wp_enqueue_style('wp-color-picker');
            
@@ -37,26 +39,16 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
                'ncd-admin-templates',
                NCD_PLUGIN_URL . 'assets/css/admin-templates.css',
                [],
-               NCD_VERSION
+               $asset_version
            );
 
            wp_enqueue_script(
                'ncd-admin-templates',
                NCD_PLUGIN_URL . 'assets/js/admin-templates.js',
                ['jquery', 'wp-color-picker'],
-               NCD_VERSION,
+               $asset_version,
                true
            );
-
-           wp_localize_script('ncd-admin-templates', 'ncdTemplates', [
-               'ajaxurl' => admin_url('admin-ajax.php'),
-               'nonce' => wp_create_nonce('ncd_template_nonce'),
-               'messages' => [
-                   'save_success' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
-                   'save_error' => __('Fehler beim Speichern der Einstellungen.', 'newcustomer-discount'),
-                   'preview_error' => __('Fehler beim Generieren der Vorschau.', 'newcustomer-discount')
-               ]
-           ]);
        }
    }
 
@@ -83,12 +75,12 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     }
 
     /**
-     * Handler für Template-Vorschau
+     * Handler für Template-Vorschau - wird von AJAX aufgerufen
      * 
      * @param array $data Die POST-Daten
      */
     public function handle_preview_template($data) {
-        if (!$this->check_ajax_request('ncd_template_nonce', 'nonce')) {
+        if (!$this->check_admin_permissions()) {
             return;
         }
 
@@ -112,41 +104,41 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     }
 
     /**
-     * Handler für Template-Wechsel
+     * Handler für Template-Wechsel - wird von AJAX aufgerufen
      * 
      * @param array $data Die POST-Daten
      */
     public function handle_switch_template($data) {
-        if (!$this->check_ajax_request('ncd_save_template', 'nonce')) {
+        if (!$this->check_admin_permissions()) {
             return;
         }
 
         $template_id = isset($data['template_id']) ? 
             sanitize_text_field($data['template_id']) : 'modern';
 
-       try {
-           $this->email_sender->load_template($template_id);
-           update_option('ncd_active_template', $template_id);
+        try {
+            $this->email_sender->load_template($template_id);
+            update_option('ncd_active_template', $template_id);
 
-           wp_send_json_success([
-               'message' => __('Template erfolgreich gewechselt.', 'newcustomer-discount')
-           ]);
-       } catch (Exception $e) {
-           $this->log_error('Template switch failed', [
-               'template_id' => $template_id,
-               'error' => $e->getMessage()
-           ]);
-           wp_send_json_error(['message' => $e->getMessage()]);
-       }
-   }
+            wp_send_json_success([
+                'message' => __('Template erfolgreich gewechselt.', 'newcustomer-discount')
+            ]);
+        } catch (Exception $e) {
+            $this->log_error('Template switch failed', [
+                'template_id' => $template_id,
+                'error' => $e->getMessage()
+            ]);
+            wp_send_json_error(['message' => $e->getMessage()]);
+        }
+    }
 
     /**
-     * Handler für Template-Einstellungen speichern
+     * Handler für Template-Einstellungen speichern - wird von AJAX aufgerufen
      * 
      * @param array $data Die POST-Daten
      */
     public function handle_save_template_settings($data) {
-        if (!$this->check_ajax_request('ncd_save_template', 'nonce')) {
+        if (!$this->check_admin_permissions()) {
             return;
         }
 
@@ -155,22 +147,22 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
         $settings = isset($data['settings']) ? 
             $this->sanitize_template_settings($data['settings']) : [];
 
-       try {
-           $this->email_sender->save_template_settings($template_id, $settings);
-           $preview = $this->email_sender->render_preview($template_id);
+        try {
+            $this->email_sender->save_template_settings($template_id, $settings);
+            $preview = $this->email_sender->render_preview($template_id);
 
-           wp_send_json_success([
-               'message' => __('Einstellungen gespeichert.', 'newcustomer-discount'),
-               'html' => $preview
-           ]);
-       } catch (Exception $e) {
-           $this->log_error('Template settings save failed', [
-               'template_id' => $template_id,
-               'error' => $e->getMessage()
-           ]);
-           wp_send_json_error(['message' => $e->getMessage()]);
-       }
-   }
+            wp_send_json_success([
+                'message' => __('Einstellungen gespeichert.', 'newcustomer-discount'),
+                'html' => $preview
+            ]);
+        } catch (Exception $e) {
+            $this->log_error('Template settings save failed', [
+                'template_id' => $template_id,
+                'error' => $e->getMessage()
+            ]);
+            wp_send_json_error(['message' => $e->getMessage()]);
+        }
+    }
 
    /**
     * Verarbeitet Template POST-Anfragen
@@ -192,27 +184,6 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
        
        return true;
    }
-
-   /**
-    * Überprüft AJAX-Anfragen
-    *
-    * @param string $action
-    * @param string $nonce_field
-    * @return bool
-    */
-    protected function check_ajax_request($action = 'ncd-admin-nonce', $nonce_field = 'nonce') {  // Angepasste Parameter
-        if (!check_ajax_referer($action, $nonce_field, false)) {
-            wp_send_json_error(['message' => __('Sicherheitsüberprüfung fehlgeschlagen.', 'newcustomer-discount')]);
-            return false;
-        }
-    
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Keine Berechtigung.', 'newcustomer-discount')]);
-            return false;
-        }
-    
-        return true;
-    }
 
    /**
     * Sanitiert Template-Einstellungen
