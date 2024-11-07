@@ -36,17 +36,17 @@
             this.$templateSelector.on('change', (e) => this.handleTemplateChange(e));
             this.$activateButton.on('click', (e) => this.handleTemplateActivation(e));
             
-            // Settings Form und Preview
+            // Settings Form und Preview - vereinfachte Version
             this.$settingsForm.on('submit', (e) => this.handleSettingsSave(e));
-            let previewTimer;
+            
+            // Einheitliches Event-Handling für alle Einstellungsänderungen
             this.$settingsForm.find('input, select').on('change input', () => {
-                clearTimeout(previewTimer);
-                previewTimer = setTimeout(() => this.updatePreview(), 500);
+                this.updatePreviewWithDelay();
             });
-
+        
             // Preview Modi
             $('.preview-mode').on('click', (e) => this.handlePreviewMode(e));
-
+        
             // Test Email Modal
             $('.preview-test-email').on('click', () => this.$testEmailModal.fadeIn(200));
             $('.ncd-modal-close').on('click', () => this.$testEmailModal.fadeOut(200));
@@ -55,9 +55,17 @@
                     this.$testEmailModal.fadeOut(200);
                 }
             });
-
+        
             // Test Email Formular
             $('#test-email-form').on('submit', (e) => this.handleTestEmailSubmit(e));
+        }
+        
+        // Neue Methode für verzögerte Aktualisierung
+        updatePreviewWithDelay() {
+            clearTimeout(this.previewTimer);
+            this.previewTimer = setTimeout(() => {
+                this.updatePreview();
+            }, 300); // 300ms Verzögerung zur Performance-Optimierung
         }
 
         handleTemplateChange(e) {
@@ -93,7 +101,7 @@
                 }
             });
         }
-        
+
         handleTemplateActivation(e) {
             e.preventDefault();
             
@@ -180,9 +188,50 @@
             }, (response) => {
                 if (response.success) {
                     this.$previewFrame.html(response.data.html);
+                    
+                    // Wende die aktuellen Einstellungen direkt auf die Preview an
+                    const settings = this.getCurrentSettings();
+                    this.applyPreviewStyles(settings);
                 }
                 this.$previewFrame.removeClass('ncd-preview-loading');
             });
+        }
+
+
+        // Neue Methode zum Sammeln der aktuellen Einstellungen
+        getCurrentSettings() {
+            return {
+                primaryColor: $('#primary_color').val(),
+                secondaryColor: $('#secondary_color').val(),
+                textColor: $('#text_color').val(),
+                backgroundColor: $('#background_color').val(),
+                fontFamily: $('#font_family').val(),
+                buttonStyle: $('#button_style').val(),
+                layoutType: $('#layout_type').val()
+            };
+        }
+
+        // Neue Methode zum direkten Anwenden der Styles
+        applyPreviewStyles(settings) {
+            // Setze die CSS-Variablen am äußersten Container
+            this.$previewFrame.css({
+                '--primary-color': settings.primaryColor,
+                '--secondary-color': settings.secondaryColor,
+                '--text-color': settings.textColor,
+                '--background-color': settings.backgroundColor,
+                '--font-family': settings.fontFamily
+            });
+        
+            // Button-Style anpassen
+            const $button = this.$previewFrame.find('.button');
+            $button.removeClass('minimal rounded pill').addClass(settings.buttonStyle);
+        
+            // Layout-Type am email-wrapper anpassen, nicht am .ncd-email
+            const $wrapper = this.$previewFrame.find('.email-wrapper');
+            $wrapper.removeClass('centered full-width').addClass(settings.layoutType);
+        
+            // Font-Family explizit setzen
+            this.$previewFrame.find('.ncd-email').css('font-family', settings.fontFamily);
         }
 
         updateActivateButtonState() {

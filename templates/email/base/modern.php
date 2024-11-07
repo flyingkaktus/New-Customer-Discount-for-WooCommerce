@@ -11,195 +11,296 @@ if (!defined('ABSPATH')) {
 
 return [
     'name' => 'Modern',
-    'description' => __('Ein modernes, klares Design mit akzentuierten Farben', 'newcustomer-discount'),
+    'description' => __('Ein modernes, dynamisches Design mit klaren Linien', 'newcustomer-discount'),
     'settings' => [
-        'primary_color' => '#4CAF50',
-        'secondary_color' => '#45a049',
-        'text_color' => '#333333',
-        'background_color' => '#f5f5f5',
+        'primary_color' => '#4F46E5',
+        'secondary_color' => '#818CF8',
+        'text_color' => '#1F2937',
+        'background_color' => '#F9FAFB',
         'button_style' => 'rounded',
         'layout_type' => 'centered',
-        'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif'
+        'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     ],
     'styles' => <<<CSS
-        .ncd-email {
+        .modern-template {
+            --primary-color: {$settings['primary_color']};
+            --secondary-color: {$settings['secondary_color']};
+            --text-color: {$settings['text_color']};
+            --background-color: {$settings['background_color']};
+            --font-family: {$settings['font_family']};
+        }
+
+        /* Button Styles */
+        .modern-template .button.rounded {
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #ffffff;
+            font-weight: 500;
+            padding: 14px 28px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modern-template .button.pill {
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #ffffff;
+            font-weight: 500;
+            padding: 14px 32px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modern-template .button.minimal {
+            border-radius: 6px;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 12px 26px;
+        }
+
+        /* Layout Styles */
+        .modern-template .email-wrapper.centered {
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        
+        .modern-template .email-wrapper.full-width {
+            margin: 0;
+            max-width: none;
+        }
+
+        .modern-template.ncd-email {
             font-family: var(--font-family);
             line-height: 1.6;
             color: var(--text-color);
             background-color: var(--background-color);
             margin: 0;
-            padding: 20px;
+            padding: 30px 20px;
         }
 
-        .email-wrapper {
-            max-width: 600px;
-            margin: 0 auto;
+        .modern-template .email-wrapper {
             background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .modern-template .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            position: relative;
             overflow: hidden;
         }
 
-        .header {
-            text-align: center;
-            padding: 30px 20px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        .modern-template .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.2), transparent 70%);
         }
 
-        .logo {
-            max-width: 200px;
+        .modern-template .logo {
+            max-width: 180px;
             height: auto;
-            margin-bottom: 20px;
+            position: relative
         }
 
-        .content {
+        .modern-template .content {
             padding: 40px;
         }
 
-        h1 {
+        .modern-template h1 {
             color: var(--text-color);
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 28px;
+            font-weight: 700;
             text-align: center;
             margin: 0 0 30px;
+            line-height: 1.3;
         }
 
-        .coupon-code {
-            background: #f8f9fa;
-            padding: 20px;
+        .modern-template .coupon-code {
+            background: var(--background-color);
+            padding: 24px;
             text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            border: 2px dashed #ddd;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            border-radius: 12px;
             margin: 30px 0;
-            border-radius: 6px;
-            color: var(--text-color);
+            color: var(--primary-color);
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .details {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 6px;
-            margin: 20px 0;
+        .modern-template .coupon-code::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
         }
 
-        .details h3 {
-            margin-top: 0;
+        .modern-template .details {
+            background: var(--background-color);
+            padding: 24px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .modern-template .details h3 {
+            margin: 0 0 16px;
             color: var(--text-color);
             font-size: 18px;
+            font-weight: 600;
         }
 
-        .details ul {
+        .modern-template .details ul {
             list-style: none;
             padding: 0;
             margin: 0;
+            display: grid;
+            gap: 12px;
         }
 
-        .details li {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
+        .modern-template .details li {
+            padding: 12px 16px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
-        .details li:last-child {
-            border-bottom: none;
-        }
-
-        .button {
+        .modern-template .button {
             display: inline-block;
-            padding: 14px 28px;
-            background: var(--primary-color);
-            color: #ffffff;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
+            text-align: center;
+            transition: all 0.2s ease;
             margin: 20px 0;
-            text-align: center;
-            transition: all 0.3s ease;
         }
 
-        .button:hover {
-            background: var(--secondary-color);
+        .modern-template .button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .footer {
+        .modern-template .footer {
             text-align: center;
-            font-size: 13px;
-            color: #666666;
+            font-size: 14px;
+            color: #6B7280;
             margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+            padding: 20px 40px;
+            background: var(--background-color);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         @media (prefers-color-scheme: dark) {
-            .details {
-                background: #333;
+            .modern-template.ncd-email {
+                background-color: #111827;
+            }
+            
+            .modern-template .email-wrapper {
+                background-color: #1F2937;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             }
 
-            .coupon-code {
-                background: #333;
-                border-color: #444;
-                color: #f5f5f5;
+            .modern-template h1 {
+                color: #F9FAFB;
             }
 
-            .details li {
-                border-bottom-color: #444;
+            .modern-template .coupon-code {
+                background: #111827;
+                color: #F9FAFB;
             }
 
-            .footer {
-                color: #999;
-                border-top-color: #444;
+            .modern-template .details {
+                background: #111827;
+            }
+
+            .modern-template .details li {
+                background: #1F2937;
+            }
+
+            .modern-template .details h3 {
+                color: #F9FAFB;
+            }
+
+            .modern-template .footer {
+                background: #111827;
+                color: #9CA3AF;
+                border-top-color: rgba(255, 255, 255, 0.05);
+            }
+
+            .modern-template .button.minimal {
+                border-color: #F9FAFB;
+                color: #F9FAFB;
             }
         }
 
         @media only screen and (max-width: 600px) {
-            body {
-                padding: 10px;
+            .modern-template.ncd-email {
+                padding: 16px;
             }
 
-            .content {
-                padding: 20px;
+            .modern-template .content {
+                padding: 24px;
             }
 
-            .coupon-code {
+            .modern-template h1 {
                 font-size: 24px;
             }
 
-            .button {
-                display: block;
-                text-align: center;
+            .modern-template .coupon-code {
+                font-size: 24px;
+                padding: 20px;
+                letter-spacing: 2px;
+            }
+
+            .modern-template .details {
+                padding: 20px;
+            }
+
+            .modern-template .footer {
+                padding: 20px;
             }
         }
-    CSS,
+CSS,
     'html' => <<<HTML
-    <div class="ncd-email modern-template">
-        <div class="email-wrapper">
+    <div class="ncd-email modern-template" style="font-family: {$settings['font_family']}">
+        <div class="email-wrapper {$settings['layout_type']}">
             <div class="header">
                 <img src="{logo_url}" alt="{shop_name}" class="logo">
             </div>
 
             <div class="content">
-                <h1>Exklusiver Rabattgutschein</h1>
+                <h1>Ihr exklusiver Willkommensrabatt</h1>
                 
-                <p>{email_greeting}</p>
+                <p style="text-align: center;">{email_greeting}</p>
                 
-                <p>{email_intro}</p>
+                <p style="text-align: center;">{email_intro}</p>
 
                 <div class="coupon-code">
                     {coupon_code}
                 </div>
 
                 <div class="details">
-                    <h3>Gutschein-Details:</h3>
+                    <h3>Ihre Vorteile</h3>
                     <ul>
-                        <li>Rabatt: {discount_amount}%</li>
-                        <li>Gültig bis: {expiry_date}</li>
-                        <li>Mindestbestellwert: {min_order_amount}</li>
+                        <li>✨ {discount_amount}% Rabatt auf Ihre Bestellung</li>
+                        <li>⏰ Gültig bis {expiry_date}</li>
+                        <li>💰 Mindestbestellwert: {min_order_amount}</li>
                     </ul>
                 </div>
 
                 <center>
-                    <a href="{shop_url}" class="button">Jetzt einlösen</a>
+                    <a href="{shop_url}" class="button {$settings['button_style']}">Jetzt einlösen</a>
                 </center>
 
                 <p style="text-align: center;">
@@ -208,7 +309,7 @@ return [
             </div>
 
             <div class="footer">
-                <p>&copy; {current_year} {shop_name}. Alle Rechte vorbehalten.</p>
+                <p>&copy; {current_year} {shop_name}</p>
                 <p>{email_footer}</p>
             </div>
         </div>

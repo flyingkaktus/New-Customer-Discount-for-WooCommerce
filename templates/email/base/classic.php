@@ -11,190 +11,307 @@ if (!defined('ABSPATH')) {
 
 return [
     'name' => 'Classic',
-    'description' => __('Ein klassisches, zeitloses Design', 'newcustomer-discount'),
+    'description' => __('Ein zeitlos-elegantes Design', 'newcustomer-discount'),
     'settings' => [
-        'primary_color' => '#2C3338',
-        'secondary_color' => '#505050',
-        'text_color' => '#333333',
-        'background_color' => '#ffffff',
+        'primary_color' => '#1B4D89',
+        'secondary_color' => '#2D6DA3',
+        'text_color' => '#2C3338',
+        'background_color' => '#F5F5F5',
         'button_style' => 'square',
-        'layout_type' => 'full-width',
-        'font_family' => 'Georgia, serif'
+        'layout_type' => 'centered',
+        'font_family' => 'Georgia, "Times New Roman", serif'
     ],
     'styles' => <<<CSS
-        .ncd-email {
-            font-family: var(--font-family);
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background_color);
-            margin: 0;
-            padding: 20px;
+        .classic-template {
+            --primary-color: {$settings['primary_color']};
+            --secondary-color: {$settings['secondary_color']};
+            --text-color: {$settings['text_color']};
+            --background-color: {$settings['background_color']};
+            --font-family: {$settings['font_family']};
         }
 
-        .email-wrapper {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-        }
-
-        .header {
-            text-align: center;
-            padding: 30px 20px;
+        /* Button Styles */
+        .classic-template .button.rounded {
+            border-radius: 4px;
             background: var(--primary-color);
-            border-bottom: 3px solid var(--secondary-color);
+            color: #ffffff;
+            font-family: var(--font-family);
+            border: none;
+        }
+        
+        .classic-template .button.pill {
+            border-radius: 25px;
+            background: var(--primary-color);
+            color: #ffffff;
+            font-family: var(--font-family);
+            border: none;
+        }
+        
+        .classic-template .button.square {
+            border-radius: 0;
+            background: var(--primary-color);
+            color: #ffffff;
+            font-family: var(--font-family);
+            border: none;
+            position: relative;
+            padding: 16px 32px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .logo {
+        .classic-template .button.square::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            bottom: 4px;
+            left: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Layout Styles */
+        .classic-template .email-wrapper.centered {
+            margin: 0 auto;
+            max-width: 600px;
+            padding: 40px 0;
+        }
+        
+        .classic-template .email-wrapper.full-width {
+            margin: 0;
+            max-width: none;
+            padding: 40px 20px;
+        }
+
+        .classic-template.ncd-email {
+            font-family: var(--font-family);
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .classic-template .email-wrapper {
+            background-color: #ffffff;
+            border: 1px solid #E5E5E5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .classic-template .header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 2px solid var(--primary-color);
+            background: #ffffff;
+        }
+
+        .classic-template .logo {
             max-width: 200px;
             height: auto;
         }
 
-        .content {
-            padding: 40px;
+        .classic-template .content {
+            padding: 60px 40px;
+            background: #ffffff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIklEQVQIHWN8//79fwYGBgZGGMHIyMgIY4DFQAqAAEjhfwYAoS0MJ7t6j+IAAAAASUVORK5CYII=');
         }
 
-        h1 {
+        .classic-template h1 {
             color: var(--primary-color);
-            font-size: 24px;
-            font-weight: normal;
-            text-align: center;
-            margin: 0 0 30px;
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
-        }
-
-        .coupon-code {
-            background: #f8f9fa;
-            padding: 20px;
-            text-align: center;
             font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            border: 2px solid var(--primary-color);
-            margin: 30px 0;
-        }
-
-        .details {
-            background: #f8f9fa;
-            padding: 20px;
-            margin: 20px 0;
-            border: 1px solid #ddd;
-        }
-
-        .details h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 18px;
             font-weight: normal;
+            text-align: center;
+            margin: 0 0 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #E5E5E5;
+            font-family: var(--font-family);
         }
 
-        .details ul {
+        .classic-template .coupon-code {
+            text-align: center;
+            font-size: 32px;
+            font-weight: normal;
+            letter-spacing: 4px;
+            margin: 40px auto;
+            padding: 30px;
+            max-width: 400px;
+            border: 2px dashed var(--primary-color);
+            color: var(--primary-color);
+            background: #FFFFFF;
+            position: relative;
+        }
+
+        .classic-template .coupon-code::before,
+        .classic-template .coupon-code::after {
+            content: '✦';
+            position: absolute;
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+
+        .classic-template .coupon-code::before {
+            left: 20px;
+        }
+
+        .classic-template .coupon-code::after {
+            right: 20px;
+        }
+
+        .classic-template .details {
+            margin: 40px auto;
+            max-width: 500px;
+            padding: 30px;
+            background: #FAFAFA;
+            border: 1px solid #E5E5E5;
+        }
+
+        .classic-template .details h3 {
+            margin: 0 0 20px;
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: normal;
+            text-align: center;
+            font-family: var(--font-family);
+        }
+
+        .classic-template .details ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        .details li {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
+        .classic-template .details li {
+            padding: 12px 0;
+            border-bottom: 1px solid #E5E5E5;
+            text-align: center;
+            font-style: italic;
         }
 
-        .details li:last-child {
+        .classic-template .details li:last-child {
             border-bottom: none;
         }
 
-        .button {
+        .classic-template .button {
             display: inline-block;
-            padding: 12px 24px;
-            background: var(--primary-color);
-            color: #ffffff;
             text-decoration: none;
-            font-weight: normal;
+            text-align: center;
+            transition: all 0.3s ease;
             margin: 20px 0;
-            text-align: center;
-            border: 2px solid var(--primary-color);
         }
 
-        .button:hover {
+        .classic-template .button:hover {
             background: var(--secondary-color);
-            border-color: var(--secondary-color);
         }
 
-        .footer {
+        .classic-template .footer {
             text-align: center;
-            font-size: 12px;
+            font-size: 14px;
             color: #666666;
-            margin-top: 40px;
-            padding: 20px;
-            border-top: 1px solid #ddd;
-            background: #f8f9fa;
+            margin-top: 0;
+            padding: 30px;
+            background: #FAFAFA;
+            border-top: 1px solid #E5E5E5;
         }
 
         @media (prefers-color-scheme: dark) {
-            .email-wrapper {
-                border-color: #444;
+            .classic-template.ncd-email {
+                background-color: #1a1a1a;
+            }
+            
+            .classic-template .email-wrapper {
+                background-color: #2d2d2d;
+                border-color: #3d3d3d;
             }
 
-            .details {
-                background: #333;
-                border-color: #444;
+            .classic-template .header {
+                background: #2d2d2d;
+                border-bottom-color: var(--primary-color);
             }
 
-            .details li {
-                border-bottom-color: #444;
+            .classic-template .content {
+                background: #2d2d2d;
             }
 
-            .footer {
-                background: #333;
-                border-top-color: #444;
-                color: #999;
+            .classic-template h1 {
+                color: #ffffff;
+                border-bottom-color: #3d3d3d;
+            }
+
+            .classic-template .coupon-code {
+                background: #1a1a1a;
+                border-color: var(--primary-color);
+                color: #ffffff;
+            }
+
+            .classic-template .details {
+                background: #1a1a1a;
+                border-color: #3d3d3d;
+            }
+
+            .classic-template .details li {
+                border-bottom-color: #3d3d3d;
+                color: #ffffff;
+            }
+
+            .classic-template .footer {
+                background: #1a1a1a;
+                border-top-color: #3d3d3d;
+                color: #888888;
             }
         }
 
         @media only screen and (max-width: 600px) {
-            .content {
+            .classic-template .email-wrapper.centered {
+                padding: 20px 0;
+            }
+
+            .classic-template .content {
+                padding: 30px 20px;
+            }
+
+            .classic-template h1 {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+
+            .classic-template .coupon-code {
+                font-size: 24px;
+                padding: 20px;
+                margin: 30px auto;
+            }
+
+            .classic-template .details {
                 padding: 20px;
             }
-
-            .coupon-code {
-                font-size: 24px;
-            }
-
-            .button {
-                display: block;
-            }
         }
-    CSS,
+CSS,
     'html' => <<<HTML
-    <div class="ncd-email classic-template">
-        <div class="email-wrapper">
+    <div class="ncd-email classic-template" style="font-family: {$settings['font_family']}">
+        <div class="email-wrapper {$settings['layout_type']}">
             <div class="header">
                 <img src="{logo_url}" alt="{shop_name}" class="logo">
             </div>
 
             <div class="content">
-                <h1>Exklusiver Rabattgutschein</h1>
+                <h1>Ihr persönlicher Rabattcode</h1>
                 
-                <p>{email_greeting}</p>
+                <p style="text-align: center;">{email_greeting}</p>
                 
-                <p>{email_intro}</p>
+                <p style="text-align: center;">{email_intro}</p>
 
                 <div class="coupon-code">
                     {coupon_code}
                 </div>
 
                 <div class="details">
-                    <h3>Gutschein-Details:</h3>
+                    <h3>Gutschein-Details</h3>
                     <ul>
-                        <li>Rabatt: {discount_amount}%</li>
-                        <li>Gültig bis: {expiry_date}</li>
-                        <li>Mindestbestellwert: {min_order_amount}</li>
+                        <li>⚜️ {discount_amount}% Rabatt auf Ihren Einkauf</li>
+                        <li>⌛ Einlösbar bis {expiry_date}</li>
+                        <li>✧ Ab einem Bestellwert von {min_order_amount}</li>
                     </ul>
                 </div>
 
                 <center>
-                    <a href="{shop_url}" class="button">Jetzt im Shop einlösen</a>
+                    <a href="{shop_url}" class="button {$settings['button_style']}">Zum Online-Shop</a>
                 </center>
 
                 <p style="text-align: center;">
@@ -203,7 +320,7 @@ return [
             </div>
 
             <div class="footer">
-                <p>&copy; {current_year} {shop_name}. Alle Rechte vorbehalten.</p>
+                <p>&copy; {current_year} {shop_name}</p>
                 <p>{email_footer}</p>
             </div>
         </div>
