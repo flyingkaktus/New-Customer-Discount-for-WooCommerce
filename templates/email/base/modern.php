@@ -9,18 +9,20 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Stelle sicher dass settings definiert ist
+if (!isset($settings)) {
+    $settings = [];
+}
+
+// Stelle sicher dass settings ein Array ist
+if (!is_array($settings)) {
+    $settings = [];
+}
+
 return [
     'name' => 'Modern',
     'description' => __('Ein modernes, dynamisches Design mit klaren Linien', 'newcustomer-discount'),
-    'settings' => [
-        'primary_color' => '#4F46E5',
-        'secondary_color' => '#818CF8',
-        'text_color' => '#1F2937',
-        'background_color' => '#F9FAFB',
-        'button_style' => 'rounded',
-        'layout_type' => 'centered',
-        'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    ],
+    'settings' => $settings,
     'styles' => <<<CSS
         .modern-template {
             --primary-color: {$settings['primary_color']};

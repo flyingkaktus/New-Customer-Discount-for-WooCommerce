@@ -14,6 +14,8 @@
             
             this.initializeTemplateStatus();
             this.bindEvents();
+
+            this.updatePreview();
         }
 
         initializeTemplateStatus() {

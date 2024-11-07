@@ -9,18 +9,20 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Stelle sicher dass settings definiert ist
+if (!isset($settings)) {
+    $settings = [];
+}
+
+// Stelle sicher dass settings ein Array ist
+if (!is_array($settings)) {
+    $settings = [];
+}
+
 return [
     'name' => 'Minimal',
     'description' => __('Ein reduziertes, minimalistisches Design', 'newcustomer-discount'),
-    'settings' => [
-        'primary_color' => '#000000',
-        'secondary_color' => '#666666',
-        'text_color' => '#333333',
-        'background_color' => '#ffffff',
-        'button_style' => 'minimal',
-        'layout_type' => 'centered',
-        'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    ],
+    'settings' => $settings,
     'styles' => <<<CSS
         .minimal-template {
             --primary-color: {$settings['primary_color']};

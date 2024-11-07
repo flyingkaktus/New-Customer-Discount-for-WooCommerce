@@ -212,21 +212,35 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     *
     * @return bool
     */
-   private function handle_template_post() {
-       if (!isset($_POST['save_template']) || !isset($_POST['template_id'])) {
-           return false;
-       }
-
-       check_admin_referer('ncd_save_template', 'ncd_template_nonce');
-       
-       $template_id = sanitize_text_field($_POST['template_id']);
-       $settings = isset($_POST['settings']) ? $_POST['settings'] : [];
-       $sanitized_settings = $this->sanitize_template_settings($settings);
-       
-       $this->email_sender->save_template_settings($template_id, $sanitized_settings);
-       
-       return true;
-   }
+    private function handle_template_post() {
+        if (!isset($_POST['template_id'])) {
+            return false;
+        }
+    
+        $template_id = sanitize_text_field($_POST['template_id']);
+        
+        // Hole aktuelle gespeicherte Einstellungen
+        $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
+        
+        // Hole das Template mit Standardeinstellungen
+        $template = $this->email_sender->load_template($template_id);
+        $default_settings = $template['settings'];
+        
+        // Wenn neue Einstellungen gesendet wurden, diese verwenden
+        if (isset($_POST['settings'])) {
+            $new_settings = $this->sanitize_template_settings($_POST['settings']);
+            // Merge in der richtigen Reihenfolge: defaults -> saved -> new
+            $settings = wp_parse_args($new_settings, wp_parse_args($saved_settings, $default_settings));
+        } else {
+            // Ansonsten nur gespeicherte mit defaults mergen
+            $settings = wp_parse_args($saved_settings, $default_settings);
+        }
+        
+        // Speichere die gemergten Einstellungen
+        update_option('ncd_template_' . $template_id . '_settings', $settings);
+        
+        return true;
+    }
 
    /**
     * Sanitiert Template-Einstellungen

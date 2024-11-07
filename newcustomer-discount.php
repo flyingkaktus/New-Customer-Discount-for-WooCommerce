@@ -104,7 +104,12 @@ function ncd_woocommerce_notice() {
 */
 function ncd_activate() {
     if (WP_DEBUG) {
-        error_log('Starting NCD plugin activation');
+        error_log('Starting NCD plugin activation in DEBUG mode - forcing table recreation');
+        // Force table drop in debug mode
+        global $wpdb;
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}ncd_email_log");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}customer_discount_tracking");
+        error_log('Dropped existing tables');
     }
  
     try {
@@ -228,6 +233,16 @@ function ncd_activate() {
             error_log('NCD plugin activation completed successfully');
         }
  
+        if (WP_DEBUG) {
+            error_log('Tables recreated successfully');
+            // Log table structure for verification
+            global $wpdb;
+            $email_log_structure = $wpdb->get_results("DESCRIBE {$wpdb->prefix}ncd_email_log");
+            $tracking_structure = $wpdb->get_results("DESCRIBE {$wpdb->prefix}customer_discount_tracking");
+            error_log('Email log table structure: ' . print_r($email_log_structure, true));
+            error_log('Tracking table structure: ' . print_r($tracking_structure, true));
+        }
+
     } catch (Exception $e) {
         if (WP_DEBUG) {
             error_log('NCD plugin activation failed: ' . $e->getMessage());

@@ -88,39 +88,58 @@ class NCD_Email_Sender {
      * @param string $template_id Template ID
      * @return array Template-Daten
      */
-    public function load_template($template_id = 'modern') {
-        $templates = $this->get_template_list();
-        
-        if (!isset($templates[$template_id])) {
-            error_log("Template '$template_id' nicht gefunden, verwende 'modern'");
-            $template_id = 'modern';
-        }
-        
-        $template_file = $templates[$template_id]['file'];
-        if (!file_exists($template_file)) {
-            error_log("Template-Datei nicht gefunden: $template_file");
+    public function load_template($template_id) {
+        try {
+            $templates = $this->get_template_list();
             
-            if ($template_id === 'modern') {
-                throw new Exception(sprintf(
-                    __('Basis-Template-Dateien fehlen. Bitte stellen Sie sicher, dass %s existiert.', 'newcustomer-discount'),
-                    'templates/email/base/modern.php'
-                ));
+            if (!isset($templates[$template_id])) {
+                throw new Exception("Template '$template_id' nicht gefunden");
             }
             
-            return $this->load_template('modern');
+            $template_file = $templates[$template_id]['file'];
+            if (!file_exists($template_file)) {
+                throw new Exception("Template-Datei nicht gefunden: $template_file");
+            }
+            
+            // Standard-Settings definieren
+            $default_settings = [
+                'primary_color' => '#4F46E5',
+                'secondary_color' => '#818CF8',
+                'text_color' => '#1F2937',
+                'background_color' => '#F9FAFB',
+                'button_style' => 'rounded',
+                'layout_type' => 'full-width',
+                'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            ];
+            
+            // Hole die gespeicherten Template-Einstellungen
+            $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
+            
+            // Merge die Settings
+            $settings = wp_parse_args($saved_settings, $default_settings);
+            
+            if (WP_DEBUG) {
+                error_log("Loading template $template_id");
+                error_log("Default settings: " . print_r($default_settings, true));
+                error_log("Saved settings: " . print_r($saved_settings, true));
+                error_log("Final settings: " . print_r($settings, true));
+            }
+            
+            // Stelle sicher dass $settings definiert ist bevor das Template geladen wird
+            $template = include $template_file;
+            
+            if ($template === false) {
+                throw new Exception("Fehler beim Laden des Templates");
+            }
+            
+            return $template;
+            
+        } catch (Exception $e) {
+            if (WP_DEBUG) {
+                error_log('Template loading error: ' . $e->getMessage());
+            }
+            throw $e; // Werfe den Fehler weiter
         }
-        
-        $template = include $template_file;
-        // Template-spezifische Einstellungen laden
-        $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
-        // Zusammenführen mit Standard-Einstellungen des Templates
-        $template['settings'] = wp_parse_args($saved_settings, $template['settings']);
-        
-        if (WP_DEBUG) {
-            error_log('Template-spezifische Einstellungen für ' . $template_id . ': ' . print_r($template['settings'], true));
-        }
-        
-        return $template;
     }
 
     /**
@@ -139,16 +158,27 @@ class NCD_Email_Sender {
     
             $settings = wp_parse_args($settings, $this->default_settings);
             
-            // Explizit das aktive Template laden
+            // Hole das aktive Template und seine gespeicherten Einstellungen
             $template_id = get_option('ncd_active_template', 'modern');
+            $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
+            
+            // Lade das Template
+            $template = $this->load_template($template_id);
+            
+            // Merge die Einstellungen in der richtigen Reihenfolge:
+            // Gespeicherte Einstellungen haben Vorrang vor Template-Standards
+            $template_settings = wp_parse_args($saved_settings, $template['settings']); 
             
             // Debug-Logging hinzufügen
             if (WP_DEBUG) {
                 error_log('Sending email with template: ' . $template_id);
+                error_log('Default template settings: ' . print_r($template['settings'], true));
+                error_log('Saved custom settings: ' . print_r($saved_settings, true));
+                error_log('Final merged settings: ' . print_r($template_settings, true));
             }
     
-            // Template rendern
-            $content = $this->render_template($template_id, $data);
+            // Template mit den gemergten Einstellungen rendern
+            $content = $this->render_template($template_id, $data, $template_settings);
             if (is_wp_error($content)) {
                 throw new Exception($content->get_error_message());
             }
@@ -162,7 +192,7 @@ class NCD_Email_Sender {
                 throw new Exception(__('E-Mail konnte nicht gesendet werden', 'newcustomer-discount'));
             }
     
-            $this->log_email_sent($email, $data, $template_id); // Template-ID zum Logging hinzufügen
+            $this->log_email_sent($email, $data, $template_id);
             return true;
     
         } catch (Exception $e) {
@@ -183,71 +213,52 @@ class NCD_Email_Sender {
      * @param array $data Template-Daten
      * @return string Gerendertes Template
      */
-    public function render_template($template_id, $data) {
+    public function render_template($template_id, $data, $settings = []) {
         $template = $this->load_template($template_id);
         
+        // Stelle sicher dass alle erforderlichen Settings vorhanden sind
+        $default_settings = [
+            'primary_color' => '#4F46E5',
+            'secondary_color' => '#818CF8',
+            'text_color' => '#1F2937',
+            'background_color' => '#F9FAFB',
+            'button_style' => 'rounded',
+            'layout_type' => 'centered',
+            'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        ];
+        
+        // Merge die Default-Settings mit den Template-Settings
+        $settings = wp_parse_args($settings, wp_parse_args($template['settings'], $default_settings));
+        
+        // Ersetze die CSS-Variablen
         $styles = strtr($template['styles'], [
-            'var(--primary-color)' => $template['settings']['primary_color'],
-            'var(--secondary-color)' => $template['settings']['secondary_color'],
-            'var(--text-color)' => $template['settings']['text_color'],
-            'var(--background-color)' => $template['settings']['background_color'],
-            'var(--font-family)' => $template['settings']['font_family']
+            'var(--primary-color)' => $settings['primary_color'],
+            'var(--secondary-color)' => $settings['secondary_color'],
+            'var(--text-color)' => $settings['text_color'],
+            'var(--background-color)' => $settings['background_color'],
+            'var(--font-family)' => $settings['font_family']
         ]);
-
-        $body_style = "background-color: " . $template['settings']['background_color'] . ";";
-        $html = "<style>{$styles}</style><body style='{$body_style}'>" . $template['html'] . "</body>";
+    
+        $body_style = "background-color: " . $settings['background_color'] . ";";
+        
+        // Ersetze die Settings-Variablen im HTML
+        $html = str_replace(
+            [
+                '{$settings[\'font_family\']}',
+                '{$settings[\'layout_type\']}',
+                '{$settings[\'button_style\']}'
+            ],
+            [
+                $settings['font_family'],
+                $settings['layout_type'],
+                $settings['button_style']
+            ],
+            $template['html']
+        );
+        
+        $html = "<style>{$styles}</style><body style='{$body_style}'>" . $html . "</body>";
         
         return $this->parse_template($html, $data);
-    }
-
-    /**
-     * Fügt Styles inline in das HTML ein mittels Emogrifier
-     *
-     * @param string $html Das Template HTML
-     * @param string $styles Die CSS Styles
-     * @return string HTML mit inline Styles
-     * @throws Exception Wenn die Konvertierung fehlschlägt
-     */
-    private function inline_styles($html, $styles) {
-        try {
-            // Prüfe ob Emogrifier verfügbar ist
-            if (!class_exists('\\Pelago\\Emogrifier\\CssInliner')) {
-                throw new Exception('Emogrifier ist nicht verfügbar');
-            }
-
-            // Bereite das HTML vor (stelle sicher, dass DOCTYPE und Meta-Tags erhalten bleiben)
-            $emogrifier = \Pelago\Emogrifier\CssInliner::fromHtml($html)
-                ->inlineCss($styles);
-
-            // Disabling style block removal to preserve media queries
-            $emogrifier->addExcludedSelector('style');
-
-            // CSS-Klassen beibehalten für eventuelle JavaScript-Funktionalität
-            $emogrifier->keepOriginalStyles();
-
-            // Optimierungen für E-Mail-Clients
-            $domDocument = $emogrifier->getDomDocument();
-            $finalHtml = $emogrifier->render();
-
-            // Füge die ursprünglichen Styles am Ende hinzu (für E-Mail-Clients die CSS unterstützen)
-            $finalHtml = str_replace('</head>', "<style>{$styles}</style></head>", $finalHtml);
-
-            // Debug-Logging
-            if (WP_DEBUG) {
-                error_log('Emogrifier conversion completed');
-                error_log('Original styles preserved');
-                error_log('Final HTML length: ' . strlen($finalHtml));
-            }
-
-            return $finalHtml;
-
-        } catch (Exception $e) {
-            if (WP_DEBUG) {
-                error_log('Emogrifier error: ' . $e->getMessage());
-            }
-            // Fallback: Wenn Emogrifier fehlschlägt, füge Styles einfach im <style> Tag hinzu
-            return "<style>{$styles}</style>" . $html;
-        }
     }
 
     /**

@@ -9,18 +9,20 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Stelle sicher dass settings definiert ist
+if (!isset($settings)) {
+    $settings = [];
+}
+
+// Stelle sicher dass settings ein Array ist
+if (!is_array($settings)) {
+    $settings = [];
+}
+
 return [
     'name' => 'Classic',
     'description' => __('Ein zeitlos-elegantes Design', 'newcustomer-discount'),
-    'settings' => [
-        'primary_color' => '#1B4D89',
-        'secondary_color' => '#2D6DA3',
-        'text_color' => '#2C3338',
-        'background_color' => '#F5F5F5',
-        'button_style' => 'square',
-        'layout_type' => 'centered',
-        'font_family' => 'Georgia, "Times New Roman", serif'
-    ],
+    'settings' => $settings,
     'styles' => <<<CSS
     .classic-template {
         --primary-color: {$settings['primary_color']};

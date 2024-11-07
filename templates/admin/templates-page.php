@@ -14,6 +14,8 @@ $email_sender = new NCD_Email_Sender();
 $available_templates = $email_sender->get_template_list();
 $current_template_id = get_option('ncd_active_template', 'modern');
 $current_template = $email_sender->load_template($current_template_id);
+$saved_settings = get_option('ncd_template_' . $current_template_id . '_settings', []);
+$initial_preview = $email_sender->render_preview($current_template_id, $saved_settings);
 ?>
 
 <div class="wrap ncd-wrap">
