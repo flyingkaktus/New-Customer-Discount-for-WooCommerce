@@ -110,8 +110,14 @@ class NCD_Email_Sender {
         }
         
         $template = include $template_file;
+        // Template-spezifische Einstellungen laden
         $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
+        // Zusammenführen mit Standard-Einstellungen des Templates
         $template['settings'] = wp_parse_args($saved_settings, $template['settings']);
+        
+        if (WP_DEBUG) {
+            error_log('Template-spezifische Einstellungen für ' . $template_id . ': ' . print_r($template['settings'], true));
+        }
         
         return $template;
     }
@@ -276,7 +282,12 @@ class NCD_Email_Sender {
      * @return bool
      */
     public function save_template_settings($template_id, $settings) {
-        return update_option('ncd_template_' . $template_id . '_settings', $settings);
+        $option_name = 'ncd_template_' . $template_id . '_settings';
+        // Bestehende Einstellungen laden
+        $existing_settings = get_option($option_name, []);
+        // Neue Einstellungen mit bestehenden zusammenführen
+        $settings = wp_parse_args($settings, $existing_settings);
+        return update_option($option_name, $settings);
     }
 
     /**
@@ -449,26 +460,41 @@ private function log_error($message, $context = []) {
  * @return string HTML der Vorschau
  */
 public function render_preview($template_id, $settings = []) {
-    $test_data = [
-        'coupon_code' => 'TESTCODE123',
-        'expiry_date' => date('Y-m-d', strtotime('+30 days'))
-    ];
+    try {
+        // Lade das spezifische Template
+        $template = $this->load_template($template_id);
+        
+        if (empty($template)) {
+            throw new Exception('Template nicht gefunden');
+        }
 
-    // Temporäre Einstellungen für die Vorschau
-    if (!empty($settings)) {
-        $option_name = 'ncd_template_' . $template_id . '_settings';
-        $original_settings = get_option($option_name);
-        update_option($option_name, wp_parse_args($settings, $original_settings));
-        
-        // Template rendern
-        $preview = $this->render_template($template_id, $test_data);
-        
-        // Originaleinstellungen wiederherstellen
-        update_option($option_name, $original_settings);
+        // Wenn keine benutzerdefinierten Einstellungen, verwende die Template-Standardeinstellungen
+        $settings = !empty($settings) ? $settings : $template['settings'];
+
+        $test_data = [
+            'coupon_code' => 'TESTCODE123',
+            'expiry_date' => date('Y-m-d', strtotime('+30 days'))
+        ];
+
+        // Wende die Template-spezifischen Styles an
+        $styles = strtr($template['styles'], [
+            'var(--primary-color)' => $settings['primary_color'],
+            'var(--secondary-color)' => $settings['secondary_color'],
+            'var(--text-color)' => $settings['text_color'],
+            'var(--background-color)' => $settings['background_color'],
+            'var(--font-family)' => $settings['font_family']
+        ]);
+
+        // Kombiniere Styles und HTML
+        $preview = "<style>{$styles}</style>" . $this->parse_template($template['html'], $test_data);
         
         return $preview;
-    }
 
-    return $this->render_template($template_id, $test_data);
+    } catch (Exception $e) {
+        if (WP_DEBUG) {
+            error_log('Template preview error: ' . $e->getMessage());
+        }
+        return '<div class="error">Fehler beim Laden der Vorschau</div>';
+    }
 }
 }

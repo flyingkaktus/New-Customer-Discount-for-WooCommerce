@@ -24,18 +24,43 @@ $current_template = $email_sender->load_template($current_template_id);
     <div class="ncd-template-manager">
         <!-- Template Selector Dropdown -->
         <div class="ncd-template-selector">
-            <select id="template-selector" class="ncd-select">
-                <?php foreach ($available_templates as $id => $template): 
-                    $template_data = $email_sender->load_template($id);
-                ?>
-                    <option value="<?php echo esc_attr($id); ?>" 
-                            <?php selected($current_template_id, $id); ?>
-                            data-preview="<?php echo esc_url($template['preview']); ?>">
-                        <?php echo esc_html($template_data['name']); ?> - 
-                        <?php echo esc_html($template_data['description']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+            <label for="template-selector" class="ncd-template-label">
+                <?php _e('Template auswählen:', 'newcustomer-discount'); ?>
+            </label>
+            <div class="ncd-template-controls">
+                <select id="template-selector" class="ncd-select" 
+                data-active-template="<?php echo esc_attr(get_option('ncd_active_template', 'modern')); ?>">
+                    <?php 
+                    $active_template_id = get_option('ncd_active_template', 'modern');
+                    foreach ($available_templates as $id => $template): 
+                        $template_data = $email_sender->load_template($id);
+                        $is_active = ($active_template_id === $id);
+                    ?>
+                        <option value="<?php echo esc_attr($id); ?>" 
+                                <?php selected($active_template_id, $id); ?>>
+                            <?php echo esc_html($template_data['name']); ?>
+                            <?php if ($is_active): ?>
+                                <?php _e(' (Aktiv)', 'newcustomer-discount'); ?>
+                            <?php endif; ?>
+                            - <?php echo esc_html($template_data['description']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="button" 
+                        id="activate-template" 
+                        class="button button-primary" 
+                        <?php echo $current_template_id === $active_template_id ? 'disabled' : ''; ?>>
+                    <?php _e('Template aktivieren', 'newcustomer-discount'); ?>
+                </button>
+            </div>
+            <div class="ncd-template-status">
+                <span class="ncd-active-template-info">
+                    <?php printf(
+                        __('Aktives Template: <strong>%s</strong>', 'newcustomer-discount'),
+                        $email_sender->load_template($active_template_id)['name']
+                    ); ?>
+                </span>
+            </div>
         </div>
 
         <div class="ncd-design-container">

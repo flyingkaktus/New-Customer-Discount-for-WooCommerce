@@ -83,23 +83,30 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
         if (!$this->check_admin_permissions()) {
             return;
         }
-
-        parse_str($data['data'], $form_data);
-        
-        $template_id = isset($form_data['template_id']) ? 
-            sanitize_text_field($form_data['template_id']) : 'modern';
-        $settings = isset($form_data['settings']) ? $form_data['settings'] : [];
-        $sanitized_settings = $this->sanitize_template_settings($settings);
-
+    
         try {
+            parse_str($data['data'], $form_data);
+            
+            // Korrekte Template-ID aus dem Formular holen
+            $template_id = isset($form_data['template_id']) ? 
+                sanitize_text_field($form_data['template_id']) : 'modern';
+                
+            $settings = isset($form_data['settings']) ? $form_data['settings'] : [];
+            $sanitized_settings = $this->sanitize_template_settings($settings);
+    
+            // Debug-Log
+            if (WP_DEBUG) {
+                error_log('Preview request for template: ' . $template_id);
+                error_log('With settings: ' . print_r($sanitized_settings, true));
+            }
+    
             $preview = $this->email_sender->render_preview($template_id, $sanitized_settings);
             wp_send_json_success(['html' => $preview]);
+            
         } catch (Exception $e) {
-            $this->log_error('Template preview failed', [
-                'template_id' => $template_id,
-                'error' => $e->getMessage()
+            wp_send_json_error([
+                'message' => $e->getMessage()
             ]);
-            wp_send_json_error(['message' => $e->getMessage()]);
         }
     }
 
@@ -132,6 +139,41 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
         }
     }
 
+    public function handle_get_template_settings($data) {
+        if (!$this->check_admin_permissions()) {
+            return;
+        }
+    
+        try {
+            if (!isset($data['template_id'])) {
+                throw new Exception(__('Keine Template-ID angegeben.', 'newcustomer-discount'));
+            }
+    
+            $template_id = sanitize_text_field($data['template_id']);
+            
+            // Debug Log
+            if (WP_DEBUG) {
+                error_log('Getting settings for template: ' . $template_id);
+            }
+    
+            // Lade das Template mit seinen Einstellungen
+            $template = $this->email_sender->load_template($template_id);
+            
+            // Sende die Template-Einstellungen zurück
+            wp_send_json_success([
+                'settings' => $template['settings']
+            ]);
+    
+        } catch (Exception $e) {
+            if (WP_DEBUG) {
+                error_log('Error getting template settings: ' . $e->getMessage());
+            }
+            wp_send_json_error([
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+    
     /**
      * Handler für Template-Einstellungen speichern - wird von AJAX aufgerufen
      * 
@@ -141,25 +183,26 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
         if (!$this->check_admin_permissions()) {
             return;
         }
-
-        $template_id = isset($data['template_id']) ? 
-            sanitize_text_field($data['template_id']) : 'modern';
-        $settings = isset($data['settings']) ? 
-            $this->sanitize_template_settings($data['settings']) : [];
-
+    
         try {
-            $this->email_sender->save_template_settings($template_id, $settings);
+            $template_id = sanitize_text_field($data['template_id']);
+            parse_str($data['settings'], $settings);
+            
+            // Nur die relevanten Einstellungen extrahieren
+            $template_settings = isset($settings['settings']) ? $settings['settings'] : [];
+            $sanitized_settings = $this->sanitize_template_settings($template_settings);
+    
+            // Template-spezifisch speichern
+            $this->email_sender->save_template_settings($template_id, $sanitized_settings);
+            
+            // Vorschau mit den gespeicherten Einstellungen rendern
             $preview = $this->email_sender->render_preview($template_id);
-
+    
             wp_send_json_success([
-                'message' => __('Einstellungen gespeichert.', 'newcustomer-discount'),
+                'message' => __('Template-Einstellungen gespeichert.', 'newcustomer-discount'),
                 'html' => $preview
             ]);
         } catch (Exception $e) {
-            $this->log_error('Template settings save failed', [
-                'template_id' => $template_id,
-                'error' => $e->getMessage()
-            ]);
             wp_send_json_error(['message' => $e->getMessage()]);
         }
     }
@@ -233,5 +276,40 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
        }
 
        return $sanitized;
+   }
+  
+   public function handle_activate_template($data) {
+    if (!isset($data['template_id'])) {
+        wp_send_json_error([
+            'message' => __('Keine Template-ID angegeben.', 'newcustomer-discount')
+        ]);
+        return;
+    }
+
+    $template_id = sanitize_text_field($data['template_id']);
+
+    try {
+        // Lade Template um zu prüfen ob es existiert
+        $template = $this->email_sender->load_template($template_id);
+        
+        // Aktiviere Template
+        update_option('ncd_active_template', $template_id);
+        
+        wp_send_json_success([
+            'message' => sprintf(
+                __('Template "%s" wurde aktiviert und wird nun für alle E-Mails verwendet.', 'newcustomer-discount'),
+                $template['name']
+            ),
+            'template_name' => $template['name']
+        ]);
+    } catch (Exception $e) {
+        $this->log_error('Template activation failed', [
+            'template_id' => $template_id,
+            'error' => $e->getMessage()
+        ]);
+        wp_send_json_error([
+            'message' => $e->getMessage()
+        ]);
+      }
    }
 }

@@ -52,7 +52,9 @@ class NCD_Admin_Ajax extends NCD_Admin_Base {
         $this->register_ajax_action('ncd_preview_template', 'templates', 'handle_preview_template');
         $this->register_ajax_action('ncd_switch_template', 'templates', 'handle_switch_template');
         $this->register_ajax_action('ncd_save_template_settings', 'templates', 'handle_save_template_settings');
-
+        $this->register_ajax_action('ncd_activate_template', 'templates', 'handle_activate_template');
+        $this->register_ajax_action('ncd_get_template_settings', 'templates', 'handle_get_template_settings');
+        
         // Kunden bezogene Aktionen
         $this->register_ajax_action('ncd_send_test_email', 'customers', 'handle_send_test_email');
         $this->register_ajax_action('ncd_send_discount', 'customers', 'handle_send_discount');

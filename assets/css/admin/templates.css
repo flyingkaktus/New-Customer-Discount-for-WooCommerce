@@ -265,3 +265,97 @@
         max-width: none;
     }
 }
+
+/* Label & Text Styles */
+.ncd-template-label,
+.ncd-active-template-info {
+    display: flex;
+    align-items: center;
+}
+
+.ncd-template-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #23282d;
+}
+
+.ncd-template-info,
+.ncd-template-status {
+    color: #666;
+}
+
+.ncd-template-info {
+    font-style: italic;
+    margin-top: 8px;
+}
+
+/* Layout & Container */
+.ncd-template-header {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.ncd-template-select-group {
+    margin-bottom: 15px;
+}
+
+.ncd-template-select-wrapper {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.ncd-template-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.ncd-template-controls .ncd-select {
+    flex: 1;
+}
+
+/* Status & Dividers */
+.ncd-template-status {
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+/* Active Template Indicator */
+.ncd-active-template-info {
+    gap: 8px;
+}
+
+.ncd-active-template-info::before {
+    content: '•';
+    color: #46b450;
+    font-size: 24px;
+}
+
+/* Select Dropdown Arrow */
+.ncd-template-select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-top-color: #555;
+    pointer-events: none;
+}
+
+/* Selected Option Style */
+.ncd-select option.active-template {
+    font-weight: bold;
+    background-color: #f0f0f0;
+}
+
+/* Button States */
+#activate-template:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}

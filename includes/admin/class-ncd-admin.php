@@ -179,7 +179,9 @@ class NCD_Admin {
                 'confirm_send' => __('Möchten Sie einen Rabattcode senden?', 'newcustomer-discount'),
                 'sending' => __('Sende...', 'newcustomer-discount'),
                 'success' => __('Erfolgreich gespeichert.', 'newcustomer-discount'),
-                'loading' => __('Laden...', 'newcustomer-discount')
+                'loading' => __('Laden...', 'newcustomer-discount'),
+                'confirm_template_activation' => __('Möchten Sie dieses Template wirklich aktivieren? Es wird dann für alle neuen E-Mails verwendet.', 'newcustomer-discount'),
+                'settings_saved' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount')
             ]
         ]);
 
