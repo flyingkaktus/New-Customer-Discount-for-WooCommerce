@@ -1,2 +1,4 @@
 output_llm.txt
 llm_creator.sh
+/vendor/
+composer.lock

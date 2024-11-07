@@ -19,6 +19,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+if (file_exists(plugin_dir_path(__FILE__) . 'vendor/autoload.php')) {
+    require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+}
+
 // Plugin-Konstanten definieren
 define('NCD_VERSION', '0.0.6');
 define('NCD_PLUGIN_DIR', plugin_dir_path(__FILE__));

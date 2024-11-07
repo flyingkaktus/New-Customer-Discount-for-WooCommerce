@@ -135,27 +135,39 @@ class NCD_Email_Sender {
             if (!is_email($email)) {
                 throw new Exception(__('Ungültige E-Mail-Adresse', 'newcustomer-discount'));
             }
-
+    
             $settings = wp_parse_args($settings, $this->default_settings);
             
-            $content = $this->render_template($settings['template'], $data);
+            // Explizit das aktive Template laden
+            $template_id = get_option('ncd_active_template', 'modern');
+            
+            // Debug-Logging hinzufügen
+            if (WP_DEBUG) {
+                error_log('Sending email with template: ' . $template_id);
+            }
+    
+            // Template rendern
+            $content = $this->render_template($template_id, $data);
             if (is_wp_error($content)) {
                 throw new Exception($content->get_error_message());
             }
-
+    
             $headers = $this->generate_email_headers($settings);
-            $sent = wp_mail($email, $settings['subject'], $content, $headers);
-
+            $subject = get_option('ncd_email_subject', $settings['subject']);
+    
+            $sent = wp_mail($email, $subject, $content, $headers);
+    
             if (!$sent) {
                 throw new Exception(__('E-Mail konnte nicht gesendet werden', 'newcustomer-discount'));
             }
-
-            $this->log_email_sent($email, $data);
+    
+            $this->log_email_sent($email, $data, $template_id); // Template-ID zum Logging hinzufügen
             return true;
-
+    
         } catch (Exception $e) {
             $this->log_error('Email sending failed', [
                 'email' => $email,
+                'template_id' => $template_id,
                 'error' => $e->getMessage(),
                 'data' => $data
             ]);
@@ -184,6 +196,56 @@ class NCD_Email_Sender {
         $html = "<style>{$styles}</style>" . $template['html'];
         
         return $this->parse_template($html, $data);
+    }
+
+    /**
+     * Fügt Styles inline in das HTML ein mittels Emogrifier
+     *
+     * @param string $html Das Template HTML
+     * @param string $styles Die CSS Styles
+     * @return string HTML mit inline Styles
+     * @throws Exception Wenn die Konvertierung fehlschlägt
+     */
+    private function inline_styles($html, $styles) {
+        try {
+            // Prüfe ob Emogrifier verfügbar ist
+            if (!class_exists('\\Pelago\\Emogrifier\\CssInliner')) {
+                throw new Exception('Emogrifier ist nicht verfügbar');
+            }
+
+            // Bereite das HTML vor (stelle sicher, dass DOCTYPE und Meta-Tags erhalten bleiben)
+            $emogrifier = \Pelago\Emogrifier\CssInliner::fromHtml($html)
+                ->inlineCss($styles);
+
+            // Disabling style block removal to preserve media queries
+            $emogrifier->addExcludedSelector('style');
+
+            // CSS-Klassen beibehalten für eventuelle JavaScript-Funktionalität
+            $emogrifier->keepOriginalStyles();
+
+            // Optimierungen für E-Mail-Clients
+            $domDocument = $emogrifier->getDomDocument();
+            $finalHtml = $emogrifier->render();
+
+            // Füge die ursprünglichen Styles am Ende hinzu (für E-Mail-Clients die CSS unterstützen)
+            $finalHtml = str_replace('</head>', "<style>{$styles}</style></head>", $finalHtml);
+
+            // Debug-Logging
+            if (WP_DEBUG) {
+                error_log('Emogrifier conversion completed');
+                error_log('Original styles preserved');
+                error_log('Final HTML length: ' . strlen($finalHtml));
+            }
+
+            return $finalHtml;
+
+        } catch (Exception $e) {
+            if (WP_DEBUG) {
+                error_log('Emogrifier error: ' . $e->getMessage());
+            }
+            // Fallback: Wenn Emogrifier fehlschlägt, füge Styles einfach im <style> Tag hinzu
+            return "<style>{$styles}</style>" . $html;
+        }
     }
 
     /**
@@ -346,19 +408,20 @@ class NCD_Email_Sender {
      * @param array $data E-Mail-Daten
      * @return void
      */
-    private function log_email_sent($email, $data) {
+    private function log_email_sent($email, $data, $template_id) {
         global $wpdb;
         $table = $wpdb->prefix . 'ncd_email_log';
-
+    
         $wpdb->insert(
             $table,
             [
                 'email' => $email,
                 'coupon_code' => $data['coupon_code'],
                 'sent_date' => current_time('mysql'),
-                'status' => 'sent'
+                'status' => 'sent',
+                'template_version' => $template_id // Template-ID speichern
             ],
-            ['%s', '%s', '%s', '%s']
+            ['%s', '%s', '%s', '%s', '%s']
         );
     }
 
