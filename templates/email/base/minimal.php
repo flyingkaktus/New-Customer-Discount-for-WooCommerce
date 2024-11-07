@@ -34,11 +34,11 @@ return [
         .minimal-template .button.rounded {
             border-radius: 4px;
         }
-        
+
         .minimal-template .button.pill {
             border-radius: 25px;
         }
-        
+
         .minimal-template .button.minimal {
             border-radius: 0;
             background: transparent;
@@ -55,7 +55,7 @@ return [
             margin: 0 auto;
             max-width: 500px;
         }
-        
+
         .minimal-template .email-wrapper.full-width {
             margin: 0;
             max-width: none;
@@ -65,19 +65,18 @@ return [
             font-family: var(--font-family);
             line-height: 1.6;
             color: var(--text-color);
-            background-color: var(--background-color);
             margin: 0;
             padding: 40px 20px;
         }
 
         .minimal-template .email-wrapper {
-            background-color: #ffffff;
+            background-color: var(--background-color);
         }
 
         .minimal-template .header {
             text-align: center;
             padding: 20px 0 40px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--text-color);
         }
 
         .minimal-template .logo {
@@ -90,7 +89,7 @@ return [
         }
 
         .minimal-template h1 {
-            color: var(--primary-color);
+            color: var(--text-color);
             font-size: 18px;
             font-weight: 400;
             text-align: center;
@@ -106,9 +105,9 @@ return [
             letter-spacing: 5px;
             margin: 30px 0;
             padding: 20px;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            color: var(--primary-color);
+            border-top: 1px solid var(--text-color);
+            border-bottom: 1px solid var(--text-color);
+            color: var(--text-color);
         }
 
         .minimal-template .details {
@@ -121,7 +120,7 @@ return [
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: var(--secondary-color);
+            color: var(--text-color);
             margin-bottom: 20px;
         }
 
@@ -148,35 +147,31 @@ return [
         .minimal-template .footer {
             text-align: center;
             font-size: 12px;
-            color: var(--secondary-color);
+            color: var(--text-color);
             margin-top: 40px;
             padding-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid var(--text-color);
         }
 
         @media (prefers-color-scheme: dark) {
-            .minimal-template.ncd-email {
-                background-color: #000;
-            }
-            
             .minimal-template .email-wrapper {
-                background-color: #111;
+                background-color: var(--background-color);
             }
 
             .minimal-template .header,
             .minimal-template .coupon-code,
             .minimal-template .footer {
-                border-color: #333;
+                border-color: var(--text-color);
             }
 
             .minimal-template h1, 
             .minimal-template .coupon-code {
-                color: #fff;
+                color: var(--text-color);
             }
 
             .minimal-template .button.minimal {
-                border-color: #fff;
-                color: #fff;
+                border-color: var(--text-color);
+                color: var(--text-color);
             }
         }
 

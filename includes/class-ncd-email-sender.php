@@ -194,7 +194,8 @@ class NCD_Email_Sender {
             'var(--font-family)' => $template['settings']['font_family']
         ]);
 
-        $html = "<style>{$styles}</style>" . $template['html'];
+        $body_style = "background-color: " . $template['settings']['background_color'] . ";";
+        $html = "<style>{$styles}</style><body style='{$body_style}'>" . $template['html'] . "</body>";
         
         return $this->parse_template($html, $data);
     }
@@ -481,85 +482,88 @@ class NCD_Email_Sender {
         ORDER BY {$args['orderby']} {$args['order']}
         LIMIT %d OFFSET %d
     ", $args['limit'], $args['offset']));
-}
-
-/**
- * Bereinigt alte Log-Einträge
- *
- * @param int $days Alter in Tagen
- * @return int Anzahl der gelöschten Einträge
- */
-public function cleanup_logs($days = 90) {
-    global $wpdb;
-    
-    $table = $wpdb->prefix . 'ncd_email_log';
-    
-    return $wpdb->query($wpdb->prepare("
-        DELETE FROM $table
-        WHERE sent_date < DATE_SUB(NOW(), INTERVAL %d DAY)
-    ", $days));
-}
-
-/**
- * Loggt Fehler für Debugging
- *
- * @param string $message Fehlermeldung
- * @param array $context Zusätzliche Kontext-Informationen
- * @return void
- */
-private function log_error($message, $context = []) {
-    if (WP_DEBUG) {
-        error_log(sprintf(
-            '[NewCustomerDiscount] Email Sender Error: %s | Context: %s',
-            $message,
-            json_encode($context)
-        ));
     }
-}
 
-/**
- * Rendert eine Template-Vorschau
- *
- * @param string $template_id Template ID
- * @param array $settings Temporäre Einstellungen
- * @return string HTML der Vorschau
- */
-public function render_preview($template_id, $settings = []) {
-    try {
-        // Lade das spezifische Template
-        $template = $this->load_template($template_id);
+    /**
+     * Bereinigt alte Log-Einträge
+     *
+     * @param int $days Alter in Tagen
+     * @return int Anzahl der gelöschten Einträge
+     */
+    public function cleanup_logs($days = 90) {
+        global $wpdb;
         
-        if (empty($template)) {
-            throw new Exception('Template nicht gefunden');
-        }
-
-        // Wenn keine benutzerdefinierten Einstellungen, verwende die Template-Standardeinstellungen
-        $settings = !empty($settings) ? $settings : $template['settings'];
-
-        $test_data = [
-            'coupon_code' => 'TESTCODE123',
-            'expiry_date' => date('Y-m-d', strtotime('+30 days'))
-        ];
-
-        // Wende die Template-spezifischen Styles an
-        $styles = strtr($template['styles'], [
-            'var(--primary-color)' => $settings['primary_color'],
-            'var(--secondary-color)' => $settings['secondary_color'],
-            'var(--text-color)' => $settings['text_color'],
-            'var(--background-color)' => $settings['background_color'],
-            'var(--font-family)' => $settings['font_family']
-        ]);
-
-        // Kombiniere Styles und HTML
-        $preview = "<style>{$styles}</style>" . $this->parse_template($template['html'], $test_data);
+        $table = $wpdb->prefix . 'ncd_email_log';
         
-        return $preview;
+        return $wpdb->query($wpdb->prepare("
+            DELETE FROM $table
+            WHERE sent_date < DATE_SUB(NOW(), INTERVAL %d DAY)
+        ", $days));
+    }
 
-    } catch (Exception $e) {
+    /**
+     * Loggt Fehler für Debugging
+     *
+     * @param string $message Fehlermeldung
+     * @param array $context Zusätzliche Kontext-Informationen
+     * @return void
+     */
+    private function log_error($message, $context = []) {
         if (WP_DEBUG) {
-            error_log('Template preview error: ' . $e->getMessage());
+            error_log(sprintf(
+                '[NewCustomerDiscount] Email Sender Error: %s | Context: %s',
+                $message,
+                json_encode($context)
+            ));
         }
-        return '<div class="error">Fehler beim Laden der Vorschau</div>';
     }
-}
+
+    /**
+     * Rendert eine Template-Vorschau
+     *
+     * @param string $template_id Template ID
+     * @param array $settings Temporäre Einstellungen
+     * @return string HTML der Vorschau
+     */
+    public function render_preview($template_id, $settings = []) {
+        try {
+            $template = $this->load_template($template_id);
+            
+            if (empty($template)) {
+                throw new Exception('Template nicht gefunden');
+            }
+
+            // Wenn keine benutzerdefinierten Einstellungen, verwende die Template-Standardeinstellungen
+            $settings = !empty($settings) ? $settings : $template['settings'];
+
+            $test_data = [
+                'coupon_code' => 'TESTCODE123',
+                'expiry_date' => date('Y-m-d', strtotime('+30 days'))
+            ];
+
+            // Wende die Template-spezifischen Styles an
+            $styles = strtr($template['styles'], [
+                'var(--primary-color)' => $settings['primary_color'],
+                'var(--secondary-color)' => $settings['secondary_color'],
+                'var(--text-color)' => $settings['text_color'],
+                'var(--background-color)' => $settings['background_color'],
+                'var(--font-family)' => $settings['font_family']
+            ]);
+
+            // Füge body-Style für Hintergrundfarbe hinzu
+            $preview = "
+                <style>{$styles}</style>
+                <div style='background-color: {$settings['background_color']}; padding: 20px; min-height: 100%;'>
+                    " . $this->parse_template($template['html'], $test_data) . "
+                </div>";
+            
+            return $preview;
+
+        } catch (Exception $e) {
+            if (WP_DEBUG) {
+                error_log('Template preview error: ' . $e->getMessage());
+            }
+            return '<div class="error">Fehler beim Laden der Vorschau</div>';
+        }
+    }
 }

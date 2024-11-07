@@ -40,7 +40,7 @@ return [
             border: none;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         .modern-template .button.pill {
             border-radius: 30px;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -50,7 +50,7 @@ return [
             border: none;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         .modern-template .button.minimal {
             border-radius: 6px;
             background: transparent;
@@ -65,7 +65,7 @@ return [
             margin: 0 auto;
             max-width: 600px;
         }
-        
+
         .modern-template .email-wrapper.full-width {
             margin: 0;
             max-width: none;
@@ -75,13 +75,12 @@ return [
             font-family: var(--font-family);
             line-height: 1.6;
             color: var(--text-color);
-            background-color: var(--background-color);
             margin: 0;
             padding: 30px 20px;
         }
 
         .modern-template .email-wrapper {
-            background-color: #ffffff;
+            background-color: var(--background-color);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -133,7 +132,7 @@ return [
             letter-spacing: 3px;
             border-radius: 12px;
             margin: 30px 0;
-            color: var(--primary-color);
+            color: var(--text-color);
             position: relative;
             overflow: hidden;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -173,9 +172,10 @@ return [
 
         .modern-template .details li {
             padding: 12px 16px;
-            background: #ffffff;
+            background: var(--background-color);
             border-radius: 8px;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            color: var(--text-color);
         }
 
         .modern-template .button {
@@ -194,53 +194,26 @@ return [
         .modern-template .footer {
             text-align: center;
             font-size: 14px;
-            color: #6B7280;
+            color: var(--text-color);
             margin-top: 40px;
             padding: 20px 40px;
             background: var(--background-color);
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            border-top: 1px solid var(--text-color);
         }
 
         @media (prefers-color-scheme: dark) {
-            .modern-template.ncd-email {
-                background-color: #111827;
-            }
-            
             .modern-template .email-wrapper {
-                background-color: #1F2937;
+                background-color: var(--background-color);
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             }
 
-            .modern-template h1 {
-                color: #F9FAFB;
-            }
-
-            .modern-template .coupon-code {
-                background: #111827;
-                color: #F9FAFB;
-            }
-
-            .modern-template .details {
-                background: #111827;
-            }
-
             .modern-template .details li {
-                background: #1F2937;
-            }
-
-            .modern-template .details h3 {
-                color: #F9FAFB;
-            }
-
-            .modern-template .footer {
-                background: #111827;
-                color: #9CA3AF;
-                border-top-color: rgba(255, 255, 255, 0.05);
+                background: var(--background-color);
             }
 
             .modern-template .button.minimal {
-                border-color: #F9FAFB;
-                color: #F9FAFB;
+                border-color: var(--text-color);
+                color: var(--text-color);
             }
         }
 
