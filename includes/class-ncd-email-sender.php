@@ -38,6 +38,7 @@ class NCD_Email_Sender {
      * @var array
      */
     private $default_email_texts = [
+        'heading' => 'Ihr exklusiver Willkommensrabatt',
         'greeting' => 'Sehr geehrter Kunde,',
         'intro' => 'vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt.',
         'coupon_info' => 'Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein.',
@@ -258,8 +259,8 @@ class NCD_Email_Sender {
     private function parse_template($template, $data) {
         $min_order_amount = get_option('ncd_min_order_amount', 0);
         $min_order_text = $min_order_amount > 0 ? wc_price($min_order_amount) : '0,00 €';
-        $email_texts = get_option('ncd_email_texts', $this->default_email_texts);
-
+        $saved_email_texts = get_option('ncd_email_texts');
+        $email_texts = wp_parse_args($saved_email_texts, $this->default_email_texts);
         foreach ($email_texts as $key => $text) {
             $email_texts[$key] = strtr($text, [
                 '{shop_name}' => get_bloginfo('name'),
@@ -287,7 +288,8 @@ class NCD_Email_Sender {
             '{email_greeting}' => $email_texts['greeting'],
             '{email_intro}' => $email_texts['intro'],
             '{email_coupon_info}' => $email_texts['coupon_info'],
-            '{email_footer}' => $email_texts['footer']
+            '{email_footer}' => $email_texts['footer'],
+            '{email_heading}' => $email_texts['heading']
         ];
 
         return str_replace(array_keys($replacements), array_values($replacements), $template);

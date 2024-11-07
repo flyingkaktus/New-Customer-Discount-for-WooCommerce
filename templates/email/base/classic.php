@@ -291,7 +291,7 @@ CSS,
             </div>
 
             <div class="content">
-                <h1>Ihr persönlicher Rabattcode</h1>
+                <h1>{email_heading}</h1>
                 
                 <p style="text-align: center;">{email_greeting}</p>
                 

@@ -153,6 +153,24 @@ $email_sender = new NCD_Email_Sender();
 
                         <tr>
                             <th scope="row">
+                                <label for="email_heading">
+                                    <?php _e('E-Mail-Überschrift', 'newcustomer-discount'); ?>
+                                </label>
+                            </th>
+                            <td>
+                                <input type="text" 
+                                    name="email_texts[heading]" 
+                                    id="email_heading" 
+                                    value="<?php echo esc_attr($email_texts['heading']); ?>" 
+                                    class="regular-text">
+                                <p class="description">
+                                    <?php _e('Die Hauptüberschrift der E-Mail.', 'newcustomer-discount'); ?>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
                                 <label for="email_greeting">
                                     <?php _e('Begrüßung', 'newcustomer-discount'); ?>
                                 </label>
