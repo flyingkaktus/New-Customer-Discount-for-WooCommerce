@@ -39,13 +39,35 @@ if ($delete_all) {
         }
     }
 
-    // Plugin Optionen löschen
+    // Logo-spezifische Optionen löschen
+    delete_option('ncd_logo_base64');  // Das gespeicherte Base64-Logo
+
+    // E-Mail Template Texte löschen
+    delete_option('ncd_email_texts');  // Die benutzerdefinierten E-Mail-Texte
+    
+    // Template-spezifische Einstellungen für jedes Template löschen
+    $templates = ['modern', 'classic', 'minimal'];
+    foreach ($templates as $template) {
+        delete_option('ncd_template_' . $template . '_settings');
+    }
+
+    // Allgemeine Plugin Optionen löschen
     $options = [
         'ncd_logo_base64',
         'ncd_delete_all_on_uninstall',
         'ncd_email_subject',
         'ncd_discount_amount',
-        'ncd_expiry_days'
+        'ncd_expiry_days',
+        'ncd_active_template',
+        'ncd_code_prefix',
+        'ncd_code_length',
+        'ncd_code_chars',
+        'ncd_cutoff_date',
+        'ncd_order_count',
+        'ncd_check_period',
+        'ncd_min_order_amount',
+        'ncd_excluded_categories',
+        'ncd_email_texts'
     ];
 
     foreach ($options as $option) {
@@ -58,6 +80,22 @@ if ($delete_all) {
          WHERE option_name LIKE '_transient_ncd_%'
          OR option_name LIKE '_transient_timeout_ncd_%'"
     );
+
+    // Bereinige Benutzerberechtigungen
+    $role = get_role('administrator');
+    if ($role) {
+        $role->remove_cap('manage_customer_discounts');
+    }
+
+    // Bereinige Upload-Verzeichnis
+    $upload_dir = wp_upload_dir();
+    $plugin_upload_dir = $upload_dir['basedir'] . '/newcustomer-discount';
+    if (file_exists($plugin_upload_dir)) {
+        require_once(ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php');
+        require_once(ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php');
+        $filesystem = new WP_Filesystem_Direct(null);
+        $filesystem->rmdir($plugin_upload_dir, true);
+    }
 }
 
 // Cache leeren
