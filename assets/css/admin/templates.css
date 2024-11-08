@@ -1,0 +1,361 @@
+/* Template Manager Styles */
+.ncd-template-selector {
+    margin-bottom: 30px;
+}
+
+/* Design Container Layout */
+.ncd-design-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 30px;
+    min-height: 600px;
+}
+
+/* Settings Panel */
+.ncd-settings-group {
+    margin-bottom: 30px;
+}
+
+.ncd-settings-group h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    color: #1a202c;
+}
+
+/* Color Controls */
+.ncd-color-controls {
+    display: grid;
+    gap: 16px;
+}
+
+.ncd-color-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ncd-color-row label {
+    font-size: 14px;
+    color: #4a5568;
+}
+
+.ncd-color-row input[type="color"] {
+    -webkit-appearance: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.ncd-color-row input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.ncd-color-row input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 6px;
+}
+
+/* Typography & Layout Controls */
+.ncd-typography-control,
+.ncd-control-group {
+    margin-bottom: 20px;
+}
+
+.ncd-typography-control label,
+.ncd-control-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #4a5568;
+}
+
+/* Preview Panel */
+.ncd-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.ncd-preview-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a202c;
+}
+
+.ncd-preview-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.preview-mode {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #718096;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.preview-mode:hover {
+    background: #f7fafc;
+}
+
+.preview-mode.active {
+    background: #ebf8ff;
+    color: #4299e1;
+}
+
+/* Preview Container */
+.ncd-preview-container {
+    padding: 24px;
+    background: #f7fafc;
+    min-height: 500px;
+}
+
+.ncd-preview-frame {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.ncd-preview-frame.mobile {
+    max-width: 375px;
+    margin: 0 auto;
+}
+
+/* Test Email Modal */
+.ncd-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999999;
+    align-items: center;
+    justify-content: center;
+}
+
+.ncd-modal-content {
+    background: #fff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.ncd-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ncd-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #1a202c;
+}
+
+.ncd-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #718096;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.ncd-modal-close:hover {
+    background: #f7fafc;
+    color: #e53e3e;
+}
+
+.ncd-modal-body {
+    padding: 24px;
+}
+
+.ncd-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Loading State */
+.ncd-preview-loading {
+    position: relative;
+    min-height: 200px;
+}
+
+.ncd-preview-loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #4299e1;
+}
+
+.ncd-preview-loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #4299e1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+    .ncd-design-container {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .ncd-settings-panel {
+        order: 2;
+    }
+
+    .ncd-preview-panel {
+        order: 1;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .ncd-preview-header {
+        padding: 12px 16px;
+    }
+
+    .ncd-preview-container {
+        padding: 16px;
+    }
+
+    .ncd-modal-content {
+        margin: 16px;
+        max-width: none;
+    }
+}
+
+/* Label & Text Styles */
+.ncd-template-label,
+.ncd-active-template-info {
+    display: flex;
+    align-items: center;
+}
+
+.ncd-template-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #23282d;
+}
+
+.ncd-template-info,
+.ncd-template-status {
+    color: #666;
+}
+
+.ncd-template-info {
+    font-style: italic;
+    margin-top: 8px;
+}
+
+/* Layout & Container */
+.ncd-template-header {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.ncd-template-select-group {
+    margin-bottom: 15px;
+}
+
+.ncd-template-select-wrapper {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.ncd-template-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.ncd-template-controls .ncd-select {
+    flex: 1;
+}
+
+/* Status & Dividers */
+.ncd-template-status {
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+/* Active Template Indicator */
+.ncd-active-template-info {
+    gap: 8px;
+}
+
+.ncd-active-template-info::before {
+    content: '•';
+    color: #46b450;
+    font-size: 24px;
+}
+
+/* Select Dropdown Arrow */
+.ncd-template-select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-top-color: #555;
+    pointer-events: none;
+}
+
+/* Selected Option Style */
+.ncd-select option.active-template {
+    font-weight: bold;
+    background-color: #f0f0f0;
+}
+
+/* Button States */
+#activate-template:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}

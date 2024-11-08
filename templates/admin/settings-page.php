@@ -15,6 +15,7 @@ $max_file_size = size_format(NCD_Logo_Manager::get_max_file_size());
 $allowed_types = implode(', ', array_map(function($type) {
     return strtoupper(str_replace('image/', '', $type));
 }, NCD_Logo_Manager::get_allowed_types()));
+$email_sender = new NCD_Email_Sender();
 ?>
 
 <div class="wrap ncd-wrap">
@@ -132,6 +133,7 @@ $allowed_types = implode(', ', array_map(function($type) {
                 
                 <form method="post" class="ncd-email-settings-form">
                     <?php wp_nonce_field('ncd_settings', 'ncd_settings_nonce'); ?>
+                    <?php $email_texts = $email_sender->get_email_texts(); ?>
 
                     <table class="form-table ncd-form-table">
                         <tr>
@@ -142,10 +144,92 @@ $allowed_types = implode(', ', array_map(function($type) {
                             </th>
                             <td>
                                 <input type="text" 
-                                       name="email_subject" 
-                                       id="email_subject" 
-                                       value="<?php echo esc_attr(get_option('ncd_email_subject', __('Dein persönlicher Neukundenrabatt', 'newcustomer-discount'))); ?>" 
-                                       class="regular-text">
+                                    name="email_subject" 
+                                    id="email_subject" 
+                                    value="<?php echo esc_attr(get_option('ncd_email_subject', __('Dein persönlicher Neukundenrabatt', 'newcustomer-discount'))); ?>" 
+                                    class="regular-text">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label for="email_heading">
+                                    <?php _e('E-Mail-Überschrift', 'newcustomer-discount'); ?>
+                                </label>
+                            </th>
+                            <td>
+                                <input type="text" 
+                                    name="email_texts[heading]" 
+                                    id="email_heading" 
+                                    value="<?php echo esc_attr($email_texts['heading']); ?>" 
+                                    class="regular-text">
+                                <p class="description">
+                                    <?php _e('Die Hauptüberschrift der E-Mail.', 'newcustomer-discount'); ?>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label for="email_greeting">
+                                    <?php _e('Begrüßung', 'newcustomer-discount'); ?>
+                                </label>
+                            </th>
+                            <td>
+                                <textarea name="email_texts[greeting]" 
+                                        id="email_greeting" 
+                                        class="large-text" 
+                                        rows="2"><?php echo esc_textarea($email_texts['greeting']); ?></textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label for="email_intro">
+                                    <?php _e('Einleitungstext', 'newcustomer-discount'); ?>
+                                </label>
+                            </th>
+                            <td>
+                                <textarea name="email_texts[intro]" 
+                                        id="email_intro" 
+                                        class="large-text" 
+                                        rows="3"><?php echo esc_textarea($email_texts['intro']); ?></textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label for="email_coupon_info">
+                                    <?php _e('Gutschein-Information', 'newcustomer-discount'); ?>
+                                </label>
+                            </th>
+                            <td>
+                                <textarea name="email_texts[coupon_info]" 
+                                        id="email_coupon_info" 
+                                        class="large-text" 
+                                        rows="2"><?php echo esc_textarea($email_texts['coupon_info']); ?></textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label for="email_footer">
+                                    <?php _e('Fußzeile', 'newcustomer-discount'); ?>
+                                </label>
+                            </th>
+                            <td>
+                                <textarea name="email_texts[footer]" 
+                                        id="email_footer" 
+                                        class="large-text" 
+                                        rows="2"><?php echo esc_textarea($email_texts['footer']); ?></textarea>
+                                <p class="description">
+                                    <?php 
+                                    $variables = $email_sender->get_available_variables();
+                                    _e('Verfügbare Variablen:', 'newcustomer-discount');
+                                    echo ' ';
+                                    echo implode(', ', array_keys($variables));
+                                    ?>
+                                </p>
                             </td>
                         </tr>
 
@@ -156,9 +240,9 @@ $allowed_types = implode(', ', array_map(function($type) {
                             <td>
                                 <div class="ncd-test-email-form">
                                     <input type="email" 
-                                           name="test_email" 
-                                           placeholder="test@example.com" 
-                                           class="regular-text">
+                                        name="test_email" 
+                                        placeholder="test@example.com" 
+                                        class="regular-text">
                                     <button type="button" 
                                             class="button button-secondary ncd-send-test">
                                         <?php _e('Test-E-Mail senden', 'newcustomer-discount'); ?>

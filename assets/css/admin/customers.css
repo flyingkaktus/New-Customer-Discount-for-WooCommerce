@@ -1,0 +1,175 @@
+/* Info Box Specific Styles */
+.ncd-info-box {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ncd-info-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.ncd-info-box-inner {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.ncd-info-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #f0f5ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.ncd-info-icon .dashicons {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+    color: #2271b1;
+}
+
+.ncd-info-content {
+    flex: 1;
+}
+
+.ncd-info-label {
+    display: block;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.ncd-info-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+/* Test Email Form */
+.ncd-test-email-form {
+    display: flex;
+    gap: 12px;
+    max-width: 500px;
+}
+
+.ncd-test-email-form input[type="email"] {
+    flex: 1;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+}
+
+/* Filter Form */
+.ncd-filter-form {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.ncd-select {
+    min-width: 200px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+}
+
+.ncd-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+/* Customer Table Specific */
+.ncd-customers-table {
+    border-radius: 10px;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.ncd-customers-table th {
+    background: #f8f9fa;
+    padding: 12px;
+    font-weight: 600;
+    color: #1d2327;
+    border-bottom: 2px solid #eee;
+}
+
+.ncd-customers-table td {
+    padding: 16px 12px;
+    vertical-align: middle;
+}
+
+/* Status Badges */
+.ncd-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.ncd-status-new {
+    background: #e8f5e9;
+    color: #1b5e20;
+}
+
+.ncd-status-existing {
+    background: #f5f5f5;
+    color: #666;
+}
+
+/* Action Elements */
+.ncd-send-discount {
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+}
+
+.ncd-sent-info {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #e8f5e9;
+    color: #1b5e20;
+}
+
+/* Empty State */
+.ncd-no-items {
+    text-align: center;
+    padding: 40px !important;
+    color: #666;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 782px) {
+    .ncd-test-email-form {
+        flex-direction: column;
+    }
+    
+    .ncd-filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .ncd-select {
+        width: 100%;
+    }
+    
+    .ncd-customers-table {
+        display: block;
+        overflow-x: auto;
+    }
+}

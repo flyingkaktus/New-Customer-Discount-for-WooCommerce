@@ -33,6 +33,19 @@ class NCD_Email_Sender {
     ];
 
     /**
+     * Default E-Mail-Texte
+     *
+     * @var array
+     */
+    private $default_email_texts = [
+        'heading' => 'Ihr exklusiver Willkommensrabatt',
+        'greeting' => 'Sehr geehrter Kunde,',
+        'intro' => 'vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt.',
+        'coupon_info' => 'Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein.',
+        'footer' => 'Dies ist eine automatisch generierte E-Mail.'
+    ];
+
+    /**
      * Constructor
      */
     public function __construct() {
@@ -41,6 +54,10 @@ class NCD_Email_Sender {
         $this->default_settings['from_email'] = get_option('admin_email');
 
         add_filter('wp_mail_content_type', [$this, 'set_html_content_type']);
+
+        if (!get_option('ncd_email_texts')) {
+            add_option('ncd_email_texts', $this->default_email_texts);
+        }
     }
 
     /**
@@ -71,36 +88,58 @@ class NCD_Email_Sender {
      * @param string $template_id Template ID
      * @return array Template-Daten
      */
-    public function load_template($template_id = 'modern') {
-        $templates = $this->get_template_list();
-        
-        if (!isset($templates[$template_id])) {
-            // Fallback zum Standard-Template
-            error_log("Template '$template_id' nicht gefunden, verwende 'modern'");
-            $template_id = 'modern';
-        }
-        
-        $template_file = $templates[$template_id]['file'];
-        if (!file_exists($template_file)) {
-            error_log("Template-Datei nicht gefunden: $template_file");
+    public function load_template($template_id) {
+        try {
+            $templates = $this->get_template_list();
             
-            // Wenn modern.php auch nicht existiert, zeige einen deutlicheren Fehler
-            if ($template_id === 'modern') {
-                throw new Exception(sprintf(
-                    __('Basis-Template-Dateien fehlen. Bitte stellen Sie sicher, dass %s existiert.', 'newcustomer-discount'),
-                    'templates/email/base/modern.php'
-                ));
+            if (!isset($templates[$template_id])) {
+                throw new Exception("Template '$template_id' nicht gefunden");
             }
             
-            // Fallback zu modern
-            return $this->load_template('modern');
+            $template_file = $templates[$template_id]['file'];
+            if (!file_exists($template_file)) {
+                throw new Exception("Template-Datei nicht gefunden: $template_file");
+            }
+            
+            // Standard-Settings definieren
+            $default_settings = [
+                'primary_color' => '#4F46E5',
+                'secondary_color' => '#818CF8',
+                'text_color' => '#1F2937',
+                'background_color' => '#F9FAFB',
+                'button_style' => 'rounded',
+                'layout_type' => 'full-width',
+                'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            ];
+            
+            // Hole die gespeicherten Template-Einstellungen
+            $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
+            
+            // Merge die Settings
+            $settings = wp_parse_args($saved_settings, $default_settings);
+            
+            if (WP_DEBUG) {
+                error_log("Loading template $template_id");
+                error_log("Default settings: " . print_r($default_settings, true));
+                error_log("Saved settings: " . print_r($saved_settings, true));
+                error_log("Final settings: " . print_r($settings, true));
+            }
+            
+            // Stelle sicher dass $settings definiert ist bevor das Template geladen wird
+            $template = include $template_file;
+            
+            if ($template === false) {
+                throw new Exception("Fehler beim Laden des Templates");
+            }
+            
+            return $template;
+            
+        } catch (Exception $e) {
+            if (WP_DEBUG) {
+                error_log('Template loading error: ' . $e->getMessage());
+            }
+            throw $e; // Werfe den Fehler weiter
         }
-        
-        $template = include $template_file;
-        $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
-        $template['settings'] = wp_parse_args($saved_settings, $template['settings']);
-        
-        return $template;
     }
 
     /**
@@ -116,33 +155,50 @@ class NCD_Email_Sender {
             if (!is_email($email)) {
                 throw new Exception(__('Ungültige E-Mail-Adresse', 'newcustomer-discount'));
             }
-
+    
             $settings = wp_parse_args($settings, $this->default_settings);
             
-            // E-Mail Inhalt generieren
-            $content = $this->render_template($settings['template'], $data);
+            // Hole das aktive Template und seine gespeicherten Einstellungen
+            $template_id = get_option('ncd_active_template', 'modern');
+            $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
+            
+            // Lade das Template
+            $template = $this->load_template($template_id);
+            
+            // Merge die Einstellungen in der richtigen Reihenfolge:
+            // Gespeicherte Einstellungen haben Vorrang vor Template-Standards
+            $template_settings = wp_parse_args($saved_settings, $template['settings']); 
+            
+            // Debug-Logging hinzufügen
+            if (WP_DEBUG) {
+                error_log('Sending email with template: ' . $template_id);
+                error_log('Default template settings: ' . print_r($template['settings'], true));
+                error_log('Saved custom settings: ' . print_r($saved_settings, true));
+                error_log('Final merged settings: ' . print_r($template_settings, true));
+            }
+    
+            // Template mit den gemergten Einstellungen rendern
+            $content = $this->render_template($template_id, $data, $template_settings);
             if (is_wp_error($content)) {
                 throw new Exception($content->get_error_message());
             }
-
-            // E-Mail Header
+    
             $headers = $this->generate_email_headers($settings);
-
-            // E-Mail senden
-            $sent = wp_mail($email, $settings['subject'], $content, $headers);
-
+            $subject = get_option('ncd_email_subject', $settings['subject']);
+    
+            $sent = wp_mail($email, $subject, $content, $headers);
+    
             if (!$sent) {
                 throw new Exception(__('E-Mail konnte nicht gesendet werden', 'newcustomer-discount'));
             }
-
-            // Log erfolgreichen Versand
-            $this->log_email_sent($email, $data);
-
+    
+            $this->log_email_sent($email, $data, $template_id);
             return true;
-
+    
         } catch (Exception $e) {
             $this->log_error('Email sending failed', [
                 'email' => $email,
+                'template_id' => $template_id,
                 'error' => $e->getMessage(),
                 'data' => $data
             ]);
@@ -157,22 +213,51 @@ class NCD_Email_Sender {
      * @param array $data Template-Daten
      * @return string Gerendertes Template
      */
-    public function render_template($template_id, $data) {
+    public function render_template($template_id, $data, $settings = []) {
         $template = $this->load_template($template_id);
         
-        // Replace CSS variables with actual values
-        $styles = strtr($template['styles'], [
-            'var(--primary-color)' => $template['settings']['primary_color'],
-            'var(--secondary-color)' => $template['settings']['secondary_color'],
-            'var(--text-color)' => $template['settings']['text_color'],
-            'var(--background-color)' => $template['settings']['background_color'],
-            'var(--font-family)' => $template['settings']['font_family']
-        ]);
-
-        // Combine styles and HTML
-        $html = "<style>{$styles}</style>" . $template['html'];
+        // Stelle sicher dass alle erforderlichen Settings vorhanden sind
+        $default_settings = [
+            'primary_color' => '#4F46E5',
+            'secondary_color' => '#818CF8',
+            'text_color' => '#1F2937',
+            'background_color' => '#F9FAFB',
+            'button_style' => 'rounded',
+            'layout_type' => 'centered',
+            'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        ];
         
-        // Replace template variables
+        // Merge die Default-Settings mit den Template-Settings
+        $settings = wp_parse_args($settings, wp_parse_args($template['settings'], $default_settings));
+        
+        // Ersetze die CSS-Variablen
+        $styles = strtr($template['styles'], [
+            'var(--primary-color)' => $settings['primary_color'],
+            'var(--secondary-color)' => $settings['secondary_color'],
+            'var(--text-color)' => $settings['text_color'],
+            'var(--background-color)' => $settings['background_color'],
+            'var(--font-family)' => $settings['font_family']
+        ]);
+    
+        $body_style = "background-color: " . $settings['background_color'] . ";";
+        
+        // Ersetze die Settings-Variablen im HTML
+        $html = str_replace(
+            [
+                '{$settings[\'font_family\']}',
+                '{$settings[\'layout_type\']}',
+                '{$settings[\'button_style\']}'
+            ],
+            [
+                $settings['font_family'],
+                $settings['layout_type'],
+                $settings['button_style']
+            ],
+            $template['html']
+        );
+        
+        $html = "<style>{$styles}</style><body style='{$body_style}'>" . $html . "</body>";
+        
         return $this->parse_template($html, $data);
     }
 
@@ -186,6 +271,19 @@ class NCD_Email_Sender {
     private function parse_template($template, $data) {
         $min_order_amount = get_option('ncd_min_order_amount', 0);
         $min_order_text = $min_order_amount > 0 ? wc_price($min_order_amount) : '0,00 €';
+        $saved_email_texts = get_option('ncd_email_texts');
+        $email_texts = wp_parse_args($saved_email_texts, $this->default_email_texts);
+        foreach ($email_texts as $key => $text) {
+            $email_texts[$key] = strtr($text, [
+                '{shop_name}' => get_bloginfo('name'),
+                '{coupon_code}' => $data['coupon_code'],
+                '{discount_amount}' => get_option('ncd_discount_amount', 20),
+                '{expiry_date}' => isset($data['expiry_date']) ? 
+                    date_i18n(get_option('date_format'), strtotime($data['expiry_date'])) : 
+                    date_i18n(get_option('date_format'), strtotime('+30 days')),
+                '{min_order_amount}' => $min_order_text
+            ]);
+        }
 
         $replacements = [
             '{coupon_code}' => $data['coupon_code'],
@@ -198,7 +296,12 @@ class NCD_Email_Sender {
             '{logo_url}' => NCD_Logo_Manager::get_logo(),
             '{current_year}' => date('Y'),
             '{min_order_amount}' => $min_order_text,
-            '{currency_symbol}' => get_woocommerce_currency_symbol()
+            '{currency_symbol}' => get_woocommerce_currency_symbol(),
+            '{email_greeting}' => $email_texts['greeting'],
+            '{email_intro}' => $email_texts['intro'],
+            '{email_coupon_info}' => $email_texts['coupon_info'],
+            '{email_footer}' => $email_texts['footer'],
+            '{email_heading}' => $email_texts['heading']
         ];
 
         return str_replace(array_keys($replacements), array_values($replacements), $template);
@@ -255,7 +358,12 @@ class NCD_Email_Sender {
      * @return bool
      */
     public function save_template_settings($template_id, $settings) {
-        return update_option('ncd_template_' . $template_id . '_settings', $settings);
+        $option_name = 'ncd_template_' . $template_id . '_settings';
+        // Bestehende Einstellungen laden
+        $existing_settings = get_option($option_name, []);
+        // Neue Einstellungen mit bestehenden zusammenführen
+        $settings = wp_parse_args($settings, $existing_settings);
+        return update_option($option_name, $settings);
     }
 
     /**
@@ -267,6 +375,25 @@ class NCD_Email_Sender {
     public function get_template_settings($template_id) {
         $template = $this->load_template($template_id);
         return $template['settings'];
+    }
+
+    /**
+     * Speichert E-Mail-Texte
+     *
+     * @param array $texts Die zu speichernden Texte
+     * @return bool
+     */
+    public function save_email_texts($texts) {
+        return update_option('ncd_email_texts', wp_parse_args($texts, $this->default_email_texts));
+    }
+
+    /**
+     * Gibt die aktuellen E-Mail-Texte zurück
+     *
+     * @return array
+     */
+    public function get_email_texts() {
+        return get_option('ncd_email_texts', $this->default_email_texts);
     }
 
     /**
@@ -295,19 +422,20 @@ class NCD_Email_Sender {
      * @param array $data E-Mail-Daten
      * @return void
      */
-    private function log_email_sent($email, $data) {
+    private function log_email_sent($email, $data, $template_id) {
         global $wpdb;
         $table = $wpdb->prefix . 'ncd_email_log';
-
+    
         $wpdb->insert(
             $table,
             [
                 'email' => $email,
                 'coupon_code' => $data['coupon_code'],
                 'sent_date' => current_time('mysql'),
-                'status' => 'sent'
+                'status' => 'sent',
+                'template_version' => $template_id // Template-ID speichern
             ],
-            ['%s', '%s', '%s', '%s']
+            ['%s', '%s', '%s', '%s', '%s']
         );
     }
 
@@ -360,11 +488,11 @@ class NCD_Email_Sender {
         $table = $wpdb->prefix . 'ncd_email_log';
         
         return $wpdb->get_results($wpdb->prepare("
-            SELECT *
-            FROM $table
-            ORDER BY {$args['orderby']} {$args['order']}
-            LIMIT %d OFFSET %d
-        ", $args['limit'], $args['offset']));
+        SELECT *
+        FROM $table
+        ORDER BY {$args['orderby']} {$args['order']}
+        LIMIT %d OFFSET %d
+    ", $args['limit'], $args['offset']));
     }
 
     /**
@@ -409,26 +537,44 @@ class NCD_Email_Sender {
      * @return string HTML der Vorschau
      */
     public function render_preview($template_id, $settings = []) {
-        $test_data = [
-            'coupon_code' => 'TESTCODE123',
-            'expiry_date' => date('Y-m-d', strtotime('+30 days'))
-        ];
+        try {
+            $template = $this->load_template($template_id);
+            
+            if (empty($template)) {
+                throw new Exception('Template nicht gefunden');
+            }
 
-        // Temporäre Einstellungen für die Vorschau
-        if (!empty($settings)) {
-            $option_name = 'ncd_template_' . $template_id . '_settings';
-            $original_settings = get_option($option_name);
-            update_option($option_name, wp_parse_args($settings, $original_settings));
-            
-            // Template rendern
-            $preview = $this->render_template($template_id, $test_data);
-            
-            // Originaleinstellungen wiederherstellen
-            update_option($option_name, $original_settings);
+            // Wenn keine benutzerdefinierten Einstellungen, verwende die Template-Standardeinstellungen
+            $settings = !empty($settings) ? $settings : $template['settings'];
+
+            $test_data = [
+                'coupon_code' => 'TESTCODE123',
+                'expiry_date' => date('Y-m-d', strtotime('+30 days'))
+            ];
+
+            // Wende die Template-spezifischen Styles an
+            $styles = strtr($template['styles'], [
+                'var(--primary-color)' => $settings['primary_color'],
+                'var(--secondary-color)' => $settings['secondary_color'],
+                'var(--text-color)' => $settings['text_color'],
+                'var(--background-color)' => $settings['background_color'],
+                'var(--font-family)' => $settings['font_family']
+            ]);
+
+            // Füge body-Style für Hintergrundfarbe hinzu
+            $preview = "
+                <style>{$styles}</style>
+                <div style='background-color: {$settings['background_color']}; padding: 20px; min-height: 100%;'>
+                    " . $this->parse_template($template['html'], $test_data) . "
+                </div>";
             
             return $preview;
-        }
 
-        return $this->render_template($template_id, $test_data);
+        } catch (Exception $e) {
+            if (WP_DEBUG) {
+                error_log('Template preview error: ' . $e->getMessage());
+            }
+            return '<div class="error">Fehler beim Laden der Vorschau</div>';
+        }
     }
 }

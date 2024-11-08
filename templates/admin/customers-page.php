@@ -24,16 +24,37 @@ $stats = $this->customer_tracker->get_statistics();
     <!-- Info Boxes -->
     <div class="ncd-info-boxes">
         <div class="ncd-info-box">
-            <h3><?php _e('Gesamt', 'newcustomer-discount'); ?></h3>
-            <p class="ncd-big-number"><?php echo esc_html($stats['total']); ?></p>
+            <div class="ncd-info-box-inner">
+                <div class="ncd-info-icon">
+                    <span class="dashicons dashicons-groups"></span>
+                </div>
+                <div class="ncd-info-content">
+                    <span class="ncd-info-label"><?php _e('Gesamt', 'newcustomer-discount'); ?></span>
+                    <span class="ncd-info-value"><?php echo esc_html($stats['total']); ?></span>
+                </div>
+            </div>
         </div>
         <div class="ncd-info-box">
-            <h3><?php _e('Ausstehend', 'newcustomer-discount'); ?></h3>
-            <p class="ncd-big-number"><?php echo esc_html($stats['pending']); ?></p>
+            <div class="ncd-info-box-inner">
+                <div class="ncd-info-icon">
+                    <span class="dashicons dashicons-clock"></span>
+                </div>
+                <div class="ncd-info-content">
+                    <span class="ncd-info-label"><?php _e('Ausstehend', 'newcustomer-discount'); ?></span>
+                    <span class="ncd-info-value"><?php echo esc_html($stats['pending']); ?></span>
+                </div>
+            </div>
         </div>
         <div class="ncd-info-box">
-            <h3><?php _e('Rabatt gesendet', 'newcustomer-discount'); ?></h3>
-            <p class="ncd-big-number"><?php echo esc_html($stats['sent']); ?></p>
+            <div class="ncd-info-box-inner">
+                <div class="ncd-info-icon">
+                    <span class="dashicons dashicons-email-alt"></span>
+                </div>
+                <div class="ncd-info-content">
+                    <span class="ncd-info-label"><?php _e('Rabatt gesendet', 'newcustomer-discount'); ?></span>
+                    <span class="ncd-info-value"><?php echo esc_html($stats['sent']); ?></span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -93,7 +114,7 @@ $stats = $this->customer_tracker->get_statistics();
         <p>
             <?php printf(
                 __('Als Neukunden werden alle Kunden gezählt, die vor dem %s noch keine Bestellung aufgegeben haben.', 'newcustomer-discount'),
-                date_i18n(get_option('date_format'), strtotime(NEWCUSTOMER_CUTOFF_DATE))
+                date_i18n(get_option('date_format'), strtotime(get_option('ncd_cutoff_date', '2024-01-01')))
             ); ?>
         </p>
     </div>
@@ -199,75 +220,6 @@ $stats = $this->customer_tracker->get_statistics();
 
 <script>
 jQuery(document).ready(function($) {
-    // Test Email Handler
-    $('.ncd-send-test').on('click', function() {
-        const $button = $(this);
-        const $input = $button.prev('input[type="email"]');
-        const email = $input.val();
-
-        if (!email) {
-            alert(ncdAdmin.messages.email_required);
-            return;
-        }
-
-        if (!confirm(ncdAdmin.messages.confirm_test)) {
-            return;
-        }
-
-        $button.prop('disabled', true).addClass('updating-message');
-
-        $.post(ajaxurl, {
-            action: 'ncd_send_test_email',
-            nonce: ncdAdmin.nonce,
-            email: email
-        })
-        .done(function(response) {
-            if (response.success) {
-                alert(response.data.message);
-            } else {
-                alert(response.data.message || ncdAdmin.messages.error);
-            }
-        })
-        .fail(function() {
-            alert(ncdAdmin.messages.error);
-        })
-        .always(function() {
-            $button.prop('disabled', false).removeClass('updating-message');
-        });
-    });
-
-    // Send Discount Handler
-    $('.ncd-send-discount').on('click', function() {
-        const $button = $(this);
-        const email = $button.data('email');
-        const firstName = $button.data('first-name');
-        const lastName = $button.data('last-name');
-
-        if (!confirm(ncdAdmin.messages.confirm_send)) {
-            return;
-        }
-
-        $button.prop('disabled', true).addClass('updating-message');
-
-        $.post(ajaxurl, {
-            action: 'ncd_send_discount',
-            nonce: ncdAdmin.nonce,
-            email: email,
-            first_name: firstName,
-            last_name: lastName
-        })
-        .done(function(response) {
-            if (response.success) {
-                location.reload();
-            } else {
-                alert(response.data.message || ncdAdmin.messages.error);
-                $button.prop('disabled', false).removeClass('updating-message');
-            }
-        })
-        .fail(function() {
-            alert(ncdAdmin.messages.error);
-            $button.prop('disabled', false).removeClass('updating-message');
-        });
-    });
+    new NCDCustomerManager();
 });
 </script>

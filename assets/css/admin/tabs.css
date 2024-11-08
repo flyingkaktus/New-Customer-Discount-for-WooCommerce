@@ -1,0 +1,60 @@
+/* Tab Navigation Styles */
+.ncd-tab-content {
+    display: none;
+    padding: 20px 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ncd-tab-content.active {
+    display: block;
+    opacity: 1;
+}
+
+.nav-tab-wrapper {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.nav-tab {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: -1px;
+    text-decoration: none;
+}
+
+.nav-tab:hover {
+    background: #fff;
+    border-bottom-color: transparent;
+}
+
+.nav-tab-active {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+.nav-tab-active:hover {
+    background: #fff;
+    border-bottom-color: #fff;
+}
+
+/* Icon Styles */
+.nav-tab .dashicons {
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 782px) {
+    .nav-tab-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    
+    .nav-tab {
+        flex: 1;
+        text-align: center;
+        margin: 0;
+    }
+}

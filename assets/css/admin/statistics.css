@@ -1,0 +1,166 @@
+/* Modern Statistics Page Styles */
+
+/* Base Layout */
+.ncd-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Stats Grid */
+.ncd-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+/* Stats Card */
+.ncd-stats-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.75rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: all 0.2s ease;
+}
+
+.ncd-stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.ncd-stats-card h2 {
+    color: #64748b;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* Stats Numbers */
+.ncd-stats-numbers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1.25rem;
+}
+
+.ncd-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ncd-stat-label {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ncd-stat-value {
+    color: #1e293b;
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* Performance Section */
+.ncd-performance-section {
+    margin: 3rem 0;
+}
+
+.ncd-performance-section h2 {
+    color: #1e293b;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.ncd-big-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-align: center;
+    margin: 1.5rem 0 0.75rem;
+}
+
+.ncd-stats-description {
+    color: #64748b;
+    text-align: center;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Export Section */
+.ncd-export-section {
+    display: flex;
+    justify-content: flex-end;
+    margin: 2rem 0;
+}
+
+.ncd-export-section .button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    height: auto;
+    line-height: 1.5;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+/* Monthly Trends Table */
+.ncd-trends-section {
+    margin-top: 3rem;
+}
+
+.ncd-trends-section .widefat {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.ncd-trends-section .widefat th {
+    background: #f8fafc;
+    padding: 1rem;
+    font-weight: 600;
+    color: #64748b;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.ncd-trends-section .widefat td {
+    padding: 1rem;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ncd-trends-section .widefat tr:last-child td {
+    border-bottom: none;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 782px) {
+    .ncd-wrap {
+        padding: 1rem;
+    }
+    
+    .ncd-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .ncd-stats-card {
+        padding: 1.25rem;
+    }
+    
+    .ncd-big-number {
+        font-size: 2rem;
+    }
+    
+    .ncd-trends-section .widefat {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}

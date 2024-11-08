@@ -1,0 +1,225 @@
+/* Modern Settings Page Styles */
+
+/* Base Layout */
+.ncd-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Card Styles */
+.ncd-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.ncd-card h2 {
+    color: #1e293b;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* Form Elements */
+.ncd-form-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 1rem;
+}
+
+.ncd-form-table th {
+    width: 280px;
+    text-align: left;
+    padding: 1rem 2rem 1rem 0;
+    color: #64748b;
+    font-weight: 600;
+    vertical-align: top;
+}
+
+.ncd-form-table td {
+    padding: 1rem 0;
+}
+
+/* Input Styles */
+.ncd-form-table input[type="text"],
+.ncd-form-table input[type="email"],
+.ncd-form-table input[type="number"],
+.ncd-form-table input[type="date"],
+.ncd-form-table select,
+.ncd-select {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #1e293b;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.ncd-form-table input:focus,
+.ncd-form-table select:focus,
+.ncd-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+/* Textarea Styles */
+.ncd-textarea {
+    width: 100%;
+    max-width: 600px;
+    min-height: 120px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Checkbox and Radio Styles */
+.ncd-form-table input[type="checkbox"],
+.ncd-form-table input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.ncd-checkbox-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+    font-size: 0.875rem;
+}
+
+/* Description Text */
+.description {
+    margin-top: 0.5rem;
+    color: #64748b;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Warning Box */
+.ncd-warning-box {
+    background-color: #fff8e1;
+    border-left: 4px solid #ffa000;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.ncd-warning-box p {
+    color: #b45309;
+    margin: 0.5rem 0;
+}
+
+.ncd-warning-box strong {
+    color: #92400e;
+}
+
+/* Confirmation Box */
+.ncd-confirmation-box {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+}
+
+/* Button Styles */
+.button-danger {
+    background: #ef4444 !important;
+    border-color: #dc2626 !important;
+    color: #fff !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+.button-danger:hover {
+    background: #dc2626 !important;
+    transform: translateY(-1px);
+}
+
+/* Logo Preview */
+.ncd-logo-preview-wrapper {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.ncd-logo-preview {
+    max-width: 200px;
+    height: auto;
+}
+
+.ncd-logo-actions {
+    margin-top: 1rem;
+}
+
+/* Test Email Form */
+.ncd-test-email-form {
+    display: flex;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 1rem 0;
+}
+
+.ncd-test-email-form input[type="email"] {
+    flex: 1;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 782px) {
+    .ncd-wrap {
+        padding: 1rem;
+    }
+    
+    .ncd-card {
+        padding: 1.5rem;
+    }
+    
+    .ncd-form-table th,
+    .ncd-form-table td {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 0;
+    }
+    
+    .ncd-form-table th {
+        padding-bottom: 0.25rem;
+    }
+    
+    .ncd-test-email-form {
+        flex-direction: column;
+    }
+}
+
+/* Loading States */
+.ncd-loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.ncd-loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.5);
+    backdrop-filter: blur(2px);
+    border-radius: 8px;
+}
+
+/* Transitions */
+.ncd-fade {
+    transition: opacity 0.2s ease;
+}
