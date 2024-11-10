@@ -1,6 +1,8 @@
+# Copyright (C) 2024 Maciej Suchowski
+# This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Neukunden Rabatt System 0.1.0\n"
+"Project-Id-Version: New-Customer-Coupon for WooCommerce 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-smart-coupon-system\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,8 +18,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #: newcustomer-discount.php
 #: includes/admin/core/class-ncd-admin-menu.php:151
-msgid "Neukunden Rabatt System"
-msgstr "New Customer Discount System"
+msgid "New-Customer-Coupon for WooCommerce"
+msgstr "New-Customer-Coupon for WooCommerce"
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
@@ -290,7 +292,7 @@ msgid "Konvertierung fehlgeschlagen."
 msgstr "Conversion failed."
 
 #: newcustomer-discount.php:96
-msgid "Das Neukunden Rabatt System benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce."
+msgid "Das New-Customer-Coupon for WooCommerce benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce."
 msgstr "The New Customer Discount System requires WooCommerce. Please install and activate WooCommerce."
 
 #: newcustomer-discount.php:126

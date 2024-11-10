@@ -148,7 +148,7 @@ class NCD_Admin_Menu {
     private function render_fallback_page() {
         ?>
         <div class="wrap">
-            <h1><?php _e('Neukunden Rabatt System', 'newcustomer-discount'); ?></h1>
+            <h1><?php _e('New-Customer-Coupon for WooCommerce', 'newcustomer-discount'); ?></h1>
             <div class="notice notice-warning">
                 <p>
                     <?php _e('Die Hauptseite konnte nicht geladen werden. Bitte überprüfen Sie die Installation.', 'newcustomer-discount'); ?>

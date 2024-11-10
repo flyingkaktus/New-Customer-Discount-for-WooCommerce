@@ -28,7 +28,7 @@ class NCD_Email_Sender {
     private $default_settings = [
         'from_name' => '',
         'from_email' => '',
-        'subject' => 'Ihr Rabattgutschein',
+        'subject' => '',
         'template' => 'modern'
     ];
 
@@ -38,17 +38,28 @@ class NCD_Email_Sender {
      * @var array
      */
     private $default_email_texts = [
-        'heading' => 'Ihr exklusiver Willkommensrabatt',
-        'greeting' => 'Sehr geehrter Kunde,',
-        'intro' => 'vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt.',
-        'coupon_info' => 'Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein.',
-        'footer' => 'Dies ist eine automatisch generierte E-Mail.'
+        'heading' => '',
+        'greeting' => '',
+        'intro' => '',
+        'coupon_info' => '',
+        'footer' => ''
     ];
 
     /**
      * Constructor
      */
     public function __construct() {
+        // Hier die Übersetzungen initialisieren
+        $this->default_settings['subject'] = __('Ihr Rabattgutschein', 'newcustomer-discount');
+        
+        $this->default_email_texts = [
+            'heading' => __('Ihr exklusiver Willkommensrabatt', 'newcustomer-discount'),
+            'greeting' => __('Sehr geehrter Kunde,', 'newcustomer-discount'),
+            'intro' => __('vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt.', 'newcustomer-discount'),
+            'coupon_info' => __('Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein.', 'newcustomer-discount'),
+            'footer' => __('Dies ist eine automatisch generierte E-Mail.', 'newcustomer-discount')
+        ];
+
         $this->template_directory = NCD_PLUGIN_DIR . 'templates/email/base/';
         $this->default_settings['from_name'] = get_bloginfo('name');
         $this->default_settings['from_email'] = get_option('admin_email');
@@ -68,16 +79,13 @@ class NCD_Email_Sender {
     public function get_template_list() {
         return [
             'modern' => [
-                'file' => $this->template_directory . 'modern.php',
-                'preview' => NCD_PLUGIN_URL . 'templates/email/previews/modern.jpg'
+                'file' => $this->template_directory . 'modern.php'
             ],
             'classic' => [
-                'file' => $this->template_directory . 'classic.php',
-                'preview' => NCD_PLUGIN_URL . 'templates/email/previews/classic.jpg'
+                'file' => $this->template_directory . 'classic.php'
             ],
             'minimal' => [
-                'file' => $this->template_directory . 'minimal.php',
-                'preview' => NCD_PLUGIN_URL . 'templates/email/previews/minimal.jpg'
+                'file' => $this->template_directory . 'minimal.php'
             ]
         ];
     }

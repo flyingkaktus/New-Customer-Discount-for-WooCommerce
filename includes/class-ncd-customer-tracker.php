@@ -325,7 +325,7 @@ class NCD_Customer_Tracker
             DELETE FROM " . self::get_table_name() . "
             WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)
             AND (status = 'used' OR status = 'expired')
-        ", 365)); // Einträge älter als 1 Jahr
+        ", 1460)); // Einträge älter als 4 Jahr
     }
 
     /**

@@ -19,6 +19,26 @@ if (!is_array($settings)) {
     $settings = [];
 }
 
+$translations = [
+    'details' => esc_html__('Details', 'newcustomer-discount'),
+    'discount_text' => sprintf(
+        /* translators: %s: discount amount */
+        esc_html__('%s%% Rabatt auf Ihre Bestellung', 'newcustomer-discount'),
+        '{discount_amount}'
+    ),
+    'expiry_text' => sprintf(
+        /* translators: %s: expiry date */
+        esc_html__('Gültig bis %s', 'newcustomer-discount'),
+        '{expiry_date}'
+    ),
+    'min_order_text' => sprintf(
+        /* translators: %s: minimum order amount */
+        esc_html__('Mindestbestellwert: %s', 'newcustomer-discount'),
+        '{min_order_amount}'
+    ),
+    'shop_button' => esc_html__('Zum Shop', 'newcustomer-discount')
+];
+
 return [
     'name' => 'Minimal',
     'description' => __('Ein reduziertes, minimalistisches Design', 'newcustomer-discount'),
@@ -211,16 +231,16 @@ CSS,
                 </div>
 
                 <div class="details">
-                    <h3>Details</h3>
+                    <h3>{$translations['details']}</h3>
                     <ul>
-                        <li>{discount_amount}% Rabatt auf Ihre Bestellung</li>
-                        <li>Gültig bis {expiry_date}</li>
-                        <li>Mindestbestellwert: {min_order_amount}</li>
+                        <li>{$translations['discount_text']}</li>
+                        <li>{$translations['expiry_text']}</li>
+                        <li>{$translations['min_order_text']}</li>
                     </ul>
                 </div>
 
                 <center>
-                    <a href="{shop_url}" class="button {$settings['button_style']}">Zum Shop</a>
+                    <a href="{shop_url}" class="button {$settings['button_style']}">{$translations['shop_button']}</a>
                 </center>
 
                 <p style="text-align: center;">

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Neukunden Rabatt System
+ * Plugin Name: New-Customer-Coupon for WooCommerce
  * Plugin URI: https://comingsoon.de
  * Description: Automatisches Rabattsystem für Neukunden mit E-Mail-Versand
  * Version: 0.1.1
@@ -93,7 +93,7 @@ function ncd_woocommerce_notice() {
     ?>
     <div class="notice notice-error">
         <p>
-            <?php _e('Das Neukunden Rabatt System benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce.', 'newcustomer-discount'); ?>
+            <?php _e('Das New-Customer-Coupon for WooCommerce benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce.', 'newcustomer-discount'); ?>
         </p>
     </div>
     <?php
@@ -288,10 +288,16 @@ register_activation_hook(__FILE__, 'ncd_activate');
  * Deaktivierungshook
  */
 function ncd_deactivate() {
-    // Cleanup Schedule entfernen
-    wp_clear_scheduled_hook('ncd_daily_cleanup');
+    // Alle möglichen Zeitpläne entfernen
+    $schedules = array('hourly', 'daily', 'twicedaily');
+    foreach ($schedules as $schedule) {
+        $timestamp = wp_next_scheduled('ncd_daily_cleanup');
+        if ($timestamp) {
+            wp_unschedule_event($timestamp, 'ncd_daily_cleanup');
+        }
+    }
     
-    // Cache leeren
+    wp_clear_scheduled_hook('ncd_daily_cleanup');
     wp_cache_flush();
 }
 register_deactivation_hook(__FILE__, 'ncd_deactivate');
@@ -300,12 +306,25 @@ register_deactivation_hook(__FILE__, 'ncd_deactivate');
  * Täglicher Cleanup
  */
 function ncd_do_daily_cleanup() {
-    // Alte Tracking-Einträge bereinigen
-    $customer_tracker = new NCD_Customer_Tracker();
-    $customer_tracker->cleanup_old_entries();
+    // Lockfile oder Transient prüfen
+    $doing_cleanup = get_transient('ncd_doing_cleanup');
+    if ($doing_cleanup) {
+        return;
+    }
     
-    // Cache leeren
-    wp_cache_flush();
+    // Lock setzen
+    set_transient('ncd_doing_cleanup', true, 15 * MINUTE_IN_SECONDS);
+    
+    try {
+        $customer_tracker = new NCD_Customer_Tracker();
+        $customer_tracker->cleanup_old_entries();
+        wp_cache_flush();
+    } catch (Exception $e) {
+        error_log('Cleanup failed: ' . $e->getMessage());
+    }
+    
+    // Lock entfernen
+    delete_transient('ncd_doing_cleanup');
 }
 add_action('ncd_daily_cleanup', 'ncd_do_daily_cleanup');
 

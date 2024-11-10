@@ -106,7 +106,7 @@ try {
 
         // Verzeichnis-Bereinigung mit Fehlerprüfung
         $upload_dir = wp_upload_dir();
-        $plugin_upload_dir = $upload_dir['basedir'] . '/newcustomer-discount';
+        $plugin_upload_dir = $upload_dir['basedir'] . '/new-customer-coupon-for-woocommerce';
         
         if (file_exists($plugin_upload_dir)) {
             require_once(ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php');
