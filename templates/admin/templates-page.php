@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Hole verfügbare Templates und aktives Template
+// Hole verfügbare Templates & aktives Template
 $email_sender = new NCD_Email_Sender();
 $available_templates = $email_sender->get_template_list();
 $current_template_id = get_option('ncd_active_template', 'modern');
