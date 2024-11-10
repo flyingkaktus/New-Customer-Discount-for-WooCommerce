@@ -2,8 +2,8 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: New-Customer-Coupon for WooCommerce 0.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-smart-coupon-system\n"
+"Project-Id-Version: New-Customer-Gutschein for WooCommerce 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-smart-Gutschein-system\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,8 +18,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #: newcustomer-discount.php
 #: includes/admin/core/class-ncd-admin-menu.php:151
-msgid "New-Customer-Coupon for WooCommerce"
-msgstr "New-Customer-Coupon for WooCommerce - Système de remise pour nouveaux clients"
+msgid "New-Customer-Gutschein for WooCommerce"
+msgstr "New-Customer-Gutschein for WooCommerce - Système de remise pour nouveaux clients"
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
@@ -145,7 +145,7 @@ msgstr "La page principale n'a pas pu être chargée. Veuillez vérifier l'insta
 #: includes/admin/customers/class-ncd-admin-customers.php:59
 #: includes/admin/customers/class-ncd-admin-customers.php:205
 #: includes/admin/customers/class-ncd-admin-customers.php:233
-#: includes/class-ncd-coupon-generator.php:150
+#: includes/class-ncd-Gutschein-generator.php:150
 msgid "Ungültige E-Mail-Adresse."
 msgstr "Adresse e-mail invalide."
 
@@ -206,31 +206,31 @@ msgstr "Paramètres du modèle enregistrés."
 msgid "Template \"%s\" wurde aktiviert und wird nun für alle E-Mails verwendet."
 msgstr "Le modèle \"%s\" a été activé et sera désormais utilisé pour tous les e-mails."
 
-#: includes/class-ncd-coupon-generator.php:134
+#: includes/class-ncd-Gutschein-generator.php:134
 msgid "Konnte keinen einzigartigen Code generieren."
 msgstr "Impossible de générer un code unique."
 
-#: includes/class-ncd-coupon-generator.php:262
+#: includes/class-ncd-Gutschein-generator.php:262
 msgid "Gutschein existiert nicht."
 msgstr "Le bon de réduction n'existe pas."
 
-#: includes/class-ncd-coupon-generator.php:280
+#: includes/class-ncd-Gutschein-generator.php:280
 msgid "Gutschein ist abgelaufen."
 msgstr "Le bon de réduction a expiré."
 
-#: includes/class-ncd-coupon-generator.php:283
+#: includes/class-ncd-Gutschein-generator.php:283
 msgid "Gutschein wurde bereits eingelöst."
 msgstr "Le bon de réduction a déjà été utilisé."
 
-#: includes/class-ncd-coupon-generator.php:416
-msgid "Ungültige Code-Länge."
+#: includes/class-ncd-Gutschein-generator.php:416
+msgid "Ungültige Gutschein-Länge."
 msgstr "Longueur de code invalide."
 
-#: includes/class-ncd-coupon-generator.php:424
-msgid "Ungültiger Code-Präfix."
+#: includes/class-ncd-Gutschein-generator.php:424
+msgid "Ungültiger Gutschein-Präfix."
 msgstr "Préfixe de code invalide."
 
-#: includes/class-ncd-coupon-generator.php:433
+#: includes/class-ncd-Gutschein-generator.php:433
 msgid "Ungültige Zeichen im Code."
 msgstr "Caractères invalides dans le code."
 
@@ -316,7 +316,7 @@ msgid "Konvertierung fehlgeschlagen."
 msgstr "La conversion a échoué."
 
 #: newcustomer-discount.php:96
-msgid "Das New-Customer-Coupon for WooCommerce benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce."
+msgid "Das New-Customer-Gutschein for WooCommerce benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce."
 msgstr "Le système de remise pour nouveaux clients nécessite WooCommerce. Veuillez installer et activer WooCommerce."
 
 #: newcustomer-discount.php:126
@@ -445,11 +445,11 @@ msgstr "Logo"
 
 #: templates/admin/settings-page.php:33
 #: templates/admin/settings-page.php:272
-msgid "Gutschein-Einstellungen"
+msgid "Gutschein"
 msgstr "Paramètres des bons de réduction"
 
 #: templates/admin/settings-page.php:36
-msgid "Code-Konfiguration"
+msgid "Gutschein-konfiguration"
 msgstr "Configuration du code"
 
 #: templates/admin/settings-page.php:39
@@ -572,11 +572,11 @@ msgid "Anzahl der Tage, die der Gutschein gültig ist."
 msgstr "Nombre de jours pendant lesquels le bon est valable."
 
 #: templates/admin/settings-page.php:335
-msgid "Gutscheincode-Konfiguration"
+msgid "Gutscheincoupon-konfiguration"
 msgstr "Configuration du code de réduction"
 
 #: templates/admin/settings-page.php:344
-msgid "Code-Präfix"
+msgid "Gutschein-Präfix"
 msgstr "Préfixe du code"
 
 #: templates/admin/settings-page.php:355
@@ -584,7 +584,7 @@ msgid "Präfix für automatisch generierte Gutscheincodes (max. 5 Zeichen)."
 msgstr "Préfixe pour les codes de réduction générés automatiquement (max. 5 caractères)."
 
 #: templates/admin/settings-page.php:363
-msgid "Code-Länge"
+msgid "Gutschein-Länge"
 msgstr "Longueur du code"
 
 #: templates/admin/settings-page.php:375

@@ -49,9 +49,9 @@ function ncd_save_used_coupon_code($order_id)
 
             // Debug-Logging
             if (WP_DEBUG) {
-                error_log('NCD Coupon used:');
+                error_log('NCD Gutschein used:');
                 error_log('Order ID: ' . $order_id);
-                error_log('Coupon Code: ' . $coupon_code);
+                error_log('Gutschein Code: ' . $coupon_code);
             }
 
             break; // Wir haben den NCD-Gutschein gefunden und verarbeitet

@@ -40,7 +40,8 @@ class NCD_Admin_Ajax extends NCD_Admin_Base {
     private function init_handlers() {
         $this->handlers = [
             'templates' => new NCD_Admin_Templates(),
-            'customers' => new NCD_Admin_Customers()
+            'customers' => new NCD_Admin_Customers(),
+            'settings' => new NCD_Admin_Settings()
         ];
     }
 
@@ -58,6 +59,9 @@ class NCD_Admin_Ajax extends NCD_Admin_Base {
         // Kunden bezogene Aktionen
         $this->register_ajax_action('ncd_send_test_email', 'customers', 'handle_send_test_email');
         $this->register_ajax_action('ncd_send_discount', 'customers', 'handle_send_discount');
+
+        // Feedback Handler
+        $this->register_ajax_action('ncd_submit_feedback', 'settings', 'handle_submit_feedback');
     }
 
     /**

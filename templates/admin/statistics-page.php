@@ -41,19 +41,19 @@ if (!defined('ABSPATH')) {
             <div class="ncd-stats-numbers">
                 <div class="ncd-stat-item">
                     <span class="ncd-stat-label"><?php _e('Erstellt', 'newcustomer-discount'); ?></span>
-                    <span class="ncd-stat-value"><?php echo esc_html($stats['coupons']['total']); ?></span>
+                    <span class="ncd-stat-value"><?php echo esc_html($stats['Gutscheine']['total']); ?></span>
                 </div>
                 <div class="ncd-stat-item">
                     <span class="ncd-stat-label"><?php _e('Eingelöst', 'newcustomer-discount'); ?></span>
-                    <span class="ncd-stat-value"><?php echo esc_html($stats['coupons']['used']); ?></span>
+                    <span class="ncd-stat-value"><?php echo esc_html($stats['Gutscheine']['used']); ?></span>
                 </div>
                 <div class="ncd-stat-item">
                     <span class="ncd-stat-label"><?php _e('Aktiv', 'newcustomer-discount'); ?></span>
-                    <span class="ncd-stat-value"><?php echo esc_html($stats['coupons']['active']); ?></span>
+                    <span class="ncd-stat-value"><?php echo esc_html($stats['Gutscheine']['active']); ?></span>
                 </div>
                 <div class="ncd-stat-item">
                     <span class="ncd-stat-label"><?php _e('Abgelaufen', 'newcustomer-discount'); ?></span>
-                    <span class="ncd-stat-value"><?php echo esc_html($stats['coupons']['expired']); ?></span>
+                    <span class="ncd-stat-value"><?php echo esc_html($stats['Gutscheine']['expired']); ?></span>
                 </div>
             </div>
         </div>
@@ -90,7 +90,7 @@ if (!defined('ABSPATH')) {
                 <h3><?php _e('Konversionsrate', 'newcustomer-discount'); ?></h3>
                 <div class="ncd-big-number">
                     <?php 
-                    $conversion_rate = ($stats['coupons']['used'] / max(1, $stats['coupons']['total'])) * 100;
+                    $conversion_rate = ($stats['Gutscheine']['used'] / max(1, $stats['Gutscheine']['total'])) * 100;
                     echo number_format($conversion_rate, 1) . '%';
                     ?>
                 </div>
@@ -103,8 +103,8 @@ if (!defined('ABSPATH')) {
                 <h3><?php _e('Durchschn. Bestellwert', 'newcustomer-discount'); ?></h3>
                 <div class="ncd-big-number">
                     <?php 
-                    if (isset($stats['coupons']['avg_order_value'])) {
-                        echo wc_price($stats['coupons']['avg_order_value']);
+                    if (isset($stats['Gutscheine']['avg_order_value'])) {
+                        echo wc_price($stats['Gutscheine']['avg_order_value']);
                     } else {
                         echo wc_price(0);
                     }

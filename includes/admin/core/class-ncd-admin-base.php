@@ -22,9 +22,9 @@ class NCD_Admin_Base {
     protected $customer_tracker;
 
     /**
-     * Coupon Generator Instanz
+     * Gutschein Generator Instanz
      * 
-     * @var NCD_Coupon_Generator
+     * @var NCD_Discount_Generator
      */
     protected $coupon_generator;
 
@@ -53,7 +53,7 @@ class NCD_Admin_Base {
     protected function init_dependencies() {
         try {
             $this->customer_tracker = new NCD_Customer_Tracker();
-            $this->coupon_generator = new NCD_Coupon_Generator();
+            $this->coupon_generator = new NCD_Discount_Generator();
             $this->email_sender = new NCD_Email_Sender();
 
             if (WP_DEBUG) {

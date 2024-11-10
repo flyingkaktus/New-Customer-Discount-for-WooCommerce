@@ -144,7 +144,7 @@ return [
         font-family: var(--font-family);
     }
 
-    .classic-template .coupon-code {
+    .classic-template .Gutschein-code {
         text-align: center;
         font-size: 32px;
         font-weight: normal;
@@ -157,19 +157,19 @@ return [
         position: relative;
     }
 
-    .classic-template .coupon-code::before,
-    .classic-template .coupon-code::after {
+    .classic-template .Gutschein-code::before,
+    .classic-template .Gutschein-code::after {
         content: '✦';
         position: absolute;
         color: var(--primary-color);
         font-size: 20px;
     }
 
-    .classic-template .coupon-code::before {
+    .classic-template .Gutschein-code::before {
         left: 20px;
     }
 
-    .classic-template .coupon-code::after {
+    .classic-template .Gutschein-code::after {
         right: 20px;
     }
 
@@ -243,7 +243,7 @@ return [
             border-bottom-color: var(--text-color);
         }
 
-        .classic-template .coupon-code {
+        .classic-template .Gutschein-code {
             border-color: var(--primary-color);
             color: var(--text-color);
         }
@@ -277,7 +277,7 @@ return [
             margin-bottom: 30px;
         }
 
-        .classic-template .coupon-code {
+        .classic-template .Gutschein-code {
             font-size: 24px;
             padding: 20px;
             margin: 30px auto;
@@ -302,7 +302,7 @@ CSS,
                 
                 <p style="text-align: center;">{email_intro}</p>
 
-                <div class="coupon-code">
+                <div class="Gutschein-code">
                     {coupon_code}
                 </div>
 

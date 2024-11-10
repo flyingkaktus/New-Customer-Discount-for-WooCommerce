@@ -145,7 +145,7 @@ return [
             line-height: 1.3;
         }
 
-        .modern-template .coupon-code {
+        .modern-template .Gutschein-code {
             background: var(--background-color);
             padding: 24px;
             text-align: center;
@@ -160,7 +160,7 @@ return [
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .modern-template .coupon-code::before {
+        .modern-template .Gutschein-code::before {
             content: '';
             position: absolute;
             top: 0;
@@ -252,7 +252,7 @@ return [
                 font-size: 24px;
             }
 
-            .modern-template .coupon-code {
+            .modern-template .Gutschein-code {
                 font-size: 24px;
                 padding: 20px;
                 letter-spacing: 2px;
@@ -281,7 +281,7 @@ CSS,
                 
                 <p style="text-align: center;">{email_intro}</p>
 
-                <div class="coupon-code">
+                <div class="Gutschein-code">
                     {coupon_code}
                 </div>
 

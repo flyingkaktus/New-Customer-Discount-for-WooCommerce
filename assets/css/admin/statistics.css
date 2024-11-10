@@ -139,6 +139,7 @@
     border-bottom: none;
 }
 
+
 /* Responsive Design */
 @media screen and (max-width: 782px) {
     .ncd-wrap {
@@ -164,3 +165,5 @@
         -webkit-overflow-scrolling: touch;
     }
 }
+
+

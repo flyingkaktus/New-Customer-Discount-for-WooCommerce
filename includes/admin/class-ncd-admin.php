@@ -181,7 +181,10 @@ class NCD_Admin {
                 'success' => __('Erfolgreich gespeichert.', 'newcustomer-discount'),
                 'loading' => __('Laden...', 'newcustomer-discount'),
                 'confirm_template_activation' => __('Möchten Sie dieses Template wirklich aktivieren? Es wird dann für alle neuen E-Mails verwendet.', 'newcustomer-discount'),
-                'settings_saved' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount')
+                'settings_saved' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
+                'feedback_required' => __('Bitte geben Sie Ihr Feedback ein.', 'newcustomer-discount'),
+                'submit_feedback' => __('Feedback senden', 'newcustomer-discount'),
+                'feedback_success' => __('Vielen Dank für Ihr Feedback!', 'newcustomer-discount'),
             ]
         ]);
 
@@ -278,6 +281,17 @@ class NCD_Admin {
                     true
                 );
             }
+
+            if ($current_page === 'new-customers-settings') {
+                // Feedback Manager Script laden
+                wp_enqueue_script(
+                    'ncd-feedback-manager',
+                    NCD_ASSETS_URL . 'js/modules/feedback-manager.js',
+                    ['jquery', 'ncd-admin-base'],
+                    $asset_version,
+                    true
+                );
+            }
         }
 
         // Prüfe ob Tabs benötigt werden
@@ -309,8 +323,18 @@ class NCD_Admin {
         if ($has_tabs) {
             $admin_deps[] = 'ncd-tab-manager';
         }
-        if (isset($_GET['page']) && $_GET['page'] === 'new-customers') {
-            $admin_deps[] = 'ncd-customer-manager';
+        if (isset($_GET['page'])) {
+            switch ($_GET['page']) {
+                case 'new-customers':
+                    $admin_deps[] = 'ncd-customer-manager';
+                    break;
+                case 'new-customers-settings':
+                    $admin_deps[] = 'ncd-feedback-manager';
+                    break;
+                case 'new-customers-templates':
+                    $admin_deps[] = 'ncd-template-manager';
+                    break;
+            }
         }
 
         // Haupt Admin Script laden

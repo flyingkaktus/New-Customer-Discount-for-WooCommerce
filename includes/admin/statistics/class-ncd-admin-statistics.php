@@ -33,7 +33,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
     
         $stats = [
             'customers' => $this->customer_tracker->get_statistics(),
-            'coupons' => $this->get_coupon_statistics(),
+            'Gutscheine' => $this->get_coupon_statistics(),
             'emails' => $this->get_email_statistics()
         ];
     
@@ -47,22 +47,22 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
     */
    private function get_coupon_statistics() {
        if (WP_DEBUG) {
-           error_log('======= Starting coupon statistics calculation =======');
+           error_log('======= Starting Gutschein statistics calculation =======');
        }
 
-       $coupons = $this->coupon_generator->get_generated_coupons();
+       $Gutscheine = $this->coupon_generator->get_generated_coupons();
 
        $stats = [
-           'total' => count($coupons),
+           'total' => count($Gutscheine),
            'used' => 0,
            'expired' => 0,
            'active' => 0,
            'total_amount' => 0
        ];
 
-       foreach ($coupons as $coupon) {
-           if (!$coupon['status']['valid']) {
-               if ($coupon['status']['is_expired']) {
+       foreach ($Gutscheine as $Gutschein) {
+           if (!$Gutschein['status']['valid']) {
+               if ($Gutschein['status']['is_expired']) {
                    $stats['expired']++;
                } else {
                    $stats['used']++;
@@ -70,15 +70,15 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
            } else {
                $stats['active']++;
            }
-           $stats['total_amount'] += floatval($coupon['discount_amount']);
+           $stats['total_amount'] += floatval($Gutschein['discount_amount']);
        }
 
        $stats['avg_order_value'] = $this->calculate_average_order_value();
 
        if (WP_DEBUG) {
-           error_log('Coupon statistics calculated:');
+           error_log('Gutschein statistics calculated:');
            error_log(print_r($stats, true));
-           error_log('======= End coupon statistics calculation =======');
+           error_log('======= End Gutschein statistics calculation =======');
        }
 
        return $stats;
@@ -304,7 +304,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
 
        $stats = [
            'customers' => $this->customer_tracker->get_statistics(),
-           'coupons' => $this->get_coupon_statistics(),
+           'Gutscheine' => $this->get_coupon_statistics(),
            'emails' => $this->get_email_statistics()
        ];
 

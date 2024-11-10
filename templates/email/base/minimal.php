@@ -120,7 +120,7 @@ return [
             letter-spacing: 3px;
         }
 
-        .minimal-template .coupon-code {
+        .minimal-template .Gutschein-code {
             text-align: center;
             font-size: 24px;
             font-weight: 300;
@@ -181,13 +181,13 @@ return [
             }
 
             .minimal-template .header,
-            .minimal-template .coupon-code,
+            .minimal-template .Gutschein-code,
             .minimal-template .footer {
                 border-color: var(--text-color);
             }
 
             .minimal-template h1, 
-            .minimal-template .coupon-code {
+            .minimal-template .Gutschein-code {
                 color: var(--text-color);
             }
 
@@ -206,7 +206,7 @@ return [
                 padding: 20px 0;
             }
 
-            .minimal-template .coupon-code {
+            .minimal-template .Gutschein-code {
                 font-size: 20px;
                 letter-spacing: 3px;
             }
@@ -226,7 +226,7 @@ CSS,
                 
                 <p style="text-align: center;">{email_intro}</p>
 
-                <div class="coupon-code">
+                <div class="Gutschein-code">
                     {coupon_code}
                 </div>
 

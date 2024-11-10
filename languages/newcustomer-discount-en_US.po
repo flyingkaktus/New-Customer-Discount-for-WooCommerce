@@ -2,8 +2,8 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: New-Customer-Coupon for WooCommerce 0.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-smart-coupon-system\n"
+"Project-Id-Version: New-Customer-Gutschein for WooCommerce 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-smart-Gutschein-system\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,8 +18,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #: newcustomer-discount.php
 #: includes/admin/core/class-ncd-admin-menu.php:151
-msgid "New-Customer-Coupon for WooCommerce"
-msgstr "New-Customer-Coupon for WooCommerce"
+msgid "New-Customer-Gutschein for WooCommerce"
+msgstr "New-Customer-Gutschein for WooCommerce"
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
@@ -145,7 +145,7 @@ msgstr "The main page could not be loaded. Please check the installation."
 #: includes/admin/customers/class-ncd-admin-customers.php:59
 #: includes/admin/customers/class-ncd-admin-customers.php:205
 #: includes/admin/customers/class-ncd-admin-customers.php:233
-#: includes/class-ncd-coupon-generator.php:150
+#: includes/class-ncd-Gutschein-generator.php:150
 msgid "Ungültige E-Mail-Adresse."
 msgstr "Invalid email address."
 
@@ -206,31 +206,31 @@ msgstr "Template settings saved."
 msgid "Template \"%s\" wurde aktiviert und wird nun für alle E-Mails verwendet."
 msgstr "Template \"%s\" has been activated and will now be used for all emails."
 
-#: includes/class-ncd-coupon-generator.php:134
+#: includes/class-ncd-Gutschein-generator.php:134
 msgid "Konnte keinen einzigartigen Code generieren."
 msgstr "Could not generate a unique code."
 
-#: includes/class-ncd-coupon-generator.php:262
+#: includes/class-ncd-Gutschein-generator.php:262
 msgid "Gutschein existiert nicht."
-msgstr "Coupon does not exist."
+msgstr "Gutschein does not exist."
 
-#: includes/class-ncd-coupon-generator.php:280
+#: includes/class-ncd-Gutschein-generator.php:280
 msgid "Gutschein ist abgelaufen."
-msgstr "Coupon has expired."
+msgstr "Gutschein has expired."
 
-#: includes/class-ncd-coupon-generator.php:283
+#: includes/class-ncd-Gutschein-generator.php:283
 msgid "Gutschein wurde bereits eingelöst."
-msgstr "Coupon has already been redeemed."
+msgstr "Gutschein has already been redeemed."
 
-#: includes/class-ncd-coupon-generator.php:416
-msgid "Ungültige Code-Länge."
+#: includes/class-ncd-Gutschein-generator.php:416
+msgid "Ungültige Gutschein-Länge."
 msgstr "Invalid code length."
 
-#: includes/class-ncd-coupon-generator.php:424
-msgid "Ungültiger Code-Präfix."
+#: includes/class-ncd-Gutschein-generator.php:424
+msgid "Ungültiger Gutschein-Präfix."
 msgstr "Invalid code prefix."
 
-#: includes/class-ncd-coupon-generator.php:433
+#: includes/class-ncd-Gutschein-generator.php:433
 msgid "Ungültige Zeichen im Code."
 msgstr "Invalid characters in code."
 
@@ -244,7 +244,7 @@ msgstr "Email could not be sent"
 
 #: includes/class-ncd-email-sender.php:414
 msgid "Der generierte Gutscheincode"
-msgstr "The generated coupon code"
+msgstr "The generated Gutschein code"
 
 #: includes/class-ncd-email-sender.php:415
 msgid "Name des Shops"
@@ -256,7 +256,7 @@ msgstr "Discount percentage"
 
 #: includes/class-ncd-email-sender.php:417
 msgid "Ablaufdatum des Gutscheins"
-msgstr "Coupon expiration date"
+msgstr "Gutschein expiration date"
 
 #: includes/class-ncd-email-sender.php:418
 msgid "URL des Shops"
@@ -292,7 +292,7 @@ msgid "Konvertierung fehlgeschlagen."
 msgstr "Conversion failed."
 
 #: newcustomer-discount.php:96
-msgid "Das New-Customer-Coupon for WooCommerce benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce."
+msgid "Das New-Customer-Gutschein for WooCommerce benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce."
 msgstr "The New Customer Discount System requires WooCommerce. Please install and activate WooCommerce."
 
 #: newcustomer-discount.php:126
@@ -331,7 +331,7 @@ msgstr "Send test email"
 
 #: templates/admin/customers-page.php:64
 msgid "Hier können Sie eine Test-E-Mail mit Gutscheincode an eine beliebige Adresse senden."
-msgstr "Here you can send a test email with a coupon code to any address."
+msgstr "Here you can send a test email with a Gutschein code to any address."
 
 #: templates/admin/customers-page.php:85
 msgid "Letzte 7 Tage"
@@ -421,11 +421,11 @@ msgstr "Logo"
 
 #: templates/admin/settings-page.php:33
 #: templates/admin/settings-page.php:272
-msgid "Gutschein-Einstellungen"
-msgstr "Coupon Settings"
+msgid "Gutschein"
+msgstr "Gutschein Settings"
 
 #: templates/admin/settings-page.php:36
-msgid "Code-Konfiguration"
+msgid "Gutschein-konfiguration"
 msgstr "Code Configuration"
 
 #: templates/admin/settings-page.php:39
@@ -500,7 +500,7 @@ msgstr "Introduction text"
 
 #: templates/admin/settings-page.php:203
 msgid "Gutschein-Information"
-msgstr "Coupon Information"
+msgstr "Gutschein Information"
 
 #: templates/admin/settings-page.php:217
 msgid "Fußzeile"
@@ -545,22 +545,22 @@ msgstr "Validity Period (Days)"
 
 #: templates/admin/settings-page.php:315
 msgid "Anzahl der Tage, die der Gutschein gültig ist."
-msgstr "Number of days the coupon is valid."
+msgstr "Number of days the Gutschein is valid."
 
 #: templates/admin/settings-page.php:335
-msgid "Gutscheincode-Konfiguration"
-msgstr "Coupon Code Configuration"
+msgid "Gutscheincoupon-konfiguration"
+msgstr "Gutschein Code Configuration"
 
 #: templates/admin/settings-page.php:344
-msgid "Code-Präfix"
+msgid "Gutschein-Präfix"
 msgstr "Code Prefix"
 
 #: templates/admin/settings-page.php:355
 msgid "Präfix für automatisch generierte Gutscheincodes (max. 5 Zeichen)."
-msgstr "Prefix for automatically generated coupon codes (max. 5 characters)."
+msgstr "Prefix for automatically generated Gutschein codes (max. 5 characters)."
 
 #: templates/admin/settings-page.php:363
-msgid "Code-Länge"
+msgid "Gutschein-Länge"
 msgstr "Code Length"
 
 #: templates/admin/settings-page.php:375
@@ -585,7 +585,7 @@ msgstr "Lowercase letters (a-z)"
 
 #: templates/admin/settings-page.php:409
 msgid "Wählen Sie die Zeichentypen für die Gutscheincodes."
-msgstr "Select the character types for the coupon codes."
+msgstr "Select the character types for the Gutschein codes."
 
 #: templates/admin/settings-page.php:439
 msgid "Stichtag"
@@ -649,11 +649,11 @@ msgstr "These actions cannot be undone. Please create a backup of your database 
 
 #: templates/admin/settings-page.php:584
 msgid "Gutscheine zurücksetzen"
-msgstr "Reset Coupons"
+msgstr "Reset Gutscheine"
 
 #: templates/admin/settings-page.php:591
 msgid "Alle erstellten Gutscheine löschen"
-msgstr "Delete all created coupons"
+msgstr "Delete all created Gutscheine"
 
 #: templates/admin/settings-page.php:598
 msgid "Neukunden zurücksetzen"
@@ -685,7 +685,7 @@ msgstr "Received Discount"
 
 #: templates/admin/statistics-page.php:40
 msgid "Gutscheine"
-msgstr "Coupons"
+msgstr "Gutscheine"
 
 #: templates/admin/statistics-page.php:43
 msgid "Erstellt"
@@ -730,7 +730,7 @@ msgstr "Conversion Rate"
 
 #: templates/admin/statistics-page.php:98
 msgid "Prozentsatz der eingelösten Gutscheine"
-msgstr "Percentage of redeemed coupons"
+msgstr "Percentage of redeemed Gutscheine"
 
 #: templates/admin/statistics-page.php:103
 msgid "Durchschn. Bestellwert"
@@ -738,7 +738,7 @@ msgstr "Avg. Order Value"
 
 #: templates/admin/statistics-page.php:114
 msgid "Durchschnittlicher Wert der Bestellungen mit Gutschein"
-msgstr "Average value of orders with coupon"
+msgstr "Average value of orders with Gutschein"
 
 #: templates/admin/statistics-page.php:126
 msgid "Statistiken exportieren"
@@ -862,7 +862,7 @@ msgstr "A modern, dynamic design with clean lines"
 
 #: includes/class-ncd-email-sender.php:53
 msgid "Ihr Rabattgutschein"
-msgstr "Your Discount Coupon"
+msgstr "Your Discount Gutschein"
 
 #: includes/class-ncd-email-sender.php:56
 msgid "Ihr exklusiver Willkommensrabatt"
@@ -874,11 +874,11 @@ msgstr "Dear Customer,"
 
 #: includes/class-ncd-email-sender.php:58
 msgid "vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt."
-msgstr "thank you for your interest in {shop_name}. As a special welcome gift, we have created an exclusive discount coupon for you."
+msgstr "thank you for your interest in {shop_name}. As a special welcome gift, we have created an exclusive discount Gutschein for you."
 
 #: includes/class-ncd-email-sender.php:59
 msgid "Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein."
-msgstr "Visit our shop and enter the coupon code at checkout."
+msgstr "Visit our shop and enter the Gutschein code at checkout."
 
 #: includes/class-ncd-email-sender.php:60
 msgid "Dies ist eine automatisch generierte E-Mail."
@@ -886,7 +886,7 @@ msgstr "This is an automatically generated email."
 
 #: templates/email/base/classic.php:23
 msgid "Gutschein-Details"
-msgstr "Coupon Details"
+msgstr "Gutschein Details"
 
 #: templates/email/base/classic.php:26
 msgid "✨ %s%% Rabatt auf Ihren Einkauf"

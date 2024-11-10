@@ -223,3 +223,136 @@
 .ncd-fade {
     transition: opacity 0.2s ease;
 }
+
+/* Donate Styles */
+.ncd-donate-wrapper {
+    margin: 20px 0;
+}
+
+.ncd-donate-text {
+    margin-bottom: 25px;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.ncd-donate-form {
+    margin: 20px 0;
+}
+
+.ncd-donate-amounts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.ncd-donate-amounts .button {
+    width: 100%;
+    text-align: center;
+    padding: 8px 12px;
+    height: auto;
+    border-radius: 6px;
+    font-weight: 500;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #2271b1;
+    transition: all 0.2s ease;
+}
+
+.ncd-donate-amounts .button:hover {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(34, 113, 177, 0.2);
+}
+
+.ncd-donate-custom {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f1;
+}
+
+.ncd-donate-custom label {
+    display: block;
+    margin-bottom: 10px;
+    color: #1d2327;
+    font-weight: normal;
+}
+
+.ncd-donate-custom-input {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.ncd-donate-custom-input input {
+    max-width: 150px;
+    padding: 6px 8px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+}
+
+.ncd-donate-custom-input input:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+.ncd-donate-custom-input .button-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(34, 113, 177, 0.2);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 782px) {
+    .ncd-donate-amounts {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .ncd-donate-custom-input {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .ncd-donate-custom-input input {
+        max-width: none;
+    }
+}
+
+/* Feedback Styles */
+.ncd-feedback-wrapper {
+    max-width: 800px;
+}
+
+.ncd-system-info {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.ncd-system-info pre {
+    margin: 0;
+    white-space: pre-wrap;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.feedback-hint {
+    color: #666;
+    font-style: italic;
+}
+
+.ncd-feedback-alternative {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.ncd-feedback-form .ncd-textarea {
+    min-height: 150px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}

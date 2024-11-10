@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: New-Customer-Coupon for WooCommerce
+ * Plugin Name: New-Customer-Gutschein for WooCommerce
  * Plugin URI: https://comingsoon.de
  * Description: Automatisches Rabattsystem für Neukunden mit E-Mail-Versand
  * Version: 1.0.0
@@ -29,14 +29,13 @@ define('NCD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('NCD_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('NCD_INCLUDES_DIR', NCD_PLUGIN_DIR . 'includes/');
 define('NCD_ASSETS_URL', NCD_PLUGIN_URL . 'assets/');
-define('NCD_CSS_URL', NCD_ASSETS_URL . 'css/admin/');
 define('NEWCUSTOMER_CUTOFF_DATE', '2024-01-01 00:00:00');
 
 // Basis-Klassen laden
 require_once NCD_INCLUDES_DIR . 'class-ncd-customer-tracker.php';
 require_once NCD_INCLUDES_DIR . 'class-ncd-email-sender.php';
 require_once NCD_INCLUDES_DIR . 'class-ncd-logo-manager.php';
-require_once NCD_INCLUDES_DIR . 'class-ncd-coupon-generator.php';
+require_once NCD_INCLUDES_DIR . 'class-ncd-discount-generator.php';
 require_once NCD_INCLUDES_DIR . 'class-ncd-updater.php';
 
 // Admin-Klassen in richtiger Reihenfolge laden
@@ -93,7 +92,7 @@ function ncd_woocommerce_notice() {
     ?>
     <div class="notice notice-error">
         <p>
-            <?php _e('Das New-Customer-Coupon for WooCommerce benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce.', 'newcustomer-discount'); ?>
+            <?php _e('Das New-Customer-Gutschein for WooCommerce benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce.', 'newcustomer-discount'); ?>
         </p>
     </div>
     <?php

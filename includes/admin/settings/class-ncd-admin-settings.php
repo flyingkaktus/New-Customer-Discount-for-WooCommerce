@@ -36,7 +36,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
         // Email Settings
         register_setting('ncd_email_settings', 'ncd_email_subject');
 
-        // Coupon Settings
+        // Gutschein Settings
         register_setting('ncd_coupon_settings', 'ncd_discount_amount', [
             'type' => 'integer',
             'sanitize_callback' => [$this, 'sanitize_discount_amount']
@@ -222,7 +222,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Verarbeitet Gutschein-Einstellungen
+     * Verarbeitet Gutschein
      *
      * @return bool
      */
@@ -311,7 +311,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
         $actions = (array) $_POST['reset_actions'];
         $reset_count = 0;
 
-        if (in_array('coupons', $actions)) {
+        if (in_array('Gutscheine', $actions)) {
             $reset_count += $this->reset_coupons();
         }
 
@@ -414,5 +414,100 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
         return max(floatval($value), 0);
     }
 
+    /**
+     * Verarbeitet Feedback-Submissions
+     *
+     * @param array $data POST-Daten
+     */
+    public function handle_submit_feedback($data) {
+        if (!$this->check_ajax_request()) {
+            return;
+        }
+
+        try {
+            // Validiere Felder
+            if (empty($data['feedback_content'])) {
+                throw new Exception(__('Bitte geben Sie Ihr Feedback ein.', 'newcustomer-discount'));
+            }
+
+            $feedback = [
+                'type' => sanitize_text_field($data['feedback_type']),
+                'content' => wp_kses_post($data['feedback_content']),
+                'system_info' => !empty($data['include_system_info']) ? $this->get_system_info() : '',
+                'version' => !empty($data['bug_version']) ? sanitize_text_field($data['bug_version']) : '',
+                'user_email' => wp_get_current_user()->user_email,
+                'site_url' => get_site_url()
+            ];
+
+            // Sende Feedback
+            $sent = $this->send_feedback($feedback);
+
+            if ($sent) {
+                wp_send_json_success([
+                    'message' => __('Vielen Dank für Ihr Feedback!', 'newcustomer-discount')
+                ]);
+            } else {
+                throw new Exception(__('Feedback konnte nicht gesendet werden.', 'newcustomer-discount'));
+            }
+
+        } catch (Exception $e) {
+            wp_send_json_error([
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Sendet das Feedback
+     *
+     * @param array $feedback
+     * @return bool
+     */
+    private function send_feedback($feedback) {
+        $to = 'suchowski@aol.com';
+        $subject = sprintf(
+            '[NCD Feedback] %s from %s',
+            $feedback['type'],
+            parse_url($feedback['site_url'], PHP_URL_HOST)
+        );
+
+        $message = sprintf(
+            "Type: %s\nVersion: %s\nFrom: %s\nSite: %s\n\nMessage:\n%s",
+            $feedback['type'],
+            $feedback['version'],
+            $feedback['user_email'],
+            $feedback['site_url'],
+            $feedback['content']
+        );
+
+        if (!empty($feedback['system_info'])) {
+            $message .= "\n\nSystem Info:\n" . $feedback['system_info'];
+        }
+
+        $headers = [
+            'From: ' . get_bloginfo('name') . ' <' . get_option('admin_email') . '>',
+            'Reply-To: ' . $feedback['user_email']
+        ];
+
+        return wp_mail($to, $subject, $message, $headers);
+    }
+
+    /**
+     * Sammelt System-Informationen
+     *
+     * @return string
+     */
+    private function get_system_info() {
+        global $wp_version;
+        
+        return sprintf(
+            "WordPress: %s\nPHP: %s\nPlugin Version: %s\nWooCommerce: %s\nTheme: %s",
+            $wp_version,
+            phpversion(),
+            NCD_VERSION,
+            WC()->version,
+            wp_get_theme()->get('Name')
+        );
+    }
     
 }

@@ -44,6 +44,12 @@
     vertical-align: middle;
 }
 
+/* Heart Icon in Tab */
+.nav-tab .dashicons-heart {
+    color: #e25555;
+    margin-right: 4px;
+}
+
 /* Responsive Styles */
 @media screen and (max-width: 782px) {
     .nav-tab-wrapper {

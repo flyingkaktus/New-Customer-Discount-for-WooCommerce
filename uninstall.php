@@ -48,14 +48,14 @@ try {
         );
 
         if ($wpdb->last_error && WP_DEBUG) {
-            error_log('NCD: Error fetching coupons: ' . $wpdb->last_error);
+            error_log('NCD: Error fetching Gutscheine: ' . $wpdb->last_error);
         }
 
         if (!empty($coupon_ids)) {
             foreach ($coupon_ids as $coupon_id) {
                 $deleted = wp_delete_post($coupon_id, true);
                 if (!$deleted && WP_DEBUG) {
-                    error_log("NCD: Failed to delete coupon ID: $coupon_id");
+                    error_log("NCD: Failed to delete Gutschein ID: $coupon_id");
                 }
             }
         }
@@ -106,7 +106,7 @@ try {
 
         // Verzeichnis-Bereinigung mit Fehlerprüfung
         $upload_dir = wp_upload_dir();
-        $plugin_upload_dir = $upload_dir['basedir'] . '/new-customer-coupon-for-woocommerce';
+        $plugin_upload_dir = $upload_dir['basedir'] . '/new-customer-Gutschein-for-woocommerce';
         
         if (file_exists($plugin_upload_dir)) {
             require_once(ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php');

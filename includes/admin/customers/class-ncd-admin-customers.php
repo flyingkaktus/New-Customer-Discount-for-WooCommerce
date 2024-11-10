@@ -114,28 +114,28 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
             }
     
             if (WP_DEBUG) {
-                error_log('Creating coupon for: ' . $email);
+                error_log('Creating Gutschein for: ' . $email);
             }
     
-            $coupon = $this->coupon_generator->create_coupon($email);
-            if (is_wp_error($coupon)) {
-                error_log('Coupon creation failed: ' . $coupon->get_error_message());
-                throw new Exception($coupon->get_error_message());
+            $Gutschein = $this->coupon_generator->create_coupon($email);
+            if (is_wp_error($Gutschein)) {
+                error_log('Gutschein creation failed: ' . $Gutschein->get_error_message());
+                throw new Exception($Gutschein->get_error_message());
             }
     
             if (WP_DEBUG) {
-                error_log('Sending email with coupon: ' . print_r($coupon, true));
+                error_log('Sending email with Gutschein: ' . print_r($Gutschein, true));
             }
     
             $result = $this->email_sender->send_discount_email($email, [
-                'coupon_code' => $coupon['code'],
+                'coupon_code' => $Gutschein['code'],
                 'first_name' => $first_name,
                 'last_name' => $last_name
             ]);
     
             if (is_wp_error($result)) {
                 error_log('Email sending failed: ' . $result->get_error_message());
-                $this->coupon_generator->deactivate_coupon($coupon['code']);
+                $this->coupon_generator->deactivate_coupon($Gutschein['code']);
                 throw new Exception($result->get_error_message());
             }
     
@@ -143,12 +143,12 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
                 error_log('Updating customer status');
             }
     
-            $this->customer_tracker->update_customer_status($email, 'sent', $coupon['code']);
+            $this->customer_tracker->update_customer_status($email, 'sent', $Gutschein['code']);
     
             wp_send_json_success([
                 'message' => sprintf(
                     __('Rabattcode %s wurde an %s gesendet.', 'newcustomer-discount'),
-                    $coupon['code'],
+                    $Gutschein['code'],
                     $email
                 )
             ]);

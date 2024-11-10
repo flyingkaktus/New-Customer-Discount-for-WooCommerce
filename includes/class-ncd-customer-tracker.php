@@ -188,7 +188,7 @@ class NCD_Customer_Tracker
             error_log('Updating customer status:');
             error_log('Email: ' . $email);
             error_log('Status: ' . $status);
-            error_log('Coupon: ' . $coupon_code);
+            error_log('Gutschein: ' . $coupon_code);
             error_log('Data: ' . print_r($data, true));
         }
     

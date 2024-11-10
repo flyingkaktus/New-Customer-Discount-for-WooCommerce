@@ -30,7 +30,7 @@ class NCD_Updater
 
         // GitHub-Einstellungen
         $this->github_username = 'flyingkaktus';
-        $this->github_repo = 'New-Customer-Coupon-for-WooCommerce';
+        $this->github_repo = 'New-Customer-Gutschein-for-WooCommerce';
 
         // Plugin Daten direkt setzen
         $this->plugin = get_plugin_data($this->file);
