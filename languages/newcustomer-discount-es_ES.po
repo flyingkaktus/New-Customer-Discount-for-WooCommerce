@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-10T15:24:24+01:00\n"
+"POT-Creation-Date: 2024-11-08T13:29:04+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: newcustomer-discount\n"
@@ -233,72 +233,48 @@ msgstr ""
 msgid "Ungültige Zeichen im Code."
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:53
-msgid "Ihr Rabattgutschein"
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:56
-msgid "Ihr exklusiver Willkommensrabatt"
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:57
-msgid "Sehr geehrter Kunde,"
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:58
-msgid "vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt."
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:59
-msgid "Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein."
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:60
-msgid "Dies ist eine automatisch generierte E-Mail."
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:164
+#: includes/class-ncd-email-sender.php:156
 msgid "Ungültige E-Mail-Adresse"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:200
+#: includes/class-ncd-email-sender.php:192
 msgid "E-Mail konnte nicht gesendet werden"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:414
+#: includes/class-ncd-email-sender.php:406
 msgid "Der generierte Gutscheincode"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:415
+#: includes/class-ncd-email-sender.php:407
 msgid "Name des Shops"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:416
+#: includes/class-ncd-email-sender.php:408
 msgid "Rabatthöhe in Prozent"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:417
+#: includes/class-ncd-email-sender.php:409
 msgid "Ablaufdatum des Gutscheins"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:418
+#: includes/class-ncd-email-sender.php:410
 msgid "URL des Shops"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:419
+#: includes/class-ncd-email-sender.php:411
 msgid "URL des Shop-Logos"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:420
+#: includes/class-ncd-email-sender.php:412
 msgid "Aktuelles Jahr"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:421
+#: includes/class-ncd-email-sender.php:413
 #: templates/admin/settings-page.php:504
 msgid "Mindestbestellwert"
 msgstr ""
 
-#: includes/class-ncd-email-sender.php:422
+#: includes/class-ncd-email-sender.php:414
 msgid "Währungssymbol"
 msgstr ""
 
@@ -871,83 +847,14 @@ msgstr ""
 msgid "Senden"
 msgstr ""
 
-#: templates/email/base/classic.php:23
-msgid "Gutschein-Details"
-msgstr ""
-
-#. translators: %s: discount amount
-#: templates/email/base/classic.php:26
-msgid "✨ %s%% Rabatt auf Ihren Einkauf"
-msgstr ""
-
-#. translators: %s: expiry date
-#: templates/email/base/classic.php:31
-msgid "⏰ Einlösbar bis %s"
-msgstr ""
-
-#. translators: %s: minimum order amount
-#: templates/email/base/classic.php:36
-msgid "💰 Ab einem Bestellwert von %s"
-msgstr ""
-
-#: templates/email/base/classic.php:39
-msgid "Zum Online-Shop"
-msgstr ""
-
-#: templates/email/base/classic.php:44
+#: templates/email/base/classic.php:24
 msgid "Ein zeitlos-elegantes Design"
 msgstr ""
 
-#: templates/email/base/minimal.php:23
-msgid "Details"
-msgstr ""
-
-#. translators: %s: discount amount
-#: templates/email/base/minimal.php:26
-msgid "%s%% Rabatt auf Ihre Bestellung"
-msgstr ""
-
-#. translators: %s: expiry date
-#: templates/email/base/minimal.php:31
-msgid "Gültig bis %s"
-msgstr ""
-
-#. translators: %s: minimum order amount
-#: templates/email/base/minimal.php:36
-msgid "Mindestbestellwert: %s"
-msgstr ""
-
-#: templates/email/base/minimal.php:39
-msgid "Zum Shop"
-msgstr ""
-
-#: templates/email/base/minimal.php:44
+#: templates/email/base/minimal.php:24
 msgid "Ein reduziertes, minimalistisches Design"
 msgstr ""
 
-#: templates/email/base/modern.php:23
-msgid "Ihre Vorteile"
-msgstr ""
-
-#. translators: %s: discount amount
-#: templates/email/base/modern.php:26
-msgid "✨ %s%% Rabatt auf Ihre Bestellung"
-msgstr ""
-
-#. translators: %s: expiry date
-#: templates/email/base/modern.php:31
-msgid "⏰ Gültig bis %s"
-msgstr ""
-
-#. translators: %s: minimum order amount
-#: templates/email/base/modern.php:36
-msgid "💰 Mindestbestellwert: %s"
-msgstr ""
-
-#: templates/email/base/modern.php:39
-msgid "Jetzt einlösen"
-msgstr ""
-
-#: templates/email/base/modern.php:44
+#: templates/email/base/modern.php:24
 msgid "Ein modernes, dynamisches Design mit klaren Linien"
 msgstr ""

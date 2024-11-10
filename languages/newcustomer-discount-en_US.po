@@ -1,5 +1,3 @@
-# Copyright (C) 2024 Maciej Suchowski
-# This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Neukunden Rabatt System 0.1.0\n"
@@ -9,8 +7,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-10T15:24:24+01:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2024-11-08T13:08:45+01:00\n"
+"PO-Revision-Date: 2024-11-08 13:45+0100\n"
+"Language: en_US\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: newcustomer-discount\n"
 
@@ -18,936 +17,927 @@ msgstr ""
 #: newcustomer-discount.php
 #: includes/admin/core/class-ncd-admin-menu.php:151
 msgid "Neukunden Rabatt System"
-msgstr ""
+msgstr "New Customer Discount System"
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
 #: newcustomer-discount.php
 msgid "https://comingsoon.de"
-msgstr ""
+msgstr "https://comingsoon.de"
 
 #. Description of the plugin
 #: newcustomer-discount.php
 msgid "Automatisches Rabattsystem für Neukunden mit E-Mail-Versand"
-msgstr ""
+msgstr "Automatic discount system for new customers with email delivery"
 
 #. Author of the plugin
 #: newcustomer-discount.php
 msgid "Maciej Suchowski"
-msgstr ""
+msgstr "Maciej Suchowski"
 
 #: includes/admin/ajax/class-ncd-admin-ajax.php:85
 msgid "Ungültiger Handler."
-msgstr ""
+msgstr "Invalid handler."
 
 #: includes/admin/ajax/class-ncd-admin-ajax.php:120
 #: includes/admin/core/class-ncd-admin-base.php:163
 #: includes/admin/customers/class-ncd-admin-customers.php:180
 #: includes/admin/settings/class-ncd-admin-settings.php:287
 msgid "Sicherheitsüberprüfung fehlgeschlagen."
-msgstr ""
+msgstr "Security check failed."
 
 #: includes/admin/ajax/class-ncd-admin-ajax.php:127
 #: includes/admin/core/class-ncd-admin-base.php:170
 #: includes/admin/customers/class-ncd-admin-customers.php:188
 msgid "Keine Berechtigung."
-msgstr ""
+msgstr "No permission."
 
 #: includes/admin/class-ncd-admin.php:176
 msgid "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
-msgstr ""
+msgstr "An error occurred. Please try again."
 
 #: includes/admin/class-ncd-admin.php:177
 msgid "Bitte geben Sie eine E-Mail-Adresse ein."
-msgstr ""
+msgstr "Please enter an email address."
 
 #: includes/admin/class-ncd-admin.php:178
 msgid "Möchten Sie eine Test-E-Mail an diese Adresse senden?"
-msgstr ""
+msgstr "Would you like to send a test email to this address?"
 
 #: includes/admin/class-ncd-admin.php:179
 msgid "Möchten Sie einen Rabattcode senden?"
-msgstr ""
+msgstr "Would you like to send a discount code?"
 
 #: includes/admin/class-ncd-admin.php:180
 msgid "Sende..."
-msgstr ""
+msgstr "Sending..."
 
 #: includes/admin/class-ncd-admin.php:181
 msgid "Erfolgreich gespeichert."
-msgstr ""
+msgstr "Successfully saved."
 
 #: includes/admin/class-ncd-admin.php:182
 #: includes/admin/class-ncd-admin.php:293
 msgid "Laden..."
-msgstr ""
+msgstr "Loading..."
 
 #: includes/admin/class-ncd-admin.php:183
 msgid "Möchten Sie dieses Template wirklich aktivieren? Es wird dann für alle neuen E-Mails verwendet."
-msgstr ""
+msgstr "Do you really want to activate this template? It will be used for all new emails."
 
 #: includes/admin/class-ncd-admin.php:184
 #: includes/admin/class-ncd-admin.php:267
 #: includes/admin/templates/class-ncd-admin-templates.php:65
 msgid "Template-Einstellungen wurden gespeichert."
-msgstr ""
+msgstr "Template settings have been saved."
 
 #: includes/admin/class-ncd-admin.php:268
 msgid "Fehler beim Speichern der Einstellungen."
-msgstr ""
+msgstr "Error saving settings."
 
 #: includes/admin/class-ncd-admin.php:269
 msgid "Fehler beim Generieren der Vorschau."
-msgstr ""
+msgstr "Error generating preview."
 
 #: includes/admin/class-ncd-admin.php:294
 msgid "Fehler beim Laden des Tabs"
-msgstr ""
+msgstr "Error loading tab"
 
 #: includes/admin/core/class-ncd-admin-base.php:131
 msgid "Sie haben nicht die erforderlichen Berechtigungen für diese Aktion."
-msgstr ""
+msgstr "You don't have the required permissions for this action."
 
 #: includes/admin/core/class-ncd-admin-menu.php:73
 #: includes/admin/core/class-ncd-admin-menu.php:74
 #: templates/admin/statistics-page.php:28
 msgid "Neukunden"
-msgstr ""
+msgstr "New Customers"
 
 #: includes/admin/core/class-ncd-admin-menu.php:87
 #: includes/admin/core/class-ncd-admin-menu.php:88
 msgid "Übersicht"
-msgstr ""
+msgstr "Overview"
 
 #: includes/admin/core/class-ncd-admin-menu.php:98
 msgid "E-Mail Templates"
-msgstr ""
+msgstr "Email Templates"
 
 #: includes/admin/core/class-ncd-admin-menu.php:99
 msgid "Templates"
-msgstr ""
+msgstr "Templates"
 
 #: includes/admin/core/class-ncd-admin-menu.php:102
 #: includes/admin/core/class-ncd-admin-menu.php:103
 msgid "Einstellungen"
-msgstr ""
+msgstr "Settings"
 
 #: includes/admin/core/class-ncd-admin-menu.php:106
 #: includes/admin/core/class-ncd-admin-menu.php:107
 msgid "Statistiken"
-msgstr ""
+msgstr "Statistics"
 
 #: includes/admin/core/class-ncd-admin-menu.php:154
 msgid "Die Hauptseite konnte nicht geladen werden. Bitte überprüfen Sie die Installation."
-msgstr ""
+msgstr "The main page could not be loaded. Please check the installation."
 
 #: includes/admin/customers/class-ncd-admin-customers.php:59
 #: includes/admin/customers/class-ncd-admin-customers.php:205
 #: includes/admin/customers/class-ncd-admin-customers.php:233
 #: includes/class-ncd-coupon-generator.php:150
 msgid "Ungültige E-Mail-Adresse."
-msgstr ""
+msgstr "Invalid email address."
 
 #: includes/admin/customers/class-ncd-admin-customers.php:73
 msgid "Test-E-Mail wurde an %s gesendet."
-msgstr ""
+msgstr "Test email has been sent to %s."
 
 #: includes/admin/customers/class-ncd-admin-customers.php:113
 msgid "Der Kunde ist kein Neukunde."
-msgstr ""
+msgstr "The customer is not a new customer."
 
 #: includes/admin/customers/class-ncd-admin-customers.php:150
 msgid "Rabattcode %s wurde an %s gesendet."
-msgstr ""
+msgstr "Discount code %s has been sent to %s."
 
 #: includes/admin/customers/class-ncd-admin-customers.php:210
 msgid "Kunde konnte nicht hinzugefügt werden."
-msgstr ""
+msgstr "Customer could not be added."
 
 #: includes/admin/settings/class-ncd-admin-settings.php:110
 msgid "Einstellungen wurden gespeichert."
-msgstr ""
+msgstr "Settings have been saved."
 
 #: includes/admin/statistics/class-ncd-admin-statistics.php:285
 msgid "Die Konversionsrate ist niedrig. Erwägen Sie eine Erhöhung des Rabatts oder eine Verlängerung der Gültigkeitsdauer."
-msgstr ""
+msgstr "The conversion rate is low. Consider increasing the discount or extending the validity period."
 
 #: includes/admin/statistics/class-ncd-admin-statistics.php:289
 msgid "Viele Gutscheine laufen ungenutzt ab. Überdenken Sie die Gültigkeitsdauer oder senden Sie Erinnerungen."
-msgstr ""
+msgstr "Many vouchers expire unused. Consider reviewing the validity period or sending reminders."
 
 #: includes/admin/statistics/class-ncd-admin-statistics.php:319
 msgid "Kategorie"
-msgstr ""
+msgstr "Category"
 
 #: includes/admin/statistics/class-ncd-admin-statistics.php:320
 msgid "Metrik"
-msgstr ""
+msgstr "Metric"
 
 #: includes/admin/statistics/class-ncd-admin-statistics.php:321
 msgid "Wert"
-msgstr ""
+msgstr "Value"
 
 #: includes/admin/templates/class-ncd-admin-templates.php:131
 msgid "Template erfolgreich gewechselt."
-msgstr ""
+msgstr "Template successfully changed."
 
 #: includes/admin/templates/class-ncd-admin-templates.php:149
 #: includes/admin/templates/class-ncd-admin-templates.php:298
 msgid "Keine Template-ID angegeben."
-msgstr ""
+msgstr "No template ID specified."
 
 #: includes/admin/templates/class-ncd-admin-templates.php:202
 msgid "Template-Einstellungen gespeichert."
-msgstr ""
+msgstr "Template settings saved."
 
 #: includes/admin/templates/class-ncd-admin-templates.php:314
 msgid "Template \"%s\" wurde aktiviert und wird nun für alle E-Mails verwendet."
-msgstr ""
+msgstr "Template \"%s\" has been activated and will now be used for all emails."
 
 #: includes/class-ncd-coupon-generator.php:134
 msgid "Konnte keinen einzigartigen Code generieren."
-msgstr ""
+msgstr "Could not generate a unique code."
 
 #: includes/class-ncd-coupon-generator.php:262
 msgid "Gutschein existiert nicht."
-msgstr ""
+msgstr "Coupon does not exist."
 
 #: includes/class-ncd-coupon-generator.php:280
 msgid "Gutschein ist abgelaufen."
-msgstr ""
+msgstr "Coupon has expired."
 
 #: includes/class-ncd-coupon-generator.php:283
 msgid "Gutschein wurde bereits eingelöst."
-msgstr ""
+msgstr "Coupon has already been redeemed."
 
 #: includes/class-ncd-coupon-generator.php:416
 msgid "Ungültige Code-Länge."
-msgstr ""
+msgstr "Invalid code length."
 
 #: includes/class-ncd-coupon-generator.php:424
 msgid "Ungültiger Code-Präfix."
-msgstr ""
+msgstr "Invalid code prefix."
 
 #: includes/class-ncd-coupon-generator.php:433
 msgid "Ungültige Zeichen im Code."
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:53
-msgid "Ihr Rabattgutschein"
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:56
-msgid "Ihr exklusiver Willkommensrabatt"
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:57
-msgid "Sehr geehrter Kunde,"
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:58
-msgid "vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt."
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:59
-msgid "Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein."
-msgstr ""
-
-#: includes/class-ncd-email-sender.php:60
-msgid "Dies ist eine automatisch generierte E-Mail."
-msgstr ""
+msgstr "Invalid characters in code."
 
 #: includes/class-ncd-email-sender.php:164
 msgid "Ungültige E-Mail-Adresse"
-msgstr ""
+msgstr "Invalid email address"
 
 #: includes/class-ncd-email-sender.php:200
 msgid "E-Mail konnte nicht gesendet werden"
-msgstr ""
+msgstr "Email could not be sent"
 
 #: includes/class-ncd-email-sender.php:414
 msgid "Der generierte Gutscheincode"
-msgstr ""
+msgstr "The generated coupon code"
 
 #: includes/class-ncd-email-sender.php:415
 msgid "Name des Shops"
-msgstr ""
+msgstr "Shop name"
 
 #: includes/class-ncd-email-sender.php:416
 msgid "Rabatthöhe in Prozent"
-msgstr ""
+msgstr "Discount percentage"
 
 #: includes/class-ncd-email-sender.php:417
 msgid "Ablaufdatum des Gutscheins"
-msgstr ""
+msgstr "Coupon expiration date"
 
 #: includes/class-ncd-email-sender.php:418
 msgid "URL des Shops"
-msgstr ""
+msgstr "Shop URL"
 
 #: includes/class-ncd-email-sender.php:419
 msgid "URL des Shop-Logos"
-msgstr ""
+msgstr "Shop logo URL"
 
 #: includes/class-ncd-email-sender.php:420
 msgid "Aktuelles Jahr"
-msgstr ""
+msgstr "Current year"
 
 #: includes/class-ncd-email-sender.php:421
 #: templates/admin/settings-page.php:504
 msgid "Mindestbestellwert"
-msgstr ""
+msgstr "Minimum order value"
 
 #: includes/class-ncd-email-sender.php:422
 msgid "Währungssymbol"
-msgstr ""
+msgstr "Currency symbol"
 
 #: includes/class-ncd-logo-manager.php:46
 msgid "Ungültiger Base64-String."
-msgstr ""
+msgstr "Invalid Base64 string."
 
 #: includes/class-ncd-logo-manager.php:68
 msgid "Ungültige Datei."
-msgstr ""
+msgstr "Invalid file."
 
 #: includes/class-ncd-logo-manager.php:73
 msgid "Konvertierung fehlgeschlagen."
-msgstr ""
+msgstr "Conversion failed."
 
 #: newcustomer-discount.php:96
 msgid "Das Neukunden Rabatt System benötigt WooCommerce. Bitte installieren und aktivieren Sie WooCommerce."
-msgstr ""
+msgstr "The New Customer Discount System requires WooCommerce. Please install and activate WooCommerce."
 
 #: newcustomer-discount.php:126
 msgid "Dein persönlicher Neukundenrabatt von comingsoon.de"
-msgstr ""
+msgstr "Your personal new customer discount from comingsoon.de"
 
 #: newcustomer-discount.php:268
 msgid "Fehler bei der Plugin-Aktivierung: %s"
-msgstr ""
+msgstr "Error during plugin activation: %s"
 
 #: newcustomer-discount.php:274
 msgid "Debug-Informationen:"
-msgstr ""
+msgstr "Debug information:"
 
 #: templates/admin/customers-page.php:22
 msgid "Neukunden Übersicht"
-msgstr ""
+msgstr "New Customers Overview"
 
 #: templates/admin/customers-page.php:32
 #: templates/admin/statistics-page.php:24
 msgid "Gesamt"
-msgstr ""
+msgstr "Total"
 
 #: templates/admin/customers-page.php:43
 msgid "Ausstehend"
-msgstr ""
+msgstr "Pending"
 
 #: templates/admin/customers-page.php:54
 msgid "Rabatt gesendet"
-msgstr ""
+msgstr "Discount sent"
 
 #: templates/admin/customers-page.php:63
 #: templates/admin/customers-page.php:73
 msgid "Test E-Mail senden"
-msgstr ""
+msgstr "Send test email"
 
 #: templates/admin/customers-page.php:64
 msgid "Hier können Sie eine Test-E-Mail mit Gutscheincode an eine beliebige Adresse senden."
-msgstr ""
+msgstr "Here you can send a test email with a coupon code to any address."
 
 #: templates/admin/customers-page.php:85
 msgid "Letzte 7 Tage"
-msgstr ""
+msgstr "Last 7 days"
 
 #: templates/admin/customers-page.php:88
 msgid "Letzte 30 Tage"
-msgstr ""
+msgstr "Last 30 days"
 
 #: templates/admin/customers-page.php:91
 msgid "Letzte 90 Tage"
-msgstr ""
+msgstr "Last 90 days"
 
 #: templates/admin/customers-page.php:94
 #: templates/admin/settings-page.php:486
 msgid "Letztes Jahr"
-msgstr ""
+msgstr "Last year"
 
 #: templates/admin/customers-page.php:103
 msgid "Nur Neukunden"
-msgstr ""
+msgstr "New customers only"
 
 #: templates/admin/customers-page.php:107
 msgid "Filter anwenden"
-msgstr ""
+msgstr "Apply filter"
 
 #: templates/admin/customers-page.php:116
 msgid "Als Neukunden werden alle Kunden gezählt, die vor dem %s noch keine Bestellung aufgegeben haben."
-msgstr ""
+msgstr "New customers are counted as all customers who haven't placed an order before %s."
 
 #: templates/admin/customers-page.php:128
 #: templates/admin/settings-page.php:30
 msgid "E-Mail"
-msgstr ""
+msgstr "Email"
 
 #: templates/admin/customers-page.php:131
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: templates/admin/customers-page.php:134
 msgid "Bestelldatum"
-msgstr ""
+msgstr "Order date"
 
 #: templates/admin/customers-page.php:137
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: templates/admin/customers-page.php:140
 msgid "Rabattcode"
-msgstr ""
+msgstr "Discount code"
 
 #: templates/admin/customers-page.php:143
 msgid "Gesendet am"
-msgstr ""
+msgstr "Sent on"
 
 #: templates/admin/customers-page.php:146
 msgid "Aktionen"
-msgstr ""
+msgstr "Actions"
 
 #: templates/admin/customers-page.php:154
 msgid "Keine Kunden gefunden."
-msgstr ""
+msgstr "No customers found."
 
 #: templates/admin/customers-page.php:178
 msgid "Neukunde"
-msgstr ""
+msgstr "New customer"
 
 #: templates/admin/customers-page.php:182
 msgid "Bestandskunde"
-msgstr ""
+msgstr "Existing customer"
 
 #: templates/admin/customers-page.php:204
 msgid "Rabattcode senden"
-msgstr ""
+msgstr "Send discount code"
 
 #: templates/admin/customers-page.php:208
 msgid "Rabattcode wurde bereits gesendet"
-msgstr ""
+msgstr "Discount code has already been sent"
 
 #: templates/admin/settings-page.php:22
 msgid "Neukunden Rabatt Einstellungen"
-msgstr ""
+msgstr "New Customer Discount Settings"
 
 #: templates/admin/settings-page.php:27
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 #: templates/admin/settings-page.php:33
 #: templates/admin/settings-page.php:272
 msgid "Gutschein-Einstellungen"
-msgstr ""
+msgstr "Coupon Settings"
 
 #: templates/admin/settings-page.php:36
 msgid "Code-Konfiguration"
-msgstr ""
+msgstr "Code Configuration"
 
 #: templates/admin/settings-page.php:39
 #: templates/admin/settings-page.php:429
 msgid "Neukunden-Definition"
-msgstr ""
+msgstr "New Customer Definition"
 
 #: templates/admin/settings-page.php:42
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
 
 #: templates/admin/settings-page.php:49
 msgid "Logo-Einstellungen"
-msgstr ""
+msgstr "Logo Settings"
 
 #: templates/admin/settings-page.php:58
 msgid "Logo hochladen"
-msgstr ""
+msgstr "Upload logo"
 
 #: templates/admin/settings-page.php:69
 msgid "Erlaubte Dateitypen: %s. Maximale Größe: %s"
-msgstr ""
+msgstr "Allowed file types: %s. Maximum size: %s"
 
 #: templates/admin/settings-page.php:80
 msgid "ODER Base64-String"
-msgstr ""
+msgstr "OR Base64 String"
 
 #: templates/admin/settings-page.php:90
 msgid "Fügen Sie hier Ihren Base64-codierten Bildstring ein (beginnt mit 'data:image/...')"
-msgstr ""
+msgstr "Paste your Base64 encoded image string here (starts with 'data:image/...')"
 
 #: templates/admin/settings-page.php:98
 #: templates/admin/settings-page.php:103
 msgid "Aktuelles Logo"
-msgstr ""
+msgstr "Current Logo"
 
 #: templates/admin/settings-page.php:110
 msgid "Logo löschen"
-msgstr ""
+msgstr "Delete logo"
 
 #: templates/admin/settings-page.php:122
 msgid "Logo speichern"
-msgstr ""
+msgstr "Save logo"
 
 #: templates/admin/settings-page.php:132
 msgid "E-Mail-Einstellungen"
-msgstr ""
+msgstr "Email Settings"
 
 #: templates/admin/settings-page.php:142
 msgid "E-Mail-Betreff"
-msgstr ""
+msgstr "Email Subject"
 
 #: templates/admin/settings-page.php:149
 msgid "Dein persönlicher Neukundenrabatt"
-msgstr ""
+msgstr "Your personal new customer discount"
 
 #: templates/admin/settings-page.php:157
 msgid "E-Mail-Überschrift"
-msgstr ""
+msgstr "Email Heading"
 
 #: templates/admin/settings-page.php:167
 msgid "Die Hauptüberschrift der E-Mail."
-msgstr ""
+msgstr "The main heading of the email."
 
 #: templates/admin/settings-page.php:175
 msgid "Begrüßung"
-msgstr ""
+msgstr "Greeting"
 
 #: templates/admin/settings-page.php:189
 msgid "Einleitungstext"
-msgstr ""
+msgstr "Introduction text"
 
 #: templates/admin/settings-page.php:203
 msgid "Gutschein-Information"
-msgstr ""
+msgstr "Coupon Information"
 
 #: templates/admin/settings-page.php:217
 msgid "Fußzeile"
-msgstr ""
+msgstr "Footer"
 
 #: templates/admin/settings-page.php:228
 msgid "Verfügbare Variablen:"
-msgstr ""
+msgstr "Available Variables:"
 
 #: templates/admin/settings-page.php:238
 #: templates/admin/templates-page.php:179
 msgid "Test-E-Mail"
-msgstr ""
+msgstr "Test Email"
 
 #: templates/admin/settings-page.php:248
 #: templates/admin/templates-page.php:213
 msgid "Test-E-Mail senden"
-msgstr ""
+msgstr "Send Test Email"
 
 #: templates/admin/settings-page.php:252
 msgid "Senden Sie eine Test-E-Mail, um die Einstellungen zu überprüfen."
-msgstr ""
+msgstr "Send a test email to verify the settings."
 
 #: templates/admin/settings-page.php:262
 #: templates/admin/settings-page.php:325
 #: templates/admin/settings-page.php:419
 #: templates/admin/settings-page.php:560
 msgid "Einstellungen speichern"
-msgstr ""
+msgstr "Save Settings"
 
 #: templates/admin/settings-page.php:281
 msgid "Rabatt-Höhe (%)"
-msgstr ""
+msgstr "Discount Amount (%)"
 
 #: templates/admin/settings-page.php:294
 msgid "Prozentuale Höhe des Neukundenrabatts."
-msgstr ""
+msgstr "Percentage amount of the new customer discount."
 
 #: templates/admin/settings-page.php:302
 msgid "Gültigkeitsdauer (Tage)"
-msgstr ""
+msgstr "Validity Period (Days)"
 
 #: templates/admin/settings-page.php:315
 msgid "Anzahl der Tage, die der Gutschein gültig ist."
-msgstr ""
+msgstr "Number of days the coupon is valid."
 
 #: templates/admin/settings-page.php:335
 msgid "Gutscheincode-Konfiguration"
-msgstr ""
+msgstr "Coupon Code Configuration"
 
 #: templates/admin/settings-page.php:344
 msgid "Code-Präfix"
-msgstr ""
+msgstr "Code Prefix"
 
 #: templates/admin/settings-page.php:355
 msgid "Präfix für automatisch generierte Gutscheincodes (max. 5 Zeichen)."
-msgstr ""
+msgstr "Prefix for automatically generated coupon codes (max. 5 characters)."
 
 #: templates/admin/settings-page.php:363
 msgid "Code-Länge"
-msgstr ""
+msgstr "Code Length"
 
 #: templates/admin/settings-page.php:375
 msgid "Länge des Codes ohne Präfix (4-12 Zeichen)."
-msgstr ""
+msgstr "Length of code without prefix (4-12 characters)."
 
 #: templates/admin/settings-page.php:383
 msgid "Erlaubte Zeichen"
-msgstr ""
+msgstr "Allowed Characters"
 
 #: templates/admin/settings-page.php:392
 msgid "Zahlen (0-9)"
-msgstr ""
+msgstr "Numbers (0-9)"
 
 #: templates/admin/settings-page.php:399
 msgid "Großbuchstaben (A-Z)"
-msgstr ""
+msgstr "Uppercase letters (A-Z)"
 
 #: templates/admin/settings-page.php:406
 msgid "Kleinbuchstaben (a-z)"
-msgstr ""
+msgstr "Lowercase letters (a-z)"
 
 #: templates/admin/settings-page.php:409
 msgid "Wählen Sie die Zeichentypen für die Gutscheincodes."
-msgstr ""
+msgstr "Select the character types for the coupon codes."
 
 #: templates/admin/settings-page.php:439
 msgid "Stichtag"
-msgstr ""
+msgstr "Reference Date"
 
 #: templates/admin/settings-page.php:449
 msgid "Kunden ohne Bestellung vor diesem Datum werden als Neukunden behandelt."
-msgstr ""
+msgstr "Customers without orders before this date are treated as new customers."
 
 #: templates/admin/settings-page.php:457
 msgid "Maximale Bestellungen"
-msgstr ""
+msgstr "Maximum Orders"
 
 #: templates/admin/settings-page.php:469
 msgid "Maximale Anzahl vorheriger Bestellungen für Neukunden (0 = keine vorherigen Bestellungen erlaubt)."
-msgstr ""
+msgstr "Maximum number of previous orders for new customers (0 = no previous orders allowed)."
 
 #: templates/admin/settings-page.php:477
 msgid "Prüfungszeitraum"
-msgstr ""
+msgstr "Review Period"
 
 #: templates/admin/settings-page.php:483
 msgid "Gesamter Zeitraum"
-msgstr ""
+msgstr "Entire Period"
 
 #: templates/admin/settings-page.php:489
 msgid "Letzte 6 Monate"
-msgstr ""
+msgstr "Last 6 Months"
 
 #: templates/admin/settings-page.php:492
 msgid "Letzte 3 Monate"
-msgstr ""
+msgstr "Last 3 Months"
 
 #: templates/admin/settings-page.php:496
 msgid "Zeitraum, in dem vorherige Bestellungen geprüft werden."
-msgstr ""
+msgstr "Period during which previous orders are checked."
 
 #: templates/admin/settings-page.php:516
 msgid "Mindestbestellwert für die Neukundenrabatt-Berechtigung (0 = kein Minimum)."
-msgstr ""
+msgstr "Minimum order value for new customer discount eligibility (0 = no minimum)."
 
 #: templates/admin/settings-page.php:524
 msgid "Ausgeschlossene Kategorien"
-msgstr ""
+msgstr "Excluded Categories"
 
 #: templates/admin/settings-page.php:550
 msgid "Bestellungen dieser Kategorien werden bei der Neukundenprüfung nicht berücksichtigt."
-msgstr ""
+msgstr "Orders from these categories are not considered in the new customer verification."
 
 #: templates/admin/settings-page.php:570
 msgid "Reset & Bereinigung"
-msgstr ""
+msgstr "Reset & Cleanup"
 
 #: templates/admin/settings-page.php:573
 msgid "Warnung:"
-msgstr ""
+msgstr "Warning:"
 
 #: templates/admin/settings-page.php:574
 msgid "Diese Aktionen können nicht rückgängig gemacht werden. Bitte erstellen Sie vorher ein Backup Ihrer Datenbank."
-msgstr ""
+msgstr "These actions cannot be undone. Please create a backup of your database first."
 
 #: templates/admin/settings-page.php:584
 msgid "Gutscheine zurücksetzen"
-msgstr ""
+msgstr "Reset Coupons"
 
 #: templates/admin/settings-page.php:591
 msgid "Alle erstellten Gutscheine löschen"
-msgstr ""
+msgstr "Delete all created coupons"
 
 #: templates/admin/settings-page.php:598
 msgid "Neukunden zurücksetzen"
-msgstr ""
+msgstr "Reset New Customers"
 
 #: templates/admin/settings-page.php:605
 msgid "Alle Neukunden-Tracking-Daten löschen"
-msgstr ""
+msgstr "Delete all new customer tracking data"
 
 #: templates/admin/settings-page.php:617
 msgid "Ich verstehe, dass diese Aktion nicht rückgängig gemacht werden kann."
-msgstr ""
+msgstr "I understand that this action cannot be undone."
 
 #: templates/admin/settings-page.php:623
 msgid "Ausgewählte Daten zurücksetzen"
-msgstr ""
+msgstr "Reset Selected Data"
 
 #: templates/admin/statistics-page.php:15
 msgid "Neukunden Rabatt Statistiken"
-msgstr ""
+msgstr "New Customer Discount Statistics"
 
 #: templates/admin/statistics-page.php:21
 msgid "Kunden"
-msgstr ""
+msgstr "Customers"
 
 #: templates/admin/statistics-page.php:32
 msgid "Rabatt erhalten"
-msgstr ""
+msgstr "Received Discount"
 
 #: templates/admin/statistics-page.php:40
 msgid "Gutscheine"
-msgstr ""
+msgstr "Coupons"
 
 #: templates/admin/statistics-page.php:43
 msgid "Erstellt"
-msgstr ""
+msgstr "Created"
 
 #: templates/admin/statistics-page.php:47
 msgid "Eingelöst"
-msgstr ""
+msgstr "Redeemed"
 
 #: templates/admin/statistics-page.php:51
 msgid "Aktiv"
-msgstr ""
+msgstr "Active"
 
 #: templates/admin/statistics-page.php:55
 msgid "Abgelaufen"
-msgstr ""
+msgstr "Expired"
 
 #: templates/admin/statistics-page.php:63
 msgid "E-Mails"
-msgstr ""
+msgstr "Emails"
 
 #: templates/admin/statistics-page.php:66
 msgid "Gesendet"
-msgstr ""
+msgstr "Sent"
 
 #: templates/admin/statistics-page.php:70
 #: templates/admin/statistics-page.php:141
 msgid "Erfolgsrate"
-msgstr ""
+msgstr "Success Rate"
 
 #: templates/admin/statistics-page.php:74
 msgid "Letzter Versand"
-msgstr ""
+msgstr "Last Sent"
 
 #: templates/admin/statistics-page.php:87
 msgid "Performance Metriken"
-msgstr ""
+msgstr "Performance Metrics"
 
 #: templates/admin/statistics-page.php:90
 msgid "Konversionsrate"
-msgstr ""
+msgstr "Conversion Rate"
 
 #: templates/admin/statistics-page.php:98
 msgid "Prozentsatz der eingelösten Gutscheine"
-msgstr ""
+msgstr "Percentage of redeemed coupons"
 
 #: templates/admin/statistics-page.php:103
 msgid "Durchschn. Bestellwert"
-msgstr ""
+msgstr "Avg. Order Value"
 
 #: templates/admin/statistics-page.php:114
 msgid "Durchschnittlicher Wert der Bestellungen mit Gutschein"
-msgstr ""
+msgstr "Average value of orders with coupon"
 
 #: templates/admin/statistics-page.php:126
 msgid "Statistiken exportieren"
-msgstr ""
+msgstr "Export Statistics"
 
 #: templates/admin/statistics-page.php:134
 msgid "Monatliche Trends"
-msgstr ""
+msgstr "Monthly Trends"
 
 #: templates/admin/statistics-page.php:138
 msgid "Monat"
-msgstr ""
+msgstr "Month"
 
 #: templates/admin/statistics-page.php:139
 msgid "Versendete E-Mails"
-msgstr ""
+msgstr "Sent Emails"
 
 #: templates/admin/statistics-page.php:140
 msgid "Erfolgreiche Zustellungen"
-msgstr ""
+msgstr "Successful Deliveries"
 
 #: templates/admin/templates-page.php:22
 msgid "E-Mail Template Design"
-msgstr ""
+msgstr "Email Template Design"
 
 #: templates/admin/templates-page.php:30
 msgid "Template auswählen:"
-msgstr ""
+msgstr "Select Template:"
 
 #: templates/admin/templates-page.php:45
 msgid " (Aktiv)"
-msgstr ""
+msgstr " (Active)"
 
 #: templates/admin/templates-page.php:55
 msgid "Template aktivieren"
-msgstr ""
+msgstr "Activate Template"
 
 #: templates/admin/templates-page.php:61
 msgid "Aktives Template: <strong>%s</strong>"
-msgstr ""
+msgstr "Active Template: <strong>%s</strong>"
 
 #: templates/admin/templates-page.php:76
 msgid "Design Anpassen"
-msgstr ""
+msgstr "Customize Design"
 
 #: templates/admin/templates-page.php:82
 msgid "Primärfarbe"
-msgstr ""
+msgstr "Primary Color"
 
 #: templates/admin/templates-page.php:92
 msgid "Akzentfarbe"
-msgstr ""
+msgstr "Accent Color"
 
 #: templates/admin/templates-page.php:102
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #: templates/admin/templates-page.php:112
 msgid "Hintergrund"
-msgstr ""
+msgstr "Background"
 
 #: templates/admin/templates-page.php:124
 msgid "Schriftart"
-msgstr ""
+msgstr "Font"
 
 #: templates/admin/templates-page.php:143
 msgid "Button Design"
-msgstr ""
+msgstr "Button Design"
 
 #: templates/admin/templates-page.php:147
 msgid "Minimalistisch"
-msgstr ""
+msgstr "Minimalist"
 
 #: templates/admin/templates-page.php:150
 msgid "Abgerundet"
-msgstr ""
+msgstr "Rounded"
 
 #: templates/admin/templates-page.php:153
 msgid "Pill"
-msgstr ""
+msgstr "Pill"
 
 #: templates/admin/templates-page.php:160
 msgid "Layout"
-msgstr ""
+msgstr "Layout"
 
 #: templates/admin/templates-page.php:164
 msgid "Zentriert"
-msgstr ""
+msgstr "Centered"
 
 #: templates/admin/templates-page.php:167
 msgid "Volle Breite"
-msgstr ""
+msgstr "Full Width"
 
 #: templates/admin/templates-page.php:176
 msgid "Speichern"
-msgstr ""
+msgstr "Save"
 
 #: templates/admin/templates-page.php:188
 msgid "Vorschau"
-msgstr ""
+msgstr "Preview"
 
 #: templates/admin/templates-page.php:219
 msgid "E-Mail-Adresse"
-msgstr ""
+msgstr "Email Address"
 
 #: templates/admin/templates-page.php:225
 msgid "Senden"
-msgstr ""
-
-#: templates/email/base/classic.php:23
-msgid "Gutschein-Details"
-msgstr ""
-
-#. translators: %s: discount amount
-#: templates/email/base/classic.php:26
-msgid "✨ %s%% Rabatt auf Ihren Einkauf"
-msgstr ""
-
-#. translators: %s: expiry date
-#: templates/email/base/classic.php:31
-msgid "⏰ Einlösbar bis %s"
-msgstr ""
-
-#. translators: %s: minimum order amount
-#: templates/email/base/classic.php:36
-msgid "💰 Ab einem Bestellwert von %s"
-msgstr ""
-
-#: templates/email/base/classic.php:39
-msgid "Zum Online-Shop"
-msgstr ""
+msgstr "Send"
 
 #: templates/email/base/classic.php:44
 msgid "Ein zeitlos-elegantes Design"
-msgstr ""
-
-#: templates/email/base/minimal.php:23
-msgid "Details"
-msgstr ""
-
-#. translators: %s: discount amount
-#: templates/email/base/minimal.php:26
-msgid "%s%% Rabatt auf Ihre Bestellung"
-msgstr ""
-
-#. translators: %s: expiry date
-#: templates/email/base/minimal.php:31
-msgid "Gültig bis %s"
-msgstr ""
-
-#. translators: %s: minimum order amount
-#: templates/email/base/minimal.php:36
-msgid "Mindestbestellwert: %s"
-msgstr ""
-
-#: templates/email/base/minimal.php:39
-msgid "Zum Shop"
-msgstr ""
+msgstr "A timelessly elegant design"
 
 #: templates/email/base/minimal.php:44
 msgid "Ein reduziertes, minimalistisches Design"
-msgstr ""
-
-#: templates/email/base/modern.php:23
-msgid "Ihre Vorteile"
-msgstr ""
-
-#. translators: %s: discount amount
-#: templates/email/base/modern.php:26
-msgid "✨ %s%% Rabatt auf Ihre Bestellung"
-msgstr ""
-
-#. translators: %s: expiry date
-#: templates/email/base/modern.php:31
-msgid "⏰ Gültig bis %s"
-msgstr ""
-
-#. translators: %s: minimum order amount
-#: templates/email/base/modern.php:36
-msgid "💰 Mindestbestellwert: %s"
-msgstr ""
-
-#: templates/email/base/modern.php:39
-msgid "Jetzt einlösen"
-msgstr ""
+msgstr "A reduced, minimalist design"
 
 #: templates/email/base/modern.php:44
 msgid "Ein modernes, dynamisches Design mit klaren Linien"
-msgstr ""
+msgstr "A modern, dynamic design with clean lines"
+
+#: includes/class-ncd-email-sender.php:53
+msgid "Ihr Rabattgutschein"
+msgstr "Your Discount Coupon"
+
+#: includes/class-ncd-email-sender.php:56
+msgid "Ihr exklusiver Willkommensrabatt"
+msgstr "Your Exclusive Welcome Discount"
+
+#: includes/class-ncd-email-sender.php:57
+msgid "Sehr geehrter Kunde,"
+msgstr "Dear Customer,"
+
+#: includes/class-ncd-email-sender.php:58
+msgid "vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt."
+msgstr "thank you for your interest in {shop_name}. As a special welcome gift, we have created an exclusive discount coupon for you."
+
+#: includes/class-ncd-email-sender.php:59
+msgid "Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein."
+msgstr "Visit our shop and enter the coupon code at checkout."
+
+#: includes/class-ncd-email-sender.php:60
+msgid "Dies ist eine automatisch generierte E-Mail."
+msgstr "This is an automatically generated email."
+
+#: templates/email/base/classic.php:23
+msgid "Gutschein-Details"
+msgstr "Coupon Details"
+
+#: templates/email/base/classic.php:26
+msgid "✨ %s%% Rabatt auf Ihren Einkauf"
+msgstr "✨ %s%% off your purchase"
+
+#: templates/email/base/classic.php:31
+msgid "⏰ Einlösbar bis %s"
+msgstr "⏰ Valid until %s"
+
+#: templates/email/base/classic.php:36
+msgid "💰 Ab einem Bestellwert von %s"
+msgstr "💰 For orders over %s"
+
+#: templates/email/base/classic.php:39
+msgid "Zum Online-Shop"
+msgstr "To Online Shop"
+
+#: templates/email/base/minimal.php:23
+msgid "Details"
+msgstr "Details"
+
+#: templates/email/base/minimal.php:26
+msgid "%s%% Rabatt auf Ihre Bestellung"
+msgstr "%s%% off your order"
+
+#: templates/email/base/minimal.php:31
+msgid "Gültig bis %s"
+msgstr "Valid until %s"
+
+#: templates/email/base/minimal.php:36
+msgid "Mindestbestellwert: %s"
+msgstr "Minimum order value: %s"
+
+#: templates/email/base/minimal.php:39
+msgid "Zum Shop"
+msgstr "To Shop"
+
+#: templates/email/base/modern.php:23
+msgid "Ihre Vorteile"
+msgstr "Your Benefits"
+
+#: templates/email/base/modern.php:26
+msgid "✨ %s%% Rabatt auf Ihre Bestellung"
+msgstr "✨ %s%% off your order"
+
+#: templates/email/base/modern.php:31
+msgid "⏰ Gültig bis %s"
+msgstr "⏰ Valid until %s"
+
+#: templates/email/base/modern.php:36
+msgid "💰 Mindestbestellwert: %s"
+msgstr "💰 Minimum order value: %s"
+
+#: templates/email/base/modern.php:39
+msgid "Jetzt einlösen"
+msgstr "Redeem Now"
