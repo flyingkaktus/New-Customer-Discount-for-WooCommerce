@@ -2,7 +2,7 @@
 /**
 * Admin Main Class
 *
-* Hauptklasse für den WordPress Admin-Bereich
+* Main class for admin functionality
 *
 * @package NewCustomerDiscount
 * @subpackage Admin
@@ -57,12 +57,34 @@ class NCD_Admin {
                'settings' => new NCD_Admin_Settings(),
                'statistics' => new NCD_Admin_Statistics()
            ];
+   private function init_pages() {
+       try {
+           $pages = [
+               'customers' => new NCD_Admin_Customers(),
+               'templates' => new NCD_Admin_Templates(),
+               'settings' => new NCD_Admin_Settings(),
+               'statistics' => new NCD_Admin_Statistics()
+           ];
     
            foreach ($pages as $key => $page) {
                $this->pages[$key] = $page;
                $this->menu->add_page($key, $page);
            }
+           foreach ($pages as $key => $page) {
+               $this->pages[$key] = $page;
+               $this->menu->add_page($key, $page);
+           }
     
+           if (WP_DEBUG) {
+               error_log('Admin pages initialized: ' . implode(', ', array_keys($this->pages)));
+           }
+       } catch (Exception $e) {
+           if (WP_DEBUG) {
+               error_log('Failed to initialize admin pages: ' . $e->getMessage());
+           }
+           throw $e;
+       }
+   }
            if (WP_DEBUG) {
                error_log('Admin pages initialized: ' . implode(', ', array_keys($this->pages)));
            }
@@ -86,7 +108,14 @@ class NCD_Admin {
    public function get_tab_manager() {
        return $this->tab_manager;
    }
+   public function get_tab_manager() {
+       return $this->tab_manager;
+   }
 
+   public function enqueue_common_assets($hook) {
+       if (strpos($hook, 'new-customers') === false) {
+           return;
+       }
    public function enqueue_common_assets($hook) {
        if (strpos($hook, 'new-customers') === false) {
            return;
@@ -95,20 +124,20 @@ class NCD_Admin {
        if (WP_DEBUG) {
            error_log('Loading admin assets for hook: ' . $hook);
        }
+       if (WP_DEBUG) {
+           error_log('Loading admin assets for hook: ' . $hook);
+       }
 
        $asset_version = WP_DEBUG ? time() : NCD_VERSION;
        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
 
-       // Core Scripts registrieren
+
        $this->register_core_scripts($asset_version);
 
-       // Styles registrieren
        $this->register_styles($asset_version);
 
-       // Seitenspezifische Assets
        $this->register_page_specific_assets($current_page, $asset_version);
 
-       // Scripts enqueuen
        $this->enqueue_required_scripts($current_page);
 
        if (WP_DEBUG) {
@@ -118,7 +147,6 @@ class NCD_Admin {
    }
 
    private function register_core_scripts($version) {
-       // Base Script
        wp_register_script(
            'ncd-admin-base',
            NCD_ASSETS_URL . 'js/core/admin-base.js',
@@ -127,7 +155,6 @@ class NCD_Admin {
            true
        );
 
-       // Ajax Handler
        wp_register_script(
            'ncd-ajax-handler',
            NCD_ASSETS_URL . 'js/core/ajax-handler.js',
@@ -136,14 +163,19 @@ class NCD_Admin {
            true
        );
 
-       // Lokalisierung
        wp_localize_script('ncd-admin-base', 'ncdAdmin', $this->get_admin_localization());
 
-       // Base Script aktivieren
        wp_enqueue_script('ncd-admin-base');
        wp_enqueue_script('ncd-ajax-handler');
    }
 
+   private function register_styles($version) {
+       wp_register_style(
+           'ncd-admin-base', 
+           NCD_ASSETS_URL . 'css/admin/base.css',
+           [],
+           $version
+       );
    private function register_styles($version) {
        wp_register_style(
            'ncd-admin-base', 
@@ -158,7 +190,19 @@ class NCD_Admin {
            ['ncd-admin-base'],
            $version
        );
+       wp_register_style(
+           'ncd-admin-tabs', 
+           NCD_ASSETS_URL . 'css/admin/tabs.css',
+           ['ncd-admin-base'],
+           $version
+       );
 
+       wp_register_style(
+           'ncd-admin-customers',
+           NCD_ASSETS_URL . 'css/admin/customers.css',
+           ['ncd-admin-base'],
+           $version
+       );
        wp_register_style(
            'ncd-admin-customers',
            NCD_ASSETS_URL . 'css/admin/customers.css',
@@ -172,7 +216,19 @@ class NCD_Admin {
            ['ncd-admin-base'],
            $version
        );
+       wp_register_style(
+           'ncd-admin-templates',
+           NCD_ASSETS_URL . 'css/admin/templates.css',
+           ['ncd-admin-base'],
+           $version
+       );
 
+       wp_register_style(
+           'ncd-admin-settings',
+           NCD_ASSETS_URL . 'css/admin/settings.css',
+           ['ncd-admin-base'],
+           $version
+       );
        wp_register_style(
            'ncd-admin-settings',
            NCD_ASSETS_URL . 'css/admin/settings.css',
@@ -187,14 +243,12 @@ class NCD_Admin {
            $version
        );
 
-       // Base Styles aktivieren
        wp_enqueue_style('ncd-admin-base');
        wp_enqueue_style('ncd-admin-tabs');
        wp_enqueue_style('dashicons');
    }
 
    private function register_page_specific_assets($current_page, $version) {
-       // Page Manager Scripts
        wp_register_script(
            'ncd-customer-manager',
            NCD_ASSETS_URL . 'js/modules/customer-manager.js',
@@ -227,12 +281,10 @@ class NCD_Admin {
            true
        );
 
-       // Template spezifische Lokalisierung
        if ($current_page === 'new-customers-templates') {
            wp_localize_script('ncd-template-manager', 'ncdTemplates', $this->get_template_localization());
        }
 
-       // Tab spezifische Lokalisierung
        if ($this->needs_tabs($current_page)) {
            wp_localize_script('ncd-tab-manager', 'ncdTabs', $this->get_tab_localization());
        }
@@ -270,7 +322,6 @@ class NCD_Admin {
                break;
        }
 
-       // Haupt Admin Script
        wp_enqueue_script(
            'ncd-admin',
            NCD_ASSETS_URL . 'js/admin.js',
@@ -298,45 +349,46 @@ class NCD_Admin {
    }
 
    private function get_admin_messages() {
-       return [
-           'error' => __('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', 'newcustomer-discount'),
-           'email_required' => __('Bitte geben Sie eine E-Mail-Adresse ein.', 'newcustomer-discount'),
-           'confirm_test' => __('Möchten Sie eine Test-E-Mail an diese Adresse senden?', 'newcustomer-discount'),
-           'confirm_send' => __('Möchten Sie einen Rabattcode senden?', 'newcustomer-discount'),
-           'sending' => __('Sende...', 'newcustomer-discount'),
-           'success' => __('Erfolgreich gespeichert.', 'newcustomer-discount'),
-           'loading' => __('Laden...', 'newcustomer-discount'),
-           'confirm_template_activation' => __('Möchten Sie dieses Template wirklich aktivieren?', 'newcustomer-discount'),
-           'yes' => __('Ja', 'newcustomer-discount'), 
-           'no' => __('Nein', 'newcustomer-discount'),
-           'settings_saved' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
-           'feedback_required' => __('Bitte geben Sie Ihr Feedback ein.', 'newcustomer-discount'),
-           'submit_feedback' => __('Feedback senden', 'newcustomer-discount'),
-           'feedback_success' => __('Vielen Dank für Ihr Feedback!', 'newcustomer-discount'),
-           'enter_email' => __('E-Mail Adresse eingeben', 'newcustomer-discount'),
-           'send_test' => __('Test-E-Mail senden', 'newcustomer-discount')
-       ];
-   }
+    return [
+        'error' => __('An error occurred. Please try again.', 'newcustomer-discount'),
+        'email_required' => __('Please enter an email address.', 'newcustomer-discount'),
+        'confirm_test' => __('Would you like to send a test email to this address?', 'newcustomer-discount'),
+        'confirm_send' => __('Would you like to send a discount code?', 'newcustomer-discount'),
+        'sending' => __('Sending...', 'newcustomer-discount'),
+        'success' => __('Successfully saved.', 'newcustomer-discount'),
+        'loading' => __('Loading...', 'newcustomer-discount'),
+        'confirm_template_activation' => __('Do you really want to activate this template?', 'newcustomer-discount'),
+        'yes' => __('Yes', 'newcustomer-discount'),
+        'no' => __('No', 'newcustomer-discount'),
+        'settings_saved' => __('Template settings have been saved.', 'newcustomer-discount'),
+        'feedback_required' => __('Please enter your feedback.', 'newcustomer-discount'),
+        'submit_feedback' => __('Submit feedback', 'newcustomer-discount'),
+        'feedback_success' => __('Thank you for your feedback!', 'newcustomer-discount'),
+        'enter_email' => __('Enter email address', 'newcustomer-discount'),
+        'send_test' => __('Send test email', 'newcustomer-discount'),
+        'coupon_sent' => __('Discount code has already been sent', 'newcustomer-discount')
+    ];
+}
 
-   private function get_template_localization() {
-       return [
-           'messages' => [
-               'save_success' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
-               'save_error' => __('Fehler beim Speichern der Einstellungen.', 'newcustomer-discount'),
-               'preview_error' => __('Fehler beim Generieren der Vorschau.', 'newcustomer-discount')
-           ]
-       ];
-   }
+    private function get_template_localization() {
+        return [
+            'messages' => [
+                'save_success' => __('Template settings have been saved.', 'newcustomer-discount'),
+                'save_error' => __('Error saving settings.', 'newcustomer-discount'),
+                'preview_error' => __('Error generating preview.', 'newcustomer-discount')
+            ]
+        ];
+    }
 
-   private function get_tab_localization() {
-       return [
-           'defaultTab' => 'logo-settings',
-           'messages' => [
-               'loading' => __('Laden...', 'newcustomer-discount'),
-               'error' => __('Fehler beim Laden des Tabs', 'newcustomer-discount')
-           ]
-       ];
-   }
+    private function get_tab_localization() {
+        return [
+            'defaultTab' => 'logo-settings',
+            'messages' => [
+                'loading' => __('Loading...', 'newcustomer-discount'),
+                'error' => __('Error loading tab', 'newcustomer-discount')
+            ]
+        ];
+    }
 
    private function debug_loaded_assets() {
        global $wp_scripts, $wp_styles;
@@ -347,7 +399,20 @@ class NCD_Admin {
                error_log(' - ' . $handle);
            }
        }
+       error_log('Loaded NCD Admin Scripts:');
+       foreach ($wp_scripts->queue as $handle) {
+           if (strpos($handle, 'ncd-') !== false) {
+               error_log(' - ' . $handle);
+           }
+       }
         
+       error_log('Loaded NCD Admin Styles:');
+       foreach ($wp_styles->queue as $handle) {
+           if (strpos($handle, 'ncd-') !== false) {
+               error_log(' - ' . $handle);
+           }
+       }
+   }
        error_log('Loaded NCD Admin Styles:');
        foreach ($wp_styles->queue as $handle) {
            if (strpos($handle, 'ncd-') !== false) {

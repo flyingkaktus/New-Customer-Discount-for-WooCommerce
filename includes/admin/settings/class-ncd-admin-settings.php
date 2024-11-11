@@ -2,7 +2,7 @@
 /**
  * Admin Settings Class
  *
- * Verwaltet die Plugin-Einstellungen im WordPress Admin-Bereich
+ * Manages the settings page
  *
  * @package NewCustomerDiscount
  * @subpackage Admin\Settings
@@ -20,13 +20,12 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
      */
     public function __construct() {
         parent::__construct();
-        
-        // Zusätzliche Hooks für Einstellungen
+
         add_action('admin_init', [$this, 'register_settings']);
     }
 
     /**
-     * Registriert die Plugin-Einstellungen
+     * Register Settings
      */
     public function register_settings() {
         // General Settings
@@ -35,7 +34,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
         // Email Settings
         register_setting('ncd_email_settings', 'ncd_email_subject');
 
-        // Gutschein Settings
+        // Discount Settings
         register_setting('ncd_coupon_settings', 'ncd_discount_amount', [
             'type' => 'integer',
             'sanitize_callback' => [$this, 'sanitize_discount_amount']
@@ -97,7 +96,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Rendert die Einstellungsseite
+     * Renders the settings page
      */
     public function render_page() {
         if (!$this->check_admin_permissions()) {
@@ -110,14 +109,14 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
             if($reset_count > 0) {
                 $this->add_admin_notice(
                     sprintf(
-                        __('Erfolgreich %d Einträge zurückgesetzt.', 'newcustomer-discount'), 
+                        __('Successfully reset %d entries.', 'newcustomer-discount'), 
                         $reset_count
                     ),
                     'success'
                 );
             } else {
                 $this->add_admin_notice(
-                    __('Keine Daten zum Zurücksetzen gefunden.', 'newcustomer-discount'),
+                    __('No data found to reset.', 'newcustomer-discount'),
                     'info'
                 );
             }
@@ -125,7 +124,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
 
         if ($this->handle_settings_post()) {
             $this->add_admin_notice(
-                __('Einstellungen wurden gespeichert.', 'newcustomer-discount'),
+                __('Settings have been saved.', 'newcustomer-discount'),
                 'success'
             );
         }
@@ -134,7 +133,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Verarbeitet POST-Anfragen der Einstellungsseite
+     * Processes settings form submissions
      *
      * @return bool
      */
@@ -173,21 +172,36 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Verarbeitet Logo-Updates
+     * Processes Logo-Updates
      *
      * @return bool
      */
     private function handle_logo_update() {
+        $success = false;
+        
         if (!empty($_FILES['logo_file']['name'])) {
-            return NCD_Logo_Manager::save_logo($_FILES['logo_file']);
+            $success = NCD_Logo_Manager::save_logo($_FILES['logo_file']);
         } elseif (!empty($_POST['logo_base64'])) {
-            return NCD_Logo_Manager::save_base64($_POST['logo_base64']);
+            $success = NCD_Logo_Manager::save_base64($_POST['logo_base64']);
         }
-        return false;
+    
+        if ($success) {
+            $this->add_admin_notice(
+                __('Logo has been successfully saved.', 'newcustomer-discount'),
+                'success'
+            );
+        } else {
+            $this->add_admin_notice(
+                __('Logo could not be saved.', 'newcustomer-discount'),
+                'error'
+            );
+        }
+    
+        return $success;
     }
 
     /**
-     * Verarbeitet Logo-Löschungen
+     * Processes Logo-Deletions
      *
      * @return bool
      */
@@ -196,35 +210,29 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Verarbeitet E-Mail-Einstellungen
+     * Processes E-Mail-Settings
      *
      * @return bool
      */
     private function handle_email_settings() {
         try {
-            // E-Mail-Betreff speichern
+
             update_option('ncd_email_subject', sanitize_text_field($_POST['email_subject']));
     
-            // E-Mail-Texte speichern
             if (isset($_POST['email_texts']) && is_array($_POST['email_texts'])) {
-                // Bestehende E-Mail-Texte laden
+
                 $existing_texts = get_option('ncd_email_texts', []);
-                
-                // Neue Werte durchgehen und sanitieren
                 $new_texts = [];
                 foreach ($_POST['email_texts'] as $key => $value) {
                     if ($key === 'heading') {
-                        // Die Überschrift speziell behandeln
                         $new_texts[$key] = sanitize_text_field($value);
                     } else {
                         $new_texts[$key] = wp_kses_post($value);
                     }
                 }
-                
-                // Neue Texte mit bestehenden zusammenführen, dabei haben neue Werte Priorität
+
                 $email_texts = array_merge($existing_texts, $new_texts);
     
-                // Speichern OHNE default_email_texts zu verwenden
                 update_option('ncd_email_texts', $email_texts);
             }
     
@@ -233,14 +241,14 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     
         } catch (Exception $e) {
             if (WP_DEBUG) {
-                error_log('Fehler beim Speichern der E-Mail-Einstellungen: ' . $e->getMessage());
+                error_log('Error saving email settings: ' . $e->getMessage());
             }
             return false;
         }
     }
 
     /**
-     * Verarbeitet Gutschein
+     * Processes Coupon-Settings
      *
      * @return bool
      */
@@ -255,7 +263,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Verarbeitet Code-Einstellungen
+     * Processes Code-Settings
      *
      * @return bool
      */
@@ -272,7 +280,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Verarbeitet Kunden-Einstellungen
+     * Processes Customer-Settings
      *
      * @return bool
      */
@@ -294,7 +302,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Handler für Reset-Anfragen
+     * Handles the reset data action
      */
     public function handle_reset_data() {
         if (!$this->check_admin_permissions()) {
@@ -302,32 +310,31 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
         }
 
         if (!isset($_POST['ncd_reset_nonce']) || !wp_verify_nonce($_POST['ncd_reset_nonce'], 'ncd_reset_settings')) {
-            wp_die(__('Sicherheitsüberprüfung fehlgeschlagen.', 'newcustomer-discount'));
+            wp_die(__('Security check failed.', 'newcustomer-discount'));
         }
 
         $reset_count = $this->perform_reset_actions();
 
-        // Nutze die existierende add_admin_notice Methode aus NCD_Admin_Base
         if($reset_count > 0) {
             $this->add_admin_notice(
                 sprintf(
-                    __('Erfolgreich %d Einträge zurückgesetzt.', 'newcustomer-discount'), 
+                    __('Successfully reset %d entries.', 'newcustomer-discount'), 
                     $reset_count
                 ),
                 'success'
             );
         } else {
             $this->add_admin_notice(
-                __('Keine Daten zum Zurücksetzen gefunden.', 'newcustomer-discount'),
+                __('No data found to reset.', 'newcustomer-discount'),
                 'info'
             );
         }
     }
 
     /**
-     * Führt die Reset-Aktionen aus
+     * Executes the reset actions
      *
-     * @return int Anzahl der zurückgesetzten Elemente
+     * @return int Number of reset entries
      */
     private function perform_reset_actions() {
         if (!isset($_POST['reset_actions']) || !isset($_POST['confirm_reset']) || $_POST['confirm_reset'] != '1') {
@@ -349,7 +356,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Setzt alle erstellten Gutscheine zurück
+     * Sets all generated coupons back to default
      *
      * @return int
      */
@@ -357,7 +364,6 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
         global $wpdb;
         $count = 0;
 
-        // Für WooCommerce 8.0+ HPOS Tabellen
         if ($wpdb->get_var("SHOW TABLES LIKE '{$wpdb->prefix}wc_coupons'") === "{$wpdb->prefix}wc_coupons") {
             $coupon_ids = $wpdb->get_col("
                 SELECT coupon_id 
@@ -373,7 +379,6 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
                 $count++;
             }
         } else {
-            // Alte WordPress Tabellenstruktur
             $coupon_ids = $wpdb->get_col("
                 SELECT ID 
                 FROM {$wpdb->posts} p
@@ -393,7 +398,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Setzt alle Neukunden-Tracking-Daten zurück
+     * Sets all customer tracking data back to default
      *
      * @return int
      */
@@ -414,7 +419,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Sanitize-Funktionen für Einstellungen
+     * Sanitize-Function for discount amount
      */
     public function sanitize_discount_amount($value) {
         return min(max(absint($value), 1), 100);
@@ -441,16 +446,16 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Verarbeitet Feedback-Submissions
+     * Processes the feedback form submission
      *
      * @param array $data POST-Daten
      */
     public function handle_submit_feedback($data) {
         try {
-            // Validiere Felder
             if (empty($data['feedback_content'])) {
-                throw new Exception(__('Bitte geben Sie Ihr Feedback ein.', 'newcustomer-discount'));
+                throw new Exception(__('Please enter your feedback.', 'newcustomer-discount'));
             }
+    
     
             $feedback = [
                 'type' => sanitize_text_field($data['feedback_type']),
@@ -460,22 +465,25 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
                 'user_email' => wp_get_current_user()->user_email,
                 'site_url' => get_site_url()
             ];
-    
-            // Sende Feedback
+
             $sent = $this->send_feedback($feedback);
+    
     
             if ($sent) {
                 // WordPress Notice-System verwenden
                 wp_send_json_success([
-                    'message' => __('Vielen Dank für Ihr Feedback!', 'newcustomer-discount'),
+                    'message' => __('Thank you for your feedback!', 'newcustomer-discount'),
                     'type' => 'success'
                 ]);
             } else {
-                throw new Exception(__('Feedback konnte nicht gesendet werden.', 'newcustomer-discount'));
+                throw new Exception(__('Feedback could not be sent', 'newcustomer-discount'));
             }
+    
     
         } catch (Exception $e) {
             wp_send_json_error([
+                'message' => $e->getMessage(),
+                'type' => 'error'
                 'message' => $e->getMessage(),
                 'type' => 'error'
             ]);
@@ -483,7 +491,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Sendet das Feedback
+     * Sends the feedback via email
      *
      * @param array $feedback
      * @return bool
@@ -518,7 +526,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Sammelt System-Informationen
+     * Collecting system information
      *
      * @return string
      */

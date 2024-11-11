@@ -3,7 +3,7 @@
 
     class NCDCustomerManager {
         constructor() {
-            // Überprüfe ob ncdAdmin verfügbar ist
+
             if (typeof window.ncdAdmin === 'undefined') {
                 console.error('ncdAdmin object not found');
                 return;
@@ -20,17 +20,9 @@
             this.$filterForm = $('.ncd-filter-form');
             this.originalButtonText = $('.ncd-send-discount').text();
             
-            // Speichere nonce direkt aus ncdAdmin
             this.nonce = window.ncdAdmin.nonce;
-            
-            // Messages aus ncdAdmin übernehmen
-            this.messages = window.ncdAdmin.messages || {
-                error: 'Ein Fehler ist aufgetreten',
-                email_required: 'Bitte geben Sie eine E-Mail-Adresse ein',
-                confirm_test: 'Möchten Sie eine Test-E-Mail senden?',
-                confirm_send: 'Möchten Sie einen Rabattcode senden?',
-                sending: 'Sende...'
-            };
+            this.messages = window.ncdAdmin.messages;
+
             this.$customerTable.off('click', '.ncd-send-discount');
             this.bindEvents();
             
@@ -48,38 +40,17 @@
             this.$filterForm.on('change', 'select, input', () => this.handleFilterChange());
         }
 
-        handleTestEmailSubmit(e) {
-            e.preventDefault();
-            const $form = $(e.currentTarget);
-            const email = $form.find('input[name="test_email"]').val();
-
-            if (!this.validateEmail(email)) {
-                alert(this.messages.email_required);
-                return;
-            }
-
-            if (!confirm(this.messages.confirm_test)) {
-                return;
-            }
-
-            this.submitForm($form);
-        }
-
         handleDiscountSend(e) {
             e.preventDefault();
             const $button = $(e.currentTarget);
             const email = $button.data('email');
             const firstName = $button.data('first-name');
             const lastName = $button.data('last-name');
-
-            if (!confirm(this.messages.confirm_send)) {
-                return;
-            }
-
+        
             $button.prop('disabled', true)
                 .addClass('updating-message')
                 .text(this.messages.sending);
-
+        
             $.post(ajaxurl, {
                 action: 'ncd_send_discount',
                 nonce: this.nonce,
@@ -89,14 +60,30 @@
             })
             .done((response) => {
                 if (response.success) {
-                    location.reload();
+                    NCDBase.showNotice(response.data.message, 'success');
+                    
+                    const $row = $button.closest('tr');
+                    const $codeCell = $row.find('.ncd-col-code');
+                    const $sentCell = $row.find('.ncd-col-sent');
+                    const $actionCell = $row.find('.ncd-col-actions');
+                    
+                    if (response.data.coupon_code) {
+                        $codeCell.text(response.data.coupon_code);
+                    }
+                    if (response.data.sent_date) {
+                        $sentCell.text(response.data.sent_date);
+                    }
+                    
+                    $actionCell.html('<span class="ncd-sent-info" title="' + 
+                        this.messages.coupon_sent + '">✓</span>');
+                    
                 } else {
-                    alert(response.data?.message || this.messages.error);
+                    NCDBase.showNotice(response.data?.message || this.messages.error, 'error');
                     this.resetButton($button);
                 }
             })
             .fail(() => {
-                alert(this.messages.error);
+                NCDBase.showNotice(this.messages.error, 'error');
                 this.resetButton($button);
             });
         }
@@ -148,10 +135,8 @@
         }
     }
 
-    // Globale Verfügbarkeit für andere Module
     window.NCDCustomerManager = NCDCustomerManager;
 
-    // Initialisierung nur wenn ncdAdmin verfügbar ist
     $(document).ready(() => {
         if (typeof window.ncdAdmin !== 'undefined' && window.ncdAdmin.nonce) {
             window.ncdCustomerManager = new NCDCustomerManager();

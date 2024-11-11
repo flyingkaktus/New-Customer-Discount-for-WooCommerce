@@ -14,11 +14,10 @@ class NCD_Updater
     private $github_username;
     private $github_repo;
     private $github_response;
-    private $authorize_token; // Optional für private Repos
+    private $authorize_token;
 
     public function __construct($file)
     {
-        // Include plugin.php to get access to is_plugin_active()
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
         $this->file = $file;
@@ -28,20 +27,16 @@ class NCD_Updater
         error_log('NCD_Updater basename: ' . $this->basename);
         error_log('NCD_Updater active: ' . ($this->active ? 'yes' : 'no'));
 
-        // GitHub-Einstellungen
         $this->github_username = 'flyingkaktus';
-        $this->github_repo = 'New-Customer-Gutschein-for-WooCommerce';
+        $this->github_repo = 'New-Customer-Discount-for-WooCommerce';
 
-        // Plugin Daten direkt setzen
         $this->plugin = get_plugin_data($this->file);
         error_log('NCD_Updater current version: ' . $this->plugin["Version"]);
 
-        // Hooks hinzufügen
         add_filter('pre_set_site_transient_update_plugins', [$this, 'modify_transient'], 10, 1);
         add_filter('plugins_api', [$this, 'plugin_popup'], 10, 3);
         add_filter('upgrader_post_install', [$this, 'after_install'], 10, 3);
 
-        // Cache regelmäßig leeren
         add_action('admin_init', [$this, 'clear_plugin_cache']);
     }
 
@@ -71,7 +66,6 @@ class NCD_Updater
             ]
         ];
 
-        // Füge Authorization hinzu falls Token gesetzt
         if (!empty($this->authorize_token)) {
             $args['headers']['Authorization'] = "token {$this->authorize_token}";
         }
@@ -93,7 +87,6 @@ class NCD_Updater
             return false;
         }
 
-        // Speichere Response
         $this->github_response = $data;
 
         return true;
@@ -107,17 +100,14 @@ class NCD_Updater
             $transient = new stdClass;
         }
     
-        // Stelle sicher dass checked existiert
         if (!isset($transient->checked)) {
             error_log('NCD_Updater initializing checked data');
             $transient->checked = [];
         }
     
-        // Füge unser Plugin zur checked-Liste hinzu
         $transient->checked[$this->basename] = $this->plugin['Version'];
         error_log('NCD_Updater added plugin to checked: ' . $this->basename . ' => ' . $this->plugin['Version']);
     
-        // Hole GitHub Version
         if ($this->get_repository_info()) {
             $remote_version = str_replace('v', '', $this->github_response->tag_name);
             error_log('NCD_Updater remote version: ' . $remote_version);
@@ -137,7 +127,6 @@ class NCD_Updater
                 $obj->requires = $this->plugin["RequiresWP"];
                 $obj->requires_php = $this->plugin["RequiresPHP"];
                 
-                // Log before setting response
                 error_log('Setting response for: ' . $this->basename);
                 $transient->response[$this->basename] = $obj;
                 
@@ -172,7 +161,7 @@ class NCD_Updater
             $plugin = new stdClass();
             $plugin->name = $this->plugin["Name"];
             $plugin->slug = dirname($this->basename);
-            $plugin->plugin = $this->basename;  // Wichtig!
+            $plugin->plugin = $this->basename;
             $plugin->version = str_replace('v', '', $this->github_response->tag_name);
             $plugin->author = $this->plugin["AuthorName"];
             $plugin->homepage = $this->plugin["PluginURI"];

@@ -2,7 +2,7 @@
 /**
  * Logo Manager Class
  *
- * Verwaltet das Upload, Speichern und Abrufen des Logos für E-Mail-Templates
+ * Manages the upload, storage and retrieval of logos for email templates
  *
  * @package NewCustomerDiscount
  * @since 0.0.1
@@ -14,36 +14,36 @@ if (!defined('ABSPATH')) {
 
 class NCD_Logo_Manager {
     /**
-     * Option name für das Logo in der WordPress Datenbank
+     * Option name for the logo in WordPress database
      *
      * @var string
      */
     private static $option_name = 'ncd_logo_base64';
 
     /**
-     * Erlaubte Bildtypen
+     * Allowed image types
      *
      * @var array
      */
     private static $allowed_types = ['image/jpeg', 'image/png'];
 
     /**
-     * Maximale Dateigröße in Bytes (2MB)
+     * Maximum file size in bytes (2MB)
      *
      * @var int
      */
-    private static $max_file_size = 2097152; // 2 * 1024 * 1024
+    private static $max_file_size = 2097152;
 
     /**
-     * Speichert einen Base64-String als Logo
+     * Saves a base64 string as logo
      *
-     * @param string $base64_string Der zu speichernde Base64-String
-     * @return bool True bei Erfolg, False bei Fehler
+     * @param string $base64_string The base64 string to be saved
+     * @return bool True on success, False on error
      */
     public static function save_base64($base64_string) {
         try {
             if (!self::validate_base64($base64_string)) {
-                throw new Exception(__('Ungültiger Base64-String.', 'newcustomer-discount'));
+                throw new Exception(__('Invalid Base64 string.', 'newcustomer-discount'));
             }
             
             return update_option(self::$option_name, $base64_string);
@@ -57,20 +57,20 @@ class NCD_Logo_Manager {
     }
 
     /**
-     * Speichert ein Logo via File-Upload
+     * Saves a logo via file upload
      *
-     * @param array $file $_FILES Array des Uploads
-     * @return bool True bei Erfolg, False bei Fehler
+     * @param array $file $_FILES array of the upload
+     * @return bool True on success, False on error
      */
     public static function save_logo($file) {
         try {
             if (!self::validate_upload($file)) {
-                throw new Exception(__('Ungültige Datei.', 'newcustomer-discount'));
+                throw new Exception(__('Invalid file.', 'newcustomer-discount'));
             }
 
             $base64 = self::convert_to_base64($file);
             if (!$base64) {
-                throw new Exception(__('Konvertierung fehlgeschlagen.', 'newcustomer-discount'));
+                throw new Exception(__('Conversion failed.', 'newcustomer-discount'));
             }
 
             return self::save_base64($base64);
@@ -84,28 +84,28 @@ class NCD_Logo_Manager {
     }
 
     /**
-     * Ruft das gespeicherte Logo ab
+     * Retrieves the stored logo
      *
-     * @return string Base64-String des Logos oder leerer String
+     * @return string Base64 string of the logo or empty string
      */
     public static function get_logo() {
         return get_option(self::$option_name, '');
     }
 
     /**
-     * Löscht das gespeicherte Logo
+     * Deletes the stored logo
      *
-     * @return bool True bei Erfolg, False bei Fehler
+     * @return bool True on success, False on error
      */
     public static function delete_logo() {
         return delete_option(self::$option_name);
     }
 
     /**
-     * Validiert einen Base64-String
+     * Validates a base64 string
      *
-     * @param string $string Zu validierender Base64-String
-     * @return bool True wenn valid, False wenn invalid
+     * @param string $string Base64 string to validate
+     * @return bool True if valid, False if invalid
      */
     private static function validate_base64($string) {
         if (!preg_match('/^data:image\/(jpeg|png);base64,/', $string)) {
@@ -119,7 +119,6 @@ class NCD_Logo_Manager {
             return false;
         }
 
-        // Überprüfe Dateigröße nach Dekodierung
         if (strlen($decoded) > self::$max_file_size) {
             return false;
         }
@@ -128,28 +127,24 @@ class NCD_Logo_Manager {
     }
 
     /**
-     * Validiert einen File-Upload
+     * Validates a file upload
      *
-     * @param array $file $_FILES Array des Uploads
-     * @return bool True wenn valid, False wenn invalid
+     * @param array $file $_FILES array of the upload
+     * @return bool True if valid, False if invalid
      */
     private static function validate_upload($file) {
-        // Grundlegende Überprüfungen
         if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
             return false;
         }
 
-        // Typ-Überprüfung
         if (!in_array($file['type'], self::$allowed_types)) {
             return false;
         }
 
-        // Größen-Überprüfung
         if ($file['size'] > self::$max_file_size) {
             return false;
         }
 
-        // MIME-Type Validierung
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime_type = finfo_file($finfo, $file['tmp_name']);
         finfo_close($finfo);
@@ -162,20 +157,20 @@ class NCD_Logo_Manager {
     }
 
     /**
-     * Konvertiert eine Datei zu Base64
+     * Converts a file to base64
      *
-     * @param array $file $_FILES Array des Uploads
-     * @return string|false Base64-String oder False bei Fehler
+     * @param array $file $_FILES array of the upload
+     * @return string|false Base64 string or False on error
      */
     private static function convert_to_base64($file) {
         try {
             if (!file_exists($file['tmp_name'])) {
-                throw new Exception('Temporäre Datei nicht gefunden');
+                throw new Exception('Temporary file not found');
             }
 
             $data = file_get_contents($file['tmp_name']);
             if ($data === false) {
-                throw new Exception('Datei konnte nicht gelesen werden');
+                throw new Exception('Could not read file');
             }
 
             return 'data:' . $file['type'] . ';base64,' . base64_encode($data);
@@ -189,10 +184,10 @@ class NCD_Logo_Manager {
     }
 
     /**
-     * Loggt Fehler für Debugging
+     * Logs errors for debugging
      *
-     * @param string $message Fehlermeldung
-     * @param array $context Zusätzliche Kontext-Informationen
+     * @param string $message Error message
+     * @param array $context Additional context information
      * @return void
      */
     private static function log_error($message, $context = []) {
@@ -206,18 +201,18 @@ class NCD_Logo_Manager {
     }
 
     /**
-     * Gibt die erlaubten Dateitypen zurück
+     * Returns the allowed file types
      *
-     * @return array Array mit erlaubten MIME-Types
+     * @return array Array with allowed MIME types
      */
     public static function get_allowed_types() {
         return self::$allowed_types;
     }
 
     /**
-     * Gibt die maximale Dateigröße in Bytes zurück
+     * Returns the maximum file size in bytes
      *
-     * @return int Maximale Dateigröße in Bytes
+     * @return int Maximum file size in bytes
      */
     public static function get_max_file_size() {
         return self::$max_file_size;

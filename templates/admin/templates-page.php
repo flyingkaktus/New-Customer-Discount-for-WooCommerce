@@ -9,7 +9,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Hole verfügbare Templates & aktives Template
 $email_sender = new NCD_Email_Sender();
 $available_templates = $email_sender->get_template_list();
 $current_template_id = get_option('ncd_active_template', 'modern');
@@ -19,15 +18,14 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
 ?>
 
 <div class="wrap ncd-wrap">
-    <h1><?php _e('E-Mail Template Design', 'newcustomer-discount'); ?></h1>
+    <h1><?php _e('Email Template Design', 'newcustomer-discount'); ?></h1>
 
     <?php settings_errors(); ?>
 
     <div class="ncd-template-manager">
-        <!-- Template Selector Dropdown -->
         <div class="ncd-template-selector">
             <label for="template-selector" class="ncd-template-label">
-                <?php _e('Template auswählen:', 'newcustomer-discount'); ?>
+                <?php _e('Select Template:', 'newcustomer-discount'); ?>
             </label>
             <div class="ncd-template-controls">
                 <select id="template-selector" class="ncd-select" 
@@ -42,7 +40,7 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
                                 <?php selected($active_template_id, $id); ?>>
                             <?php echo esc_html($template_data['name']); ?>
                             <?php if ($is_active): ?>
-                                <?php _e(' (Aktiv)', 'newcustomer-discount'); ?>
+                                <?php _e(' (Active)', 'newcustomer-discount'); ?>
                             <?php endif; ?>
                             - <?php echo esc_html($template_data['description']); ?>
                         </option>
@@ -52,13 +50,13 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
                         id="activate-template" 
                         class="button button-primary" 
                         <?php echo $current_template_id === $active_template_id ? 'disabled' : ''; ?>>
-                    <?php _e('Template aktivieren', 'newcustomer-discount'); ?>
+                    <?php _e('Activate Template', 'newcustomer-discount'); ?>
                 </button>
             </div>
             <div class="ncd-template-status">
                 <span class="ncd-active-template-info">
                     <?php printf(
-                        __('Aktives Template: <strong>%s</strong>', 'newcustomer-discount'),
+                        __('Active Template: <strong>%s</strong>', 'newcustomer-discount'),
                         $email_sender->load_template($active_template_id)['name']
                     ); ?>
                 </span>
@@ -66,20 +64,18 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
         </div>
 
         <div class="ncd-design-container">
-            <!-- Settings Panel -->
             <div class="ncd-settings-panel">
                 <form method="post" id="template-settings-form">
                     <?php wp_nonce_field('ncd_save_template', 'ncd_template_nonce'); ?>
                     <input type="hidden" name="template_id" value="<?php echo esc_attr($current_template_id); ?>">
                     
                     <div class="ncd-settings-group">
-                        <h3><?php _e('Design Anpassen', 'newcustomer-discount'); ?></h3>
+                        <h3><?php _e('Customize Design', 'newcustomer-discount'); ?></h3>
                         
-                        <!-- Colors -->
                         <div class="ncd-color-controls">
                             <div class="ncd-color-row">
                                 <label for="primary_color">
-                                    <?php _e('Primärfarbe', 'newcustomer-discount'); ?>
+                                    <?php _e('Primary Color', 'newcustomer-discount'); ?>
                                 </label>
                                 <input type="color" 
                                        name="settings[primary_color]" 
@@ -89,7 +85,7 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
 
                             <div class="ncd-color-row">
                                 <label for="secondary_color">
-                                    <?php _e('Akzentfarbe', 'newcustomer-discount'); ?>
+                                    <?php _e('Accent Color', 'newcustomer-discount'); ?>
                                 </label>
                                 <input type="color" 
                                        name="settings[secondary_color]" 
@@ -109,7 +105,7 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
 
                             <div class="ncd-color-row">
                                 <label for="background_color">
-                                    <?php _e('Hintergrund', 'newcustomer-discount'); ?>
+                                    <?php _e('Background', 'newcustomer-discount'); ?>
                                 </label>
                                 <input type="color" 
                                        name="settings[background_color]" 
@@ -118,10 +114,9 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
                             </div>
                         </div>
 
-                        <!-- Typography -->
                         <div class="ncd-typography-control">
                             <label for="font_family">
-                                <?php _e('Schriftart', 'newcustomer-discount'); ?>
+                                <?php _e('Font Family', 'newcustomer-discount'); ?>
                             </label>
                             <select name="settings[font_family]" id="font_family">
                                 <option value="system-ui, -apple-system, sans-serif" <?php selected($current_template['settings']['font_family'], 'system-ui, -apple-system, sans-serif'); ?>>
@@ -136,18 +131,17 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
                             </select>
                         </div>
 
-                        <!-- Layout -->
                         <div class="ncd-layout-controls">
                             <div class="ncd-control-group">
                                 <label for="button_style">
-                                    <?php _e('Button Design', 'newcustomer-discount'); ?>
+                                    <?php _e('Button Style', 'newcustomer-discount'); ?>
                                 </label>
                                 <select name="settings[button_style]" id="button_style">
                                     <option value="minimal" <?php selected($current_template['settings']['button_style'], 'minimal'); ?>>
-                                        <?php _e('Minimalistisch', 'newcustomer-discount'); ?>
+                                        <?php _e('Minimal', 'newcustomer-discount'); ?>
                                     </option>
                                     <option value="rounded" <?php selected($current_template['settings']['button_style'], 'rounded'); ?>>
-                                        <?php _e('Abgerundet', 'newcustomer-discount'); ?>
+                                        <?php _e('Rounded', 'newcustomer-discount'); ?>
                                     </option>
                                     <option value="pill" <?php selected($current_template['settings']['button_style'], 'pill'); ?>>
                                         <?php _e('Pill', 'newcustomer-discount'); ?>
@@ -161,10 +155,10 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
                                 </label>
                                 <select name="settings[layout_type]" id="layout_type">
                                     <option value="centered" <?php selected($current_template['settings']['layout_type'], 'centered'); ?>>
-                                        <?php _e('Zentriert', 'newcustomer-discount'); ?>
+                                        <?php _e('Centered', 'newcustomer-discount'); ?>
                                     </option>
                                     <option value="full-width" <?php selected($current_template['settings']['layout_type'], 'full-width'); ?>>
-                                        <?php _e('Volle Breite', 'newcustomer-discount'); ?>
+                                        <?php _e('Full Width', 'newcustomer-discount'); ?>
                                     </option>
                                 </select>
                             </div>
@@ -173,19 +167,18 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
 
                     <div class="ncd-action-bar">
                         <button type="submit" name="save_template" class="button button-primary">
-                            <?php _e('Speichern', 'newcustomer-discount'); ?>
+                            <?php _e('Save', 'newcustomer-discount'); ?>
                         </button>
                         <button type="button" class="button preview-test-email">
-                            <?php _e('Test-E-Mail', 'newcustomer-discount'); ?>
+                            <?php _e('Test Email', 'newcustomer-discount'); ?>
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Preview Panel -->
             <div class="ncd-preview-panel">
                 <div class="ncd-preview-header">
-                    <h3><?php _e('Vorschau', 'newcustomer-discount'); ?></h3>
+                    <h3><?php _e('Preview', 'newcustomer-discount'); ?></h3>
                     <div class="ncd-preview-controls">
                         <button type="button" class="preview-mode active" data-mode="desktop">
                             <span class="dashicons dashicons-desktop"></span>

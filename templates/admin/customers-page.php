@@ -10,18 +10,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Aktueller Filter-Status
 $days = isset($_GET['days_filter']) ? (int)$_GET['days_filter'] : 30;
 $only_new = isset($_GET['only_new']);
 
-// Hole Statistiken für Info-Boxen
 $stats = $this->customer_tracker->get_statistics();
 ?>
 
 <div class="wrap ncd-wrap">
-    <h1><?php _e('Neukunden Übersicht', 'newcustomer-discount'); ?></h1>
+    <h1><?php _e('New Customer Overview', 'newcustomer-discount'); ?></h1>
     <?php settings_errors(); ?>
-    <!-- Info Boxes -->
     <div class="ncd-info-boxes">
         <div class="ncd-info-box">
             <div class="ncd-info-box-inner">
@@ -29,7 +26,7 @@ $stats = $this->customer_tracker->get_statistics();
                     <span class="dashicons dashicons-groups"></span>
                 </div>
                 <div class="ncd-info-content">
-                    <span class="ncd-info-label"><?php _e('Gesamt', 'newcustomer-discount'); ?></span>
+                    <span class="ncd-info-label"><?php _e('Total', 'newcustomer-discount'); ?></span>
                     <span class="ncd-info-value"><?php echo esc_html($stats['total']); ?></span>
                 </div>
             </div>
@@ -40,7 +37,7 @@ $stats = $this->customer_tracker->get_statistics();
                     <span class="dashicons dashicons-clock"></span>
                 </div>
                 <div class="ncd-info-content">
-                    <span class="ncd-info-label"><?php _e('Ausstehend', 'newcustomer-discount'); ?></span>
+                    <span class="ncd-info-label"><?php _e('Pending', 'newcustomer-discount'); ?></span>
                     <span class="ncd-info-value"><?php echo esc_html($stats['pending']); ?></span>
                 </div>
             </div>
@@ -51,47 +48,29 @@ $stats = $this->customer_tracker->get_statistics();
                     <span class="dashicons dashicons-email-alt"></span>
                 </div>
                 <div class="ncd-info-content">
-                    <span class="ncd-info-label"><?php _e('Rabatt gesendet', 'newcustomer-discount'); ?></span>
+                    <span class="ncd-info-label"><?php _e('Discount Sent', 'newcustomer-discount'); ?></span>
                     <span class="ncd-info-value"><?php echo esc_html($stats['sent']); ?></span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Test Email Card -->
-    <div class="ncd-card">
-        <h2><?php _e('Test E-Mail senden', 'newcustomer-discount'); ?></h2>
-        <p><?php _e('Hier können Sie eine Test-E-Mail mit Gutscheincode an eine beliebige Adresse senden.', 'newcustomer-discount'); ?></p>
-        
-        <div class="ncd-test-email-form">
-            <input type="email" 
-                   name="test_email" 
-                   placeholder="test@example.com" 
-                   class="regular-text"
-                   value="<?php echo isset($_POST['test_email']) ? esc_attr($_POST['test_email']) : ''; ?>">
-            <button type="button" class="button button-secondary ncd-send-test">
-                <?php _e('Test E-Mail senden', 'newcustomer-discount'); ?>
-            </button>
-        </div>
-    </div>
-
-    <!-- Filter Form -->
     <div class="ncd-card">
         <form method="get" class="ncd-filter-form">
             <input type="hidden" name="page" value="new-customers">
             
             <select name="days_filter" class="ncd-select">
                 <option value="7" <?php selected($days, 7); ?>>
-                    <?php _e('Letzte 7 Tage', 'newcustomer-discount'); ?>
+                    <?php _e('Last 7 Days', 'newcustomer-discount'); ?>
                 </option>
                 <option value="30" <?php selected($days, 30); ?>>
-                    <?php _e('Letzte 30 Tage', 'newcustomer-discount'); ?>
+                    <?php _e('Last 30 Days', 'newcustomer-discount'); ?>
                 </option>
                 <option value="90" <?php selected($days, 90); ?>>
-                    <?php _e('Letzte 90 Tage', 'newcustomer-discount'); ?>
+                    <?php _e('Last 90 Days', 'newcustomer-discount'); ?>
                 </option>
                 <option value="365" <?php selected($days, 365); ?>>
-                    <?php _e('Letztes Jahr', 'newcustomer-discount'); ?>
+                    <?php _e('Last Year', 'newcustomer-discount'); ?>
                 </option>
             </select>
 
@@ -100,50 +79,48 @@ $stats = $this->customer_tracker->get_statistics();
                        name="only_new" 
                        value="1" 
                        <?php checked($only_new); ?>>
-                <?php _e('Nur Neukunden', 'newcustomer-discount'); ?>
+                <?php _e('New Customers Only', 'newcustomer-discount'); ?>
             </label>
 
             <button type="submit" class="button button-secondary">
-                <?php _e('Filter anwenden', 'newcustomer-discount'); ?>
+                <?php _e('Apply Filter', 'newcustomer-discount'); ?>
             </button>
         </form>
     </div>
 
-    <!-- Info Notice -->
     <div class="notice notice-info">
         <p>
             <?php printf(
-                __('Als Neukunden werden alle Kunden gezählt, die vor dem %s noch keine Bestellung aufgegeben haben.', 'newcustomer-discount'),
+                __('New customers are counted as all customers who have not placed an order before %s.', 'newcustomer-discount'),
                 date_i18n(get_option('date_format'), strtotime(get_option('ncd_cutoff_date', '2024-01-01')))
             ); ?>
         </p>
     </div>
 
-    <!-- Customers Table -->
     <div class="ncd-card">
         <table class="wp-list-table widefat fixed striped ncd-customers-table">
             <thead>
                 <tr>
                     <th scope="col" class="ncd-col-email">
-                        <?php _e('E-Mail', 'newcustomer-discount'); ?>
+                        <?php _e('Email', 'newcustomer-discount'); ?>
                     </th>
                     <th scope="col" class="ncd-col-name">
                         <?php _e('Name', 'newcustomer-discount'); ?>
                     </th>
                     <th scope="col" class="ncd-col-date">
-                        <?php _e('Bestelldatum', 'newcustomer-discount'); ?>
+                        <?php _e('Order Date', 'newcustomer-discount'); ?>
                     </th>
                     <th scope="col" class="ncd-col-status">
                         <?php _e('Status', 'newcustomer-discount'); ?>
                     </th>
                     <th scope="col" class="ncd-col-code">
-                        <?php _e('Rabattcode', 'newcustomer-discount'); ?>
+                        <?php _e('Discount Code', 'newcustomer-discount'); ?>
                     </th>
                     <th scope="col" class="ncd-col-sent">
-                        <?php _e('Gesendet am', 'newcustomer-discount'); ?>
+                        <?php _e('Sent On', 'newcustomer-discount'); ?>
                     </th>
                     <th scope="col" class="ncd-col-actions">
-                        <?php _e('Aktionen', 'newcustomer-discount'); ?>
+                        <?php _e('Actions', 'newcustomer-discount'); ?>
                     </th>
                 </tr>
             </thead>
@@ -151,7 +128,7 @@ $stats = $this->customer_tracker->get_statistics();
                 <?php if (empty($customers)): ?>
                     <tr>
                         <td colspan="7" class="ncd-no-items">
-                            <?php _e('Keine Kunden gefunden.', 'newcustomer-discount'); ?>
+                            <?php _e('No customers found.', 'newcustomer-discount'); ?>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -175,11 +152,11 @@ $stats = $this->customer_tracker->get_statistics();
                             <td class="ncd-col-status">
                                 <?php if ($is_new): ?>
                                     <span class="ncd-status ncd-status-new">
-                                        <?php _e('Neukunde', 'newcustomer-discount'); ?>
+                                        <?php _e('New Customer', 'newcustomer-discount'); ?>
                                     </span>
                                 <?php else: ?>
                                     <span class="ncd-status ncd-status-existing">
-                                        <?php _e('Bestandskunde', 'newcustomer-discount'); ?>
+                                        <?php _e('Existing Customer', 'newcustomer-discount'); ?>
                                     </span>
                                 <?php endif; ?>
                             </td>
@@ -201,11 +178,11 @@ $stats = $this->customer_tracker->get_statistics();
                                             data-email="<?php echo esc_attr($customer['customer_email']); ?>"
                                             data-first-name="<?php echo esc_attr($customer['customer_first_name']); ?>"
                                             data-last-name="<?php echo esc_attr($customer['customer_last_name']); ?>">
-                                        <?php _e('Rabattcode senden', 'newcustomer-discount'); ?>
+                                        <?php _e('Send Discount Code', 'newcustomer-discount'); ?>
                                     </button>
                                 <?php elseif ($has_coupon): ?>
                                     <span class="ncd-sent-info" 
-                                          title="<?php esc_attr_e('Rabattcode wurde bereits gesendet', 'newcustomer-discount'); ?>">
+                                          title="<?php esc_attr_e('Discount code has been sent', 'newcustomer-discount'); ?>">
                                         ✓
                                     </span>
                                 <?php endif; ?>

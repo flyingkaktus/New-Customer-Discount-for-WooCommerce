@@ -19,7 +19,7 @@ $email_sender = new NCD_Email_Sender();
 ?>
 
 <div class="wrap ncd-wrap">
-    <h1><?php _e('Neukunden-Gutschein Einstellungen', 'newcustomer-discount'); ?></h1>
+    <h1><?php _e('New Customer Discount Settings', 'newcustomer-discount'); ?></h1>
     <?php settings_errors(); ?>
     <div class="ncd-tabs">
         <nav class="nav-tab-wrapper">
@@ -29,15 +29,15 @@ $email_sender = new NCD_Email_Sender();
             </a>
             <a href="#email-settings" class="nav-tab">
                 <span class="dashicons dashicons-email"></span>
-                <?php _e('E-Mail', 'newcustomer-discount'); ?>
+                <?php _e('Email', 'newcustomer-discount'); ?>
             </a>
             <a href="#Gutschein-settings" class="nav-tab">
                 <span class="dashicons dashicons-tickets-alt"></span>
-                <?php _e('Gutschein', 'newcustomer-discount'); ?>
+                <?php _e('Coupon', 'newcustomer-discount'); ?>
             </a>
             <a href="#customer-settings" class="nav-tab">
                 <span class="dashicons dashicons-groups"></span>
-                <?php _e('Neukunden-Definition', 'newcustomer-discount'); ?>
+                <?php _e('New Customer Definition', 'newcustomer-discount'); ?>
             </a>
             <a href="#reset-settings" class="nav-tab">
                 <span class="dashicons dashicons-image-rotate"></span>
@@ -45,7 +45,7 @@ $email_sender = new NCD_Email_Sender();
             </a>
             <a href="#donate-settings" class="nav-tab">
                 <span class="dashicons dashicons-heart"></span>
-                <?php _e('Unterstützen', 'newcustomer-discount'); ?>
+                <?php _e('Support', 'newcustomer-discount'); ?>
             </a>
             <a href="#feedback-settings" class="nav-tab">
                 <span class="dashicons dashicons-megaphone"></span>
@@ -56,7 +56,7 @@ $email_sender = new NCD_Email_Sender();
         <!-- Logo Settings -->
         <div id="logo-settings" class="ncd-tab-content active">
             <div class="ncd-card">
-                <h2><?php _e('Logo-Einstellungen', 'newcustomer-discount'); ?></h2>
+                <h2><?php _e('Logo Settings', 'newcustomer-discount'); ?></h2>
                 
                 <form method="post" enctype="multipart/form-data" class="ncd-logo-form">
                     <?php wp_nonce_field('ncd_settings', 'ncd_settings_nonce'); ?>
@@ -65,7 +65,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="logo_file">
-                                    <?php _e('Logo hochladen', 'newcustomer-discount'); ?>
+                                    <?php _e('Upload Logo', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -76,7 +76,7 @@ $email_sender = new NCD_Email_Sender();
                                        class="ncd-file-input">
                                 <p class="description">
                                     <?php printf(
-                                        __('Erlaubte Dateitypen: %s. Maximale Größe: %s', 'newcustomer-discount'),
+                                        __('Allowed file types: %s. Maximum size: %s', 'newcustomer-discount'),
                                         $allowed_types,
                                         $max_file_size
                                     ); ?>
@@ -87,7 +87,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="logo_base64">
-                                    <?php _e('ODER Base64-String', 'newcustomer-discount'); ?>
+                                    <?php _e('OR Base64 String', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -97,7 +97,7 @@ $email_sender = new NCD_Email_Sender();
                                           class="large-text code ncd-textarea"
                                           placeholder="data:image/png;base64,..."><?php echo esc_textarea($current_logo); ?></textarea>
                                 <p class="description">
-                                    <?php _e('Fügen Sie hier Ihren Base64-codierten Bildstring ein (beginnt mit \'data:image/...\')', 'newcustomer-discount'); ?>
+                                    <?php _e('Paste your Base64 encoded image string here (starts with \'data:image/...\')', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -105,19 +105,19 @@ $email_sender = new NCD_Email_Sender();
                         <?php if ($current_logo): ?>
                         <tr>
                             <th scope="row">
-                                <?php _e('Aktuelles Logo', 'newcustomer-discount'); ?>
+                                <?php _e('Current Logo', 'newcustomer-discount'); ?>
                             </th>
                             <td>
                                 <div class="ncd-logo-preview-wrapper">
                                     <img src="<?php echo esc_attr($current_logo); ?>" 
-                                         alt="<?php _e('Aktuelles Logo', 'newcustomer-discount'); ?>"
+                                         alt="<?php _e('Current Logo', 'newcustomer-discount'); ?>"
                                          class="ncd-logo-preview">
                                 </div>
                                 <div class="ncd-logo-actions">
                                     <button type="submit" 
                                             name="delete_logo" 
                                             class="button button-secondary ncd-delete-logo">
-                                        <?php _e('Logo löschen', 'newcustomer-discount'); ?>
+                                        <?php _e('Delete Logo', 'newcustomer-discount'); ?>
                                     </button>
                                 </div>
                             </td>
@@ -129,7 +129,7 @@ $email_sender = new NCD_Email_Sender();
                         <button type="submit" 
                                 name="update_logo" 
                                 class="button button-primary">
-                            <?php _e('Logo speichern', 'newcustomer-discount'); ?>
+                            <?php _e('Save Logo', 'newcustomer-discount'); ?>
                         </button>
                     </p>
                 </form>
@@ -139,7 +139,7 @@ $email_sender = new NCD_Email_Sender();
         <!-- Email Settings -->
         <div id="email-settings" class="ncd-tab-content">
             <div class="ncd-card">
-                <h2><?php _e('E-Mail-Einstellungen', 'newcustomer-discount'); ?></h2>
+                <h2><?php _e('Email Settings', 'newcustomer-discount'); ?></h2>
                 
                 <form method="post" class="ncd-email-settings-form">
                     <?php wp_nonce_field('ncd_settings', 'ncd_settings_nonce'); ?>
@@ -149,14 +149,14 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="email_subject">
-                                    <?php _e('E-Mail-Betreff', 'newcustomer-discount'); ?>
+                                    <?php _e('Email Subject', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
                                 <input type="text" 
                                     name="email_subject" 
                                     id="email_subject" 
-                                    value="<?php echo esc_attr(get_option('ncd_email_subject', __('Dein persönlicher Neukundenrabatt', 'newcustomer-discount'))); ?>" 
+                                    value="<?php echo esc_attr(get_option('ncd_email_subject', __('Your Personal New Customer Discount', 'newcustomer-discount'))); ?>" 
                                     class="regular-text">
                             </td>
                         </tr>
@@ -164,7 +164,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="email_heading">
-                                    <?php _e('E-Mail-Überschrift', 'newcustomer-discount'); ?>
+                                    <?php _e('Email Heading', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -174,7 +174,7 @@ $email_sender = new NCD_Email_Sender();
                                     value="<?php echo esc_attr($email_texts['heading']); ?>" 
                                     class="regular-text">
                                 <p class="description">
-                                    <?php _e('Die Hauptüberschrift der E-Mail.', 'newcustomer-discount'); ?>
+                                    <?php _e('The main heading of the email.', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -182,7 +182,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="email_greeting">
-                                    <?php _e('Begrüßung', 'newcustomer-discount'); ?>
+                                    <?php _e('Greeting', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -196,7 +196,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="email_intro">
-                                    <?php _e('Einleitungstext', 'newcustomer-discount'); ?>
+                                    <?php _e('Introduction Text', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -210,7 +210,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="email_coupon_info">
-                                    <?php _e('Gutschein-Information', 'newcustomer-discount'); ?>
+                                    <?php _e('Coupon Information', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -224,7 +224,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="email_footer">
-                                    <?php _e('Fußzeile', 'newcustomer-discount'); ?>
+                                    <?php _e('Footer', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -235,7 +235,7 @@ $email_sender = new NCD_Email_Sender();
                                 <p class="description">
                                     <?php 
                                     $variables = $email_sender->get_available_variables();
-                                    _e('Verfügbare Variablen:', 'newcustomer-discount');
+                                    _e('Available Variables:', 'newcustomer-discount');
                                     echo ' ';
                                     echo implode(', ', array_keys($variables));
                                     ?>
@@ -248,27 +248,26 @@ $email_sender = new NCD_Email_Sender();
                         <button type="submit" 
                                 name="save_email_settings" 
                                 class="button button-primary">
-                            <?php _e('Einstellungen speichern', 'newcustomer-discount'); ?>
+                            <?php _e('Save Settings', 'newcustomer-discount'); ?>
                         </button>
                     </p>
                 </form>
             </div>
         </div>
 
-        <!-- Gutschein Settings -->
+        <!-- Coupon Settings -->
         <div id="Gutschein-settings" class="ncd-tab-content">
             <div class="ncd-card">
-                <h2><?php _e('Gutschein-Einstellungen', 'newcustomer-discount'); ?></h2>
+                <h2><?php _e('Coupon Settings', 'newcustomer-discount'); ?></h2>
                 
                 <form method="post" class="ncd-Gutschein-settings-form">
                     <?php wp_nonce_field('ncd_settings', 'ncd_settings_nonce'); ?>
 
                     <table class="form-table ncd-form-table">
-                        <!-- Rabatt-Einstellungen -->
                         <tr>
                             <th scope="row">
                                 <label for="discount_amount">
-                                    <?php _e('Rabatt-Höhe (%)', 'newcustomer-discount'); ?>
+                                    <?php _e('Discount Amount (%)', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -281,7 +280,7 @@ $email_sender = new NCD_Email_Sender();
                                     step="1" 
                                     class="small-text">
                                 <p class="description">
-                                    <?php _e('Prozentuale Höhe des Neukundenrabatts.', 'newcustomer-discount'); ?>
+                                    <?php _e('Percentage amount of new customer discount.', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -289,7 +288,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="expiry_days">
-                                    <?php _e('Gültigkeitsdauer (Tage)', 'newcustomer-discount'); ?>
+                                    <?php _e('Validity Period (Days)', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -302,16 +301,16 @@ $email_sender = new NCD_Email_Sender();
                                     step="1" 
                                     class="small-text">
                                 <p class="description">
-                                    <?php _e('Anzahl der Tage, die der Gutschein gültig ist.', 'newcustomer-discount'); ?>
+                                    <?php _e('Number of days the coupon is valid.', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
 
-                        <!-- Code-Konfiguration -->
+                        <!-- Code Configuration -->
                         <tr>
                             <th scope="row">
                                 <label for="code_prefix">
-                                    <?php _e('Gutschein-Präfix', 'newcustomer-discount'); ?>
+                                    <?php _e('Coupon Prefix', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -322,7 +321,7 @@ $email_sender = new NCD_Email_Sender();
                                     class="regular-text"
                                     maxlength="5">
                                 <p class="description">
-                                    <?php _e('Präfix für automatisch generierte Gutscheincodes (max. 5 Zeichen).', 'newcustomer-discount'); ?>
+                                    <?php _e('Prefix for automatically generated coupon codes (max. 5 characters).', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -330,7 +329,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="code_length">
-                                    <?php _e('Gutschein-Länge', 'newcustomer-discount'); ?>
+                                    <?php _e('Coupon Length', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -342,7 +341,7 @@ $email_sender = new NCD_Email_Sender();
                                     max="12" 
                                     class="small-text">
                                 <p class="description">
-                                    <?php _e('Länge des Codes ohne Präfix (4-12 Zeichen).', 'newcustomer-discount'); ?>
+                                    <?php _e('Length of code without prefix (4-12 characters).', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -350,7 +349,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="code_characters">
-                                    <?php _e('Erlaubte Zeichen', 'newcustomer-discount'); ?>
+                                    <?php _e('Allowed Characters', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -359,24 +358,24 @@ $email_sender = new NCD_Email_Sender();
                                         name="code_chars[]" 
                                         value="numbers" 
                                         <?php checked(in_array('numbers', (array)get_option('ncd_code_chars', ['numbers', 'uppercase']))); ?>>
-                                    <?php _e('Zahlen (0-9)', 'newcustomer-discount'); ?>
+                                    <?php _e('Numbers (0-9)', 'newcustomer-discount'); ?>
                                 </label><br>
                                 <label>
-                                    <input type="checkbox" 
-                                        name="code_chars[]" 
+                                    <input type="checkbox"
+                                    name="code_chars[]" 
                                         value="uppercase" 
                                         <?php checked(in_array('uppercase', (array)get_option('ncd_code_chars', ['numbers', 'uppercase']))); ?>>
-                                    <?php _e('Großbuchstaben (A-Z)', 'newcustomer-discount'); ?>
+                                    <?php _e('Uppercase Letters (A-Z)', 'newcustomer-discount'); ?>
                                 </label><br>
                                 <label>
                                     <input type="checkbox" 
                                         name="code_chars[]" 
                                         value="lowercase" 
                                         <?php checked(in_array('lowercase', (array)get_option('ncd_code_chars', ['numbers', 'uppercase']))); ?>>
-                                    <?php _e('Kleinbuchstaben (a-z)', 'newcustomer-discount'); ?>
+                                    <?php _e('Lowercase Letters (a-z)', 'newcustomer-discount'); ?>
                                 </label>
                                 <p class="description">
-                                    <?php _e('Wählen Sie die Zeichentypen für die Gutscheincodes.', 'newcustomer-discount'); ?>
+                                    <?php _e('Select character types for coupon codes.', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -386,7 +385,7 @@ $email_sender = new NCD_Email_Sender();
                         <button type="submit" 
                                 name="save_coupon_settings" 
                                 class="button button-primary">
-                            <?php _e('Einstellungen speichern', 'newcustomer-discount'); ?>
+                            <?php _e('Save Settings', 'newcustomer-discount'); ?>
                         </button>
                     </p>
                 </form>
@@ -396,17 +395,16 @@ $email_sender = new NCD_Email_Sender();
         <!-- Customer Definition -->
         <div id="customer-settings" class="ncd-tab-content">
             <div class="ncd-card">
-                <h2><?php _e('Neukunden-Definition', 'newcustomer-discount'); ?></h2>
+                <h2><?php _e('New Customer Definition', 'newcustomer-discount'); ?></h2>
                 
                 <form method="post" class="ncd-customer-settings-form">
-                <?php wp_nonce_field('ncd_settings', 'ncd_settings_nonce'); ?>
-                <?php wp_nonce_field('ncd_settings', 'ncd_settings_nonce'); ?>
+                    <?php wp_nonce_field('ncd_settings', 'ncd_settings_nonce'); ?>
 
                     <table class="form-table ncd-form-table">
                         <tr>
                             <th scope="row">
                                 <label for="cutoff_date">
-                                    <?php _e('Stichtag', 'newcustomer-discount'); ?>
+                                    <?php _e('Reference Date', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -416,7 +414,7 @@ $email_sender = new NCD_Email_Sender();
                                        value="<?php echo esc_attr(get_option('ncd_cutoff_date', '2024-01-01')); ?>" 
                                        class="regular-text">
                                 <p class="description">
-                                    <?php _e('Kunden ohne Bestellung vor diesem Datum werden als Neukunden behandelt.', 'newcustomer-discount'); ?>
+                                    <?php _e('Customers without orders before this date are considered new customers.', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -424,7 +422,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="order_count">
-                                    <?php _e('Maximale Bestellungen', 'newcustomer-discount'); ?>
+                                    <?php _e('Maximum Orders', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -436,7 +434,7 @@ $email_sender = new NCD_Email_Sender();
                                        max="10" 
                                        class="small-text">
                                 <p class="description">
-                                    <?php _e('Maximale Anzahl vorheriger Bestellungen für Neukunden (0 = keine vorherigen Bestellungen erlaubt).', 'newcustomer-discount'); ?>
+                                    <?php _e('Maximum number of previous orders for new customers (0 = no previous orders allowed).', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -444,26 +442,26 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="check_period">
-                                    <?php _e('Prüfungszeitraum', 'newcustomer-discount'); ?>
+                                    <?php _e('Check Period', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
                                 <select name="check_period" id="check_period" class="regular-text">
                                     <option value="all" <?php selected(get_option('ncd_check_period', 'all'), 'all'); ?>>
-                                        <?php _e('Gesamter Zeitraum', 'newcustomer-discount'); ?>
+                                        <?php _e('Entire Period', 'newcustomer-discount'); ?>
                                     </option>
                                     <option value="365" <?php selected(get_option('ncd_check_period', 'all'), '365'); ?>>
-                                        <?php _e('Letztes Jahr', 'newcustomer-discount'); ?>
+                                        <?php _e('Last Year', 'newcustomer-discount'); ?>
                                     </option>
                                     <option value="180" <?php selected(get_option('ncd_check_period', 'all'), '180'); ?>>
-                                        <?php _e('Letzte 6 Monate', 'newcustomer-discount'); ?>
+                                        <?php _e('Last 6 Months', 'newcustomer-discount'); ?>
                                     </option>
                                     <option value="90" <?php selected(get_option('ncd_check_period', 'all'), '90'); ?>>
-                                        <?php _e('Letzte 3 Monate', 'newcustomer-discount'); ?>
+                                        <?php _e('Last 3 Months', 'newcustomer-discount'); ?>
                                     </option>
                                 </select>
                                 <p class="description">
-                                    <?php _e('Zeitraum, in dem vorherige Bestellungen geprüft werden.', 'newcustomer-discount'); ?>
+                                    <?php _e('Period in which previous orders are checked.', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -471,7 +469,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="min_order_amount">
-                                    <?php _e('Mindestbestellwert', 'newcustomer-discount'); ?>
+                                    <?php _e('Minimum Order Amount', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -483,7 +481,7 @@ $email_sender = new NCD_Email_Sender();
                                        step="0.01" 
                                        class="regular-text">
                                 <p class="description">
-                                    <?php _e('Mindestbestellwert für die Neukundenrabatt-Berechtigung (0 = kein Minimum).', 'newcustomer-discount'); ?>
+                                    <?php _e('Minimum order amount for new customer discount eligibility (0 = no minimum).', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -491,7 +489,7 @@ $email_sender = new NCD_Email_Sender();
                         <tr>
                             <th scope="row">
                                 <label for="exclude_categories">
-                                    <?php _e('Ausgeschlossene Kategorien', 'newcustomer-discount'); ?>
+                                    <?php _e('Excluded Categories', 'newcustomer-discount'); ?>
                                 </label>
                             </th>
                             <td>
@@ -517,7 +515,7 @@ $email_sender = new NCD_Email_Sender();
                                 endif;
                                 ?>
                                 <p class="description">
-                                    <?php _e('Bestellungen dieser Kategorien werden bei der Neukundenprüfung nicht berücksichtigt.', 'newcustomer-discount'); ?>
+                                    <?php _e('Orders from these categories will not be considered in new customer verification.', 'newcustomer-discount'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -527,7 +525,7 @@ $email_sender = new NCD_Email_Sender();
                         <button type="submit" 
                                 name="save_customer_settings" 
                                 class="button button-primary">
-                            <?php _e('Einstellungen speichern', 'newcustomer-discount'); ?>
+                            <?php _e('Save Settings', 'newcustomer-discount'); ?>
                         </button>
                     </p>
                 </form>
@@ -537,13 +535,14 @@ $email_sender = new NCD_Email_Sender();
         <!-- Reset Section -->
         <div id="reset-settings" class="ncd-tab-content">
             <div class="ncd-card">
-                <h2><?php _e('Reset & Bereinigung', 'newcustomer-discount'); ?></h2>
+                <h2><?php _e('Reset & Cleanup', 'newcustomer-discount'); ?></h2>
                 
                 <div class="ncd-warning-box">
-                    <p><strong><?php _e('Warnung:', 'newcustomer-discount'); ?></strong></p>
-                    <p><?php _e('Diese Aktionen können nicht rückgängig gemacht werden. Bitte erstellen Sie vorher ein Backup Ihrer Datenbank.', 'newcustomer-discount'); ?></p>
+                    <p><strong><?php _e('Warning:', 'newcustomer-discount'); ?></strong></p>
+                    <p><?php _e('These actions cannot be undone. Please backup your database before proceeding.', 'newcustomer-discount'); ?></p>
                 </div>
 
+                <form method="post" class="ncd-reset-form">
                 <form method="post" class="ncd-reset-form">
                     <input type="hidden" name="action" value="ncd_reset_data">
                     <?php wp_nonce_field('ncd_reset_settings', 'ncd_reset_nonce'); ?>
@@ -551,28 +550,28 @@ $email_sender = new NCD_Email_Sender();
                     <table class="form-table ncd-form-table">
                         <tr>
                             <th scope="row">
-                                <?php _e('Gutscheine zurücksetzen', 'newcustomer-discount'); ?>
+                                <?php _e('Reset Coupons', 'newcustomer-discount'); ?>
                             </th>
                             <td>
                                 <label>
                                     <input type="checkbox" 
                                         name="reset_actions[]" 
-                                        value="Gutscheine">
-                                    <?php _e('Alle erstellten Gutscheine löschen', 'newcustomer-discount'); ?>
+                                        value="coupons">
+                                    <?php _e('Delete all created coupons', 'newcustomer-discount'); ?>
                                 </label>
                             </td>
                         </tr>
 
                         <tr>
                             <th scope="row">
-                                <?php _e('Neukunden zurücksetzen', 'newcustomer-discount'); ?>
+                                <?php _e('Reset New Customers', 'newcustomer-discount'); ?>
                             </th>
                             <td>
                                 <label>
                                     <input type="checkbox" 
                                         name="reset_actions[]" 
                                         value="customers">
-                                    <?php _e('Alle Neukunden-Tracking-Daten löschen', 'newcustomer-discount'); ?>
+                                    <?php _e('Delete all new customer tracking data', 'newcustomer-discount'); ?>
                                 </label>
                             </td>
                         </tr>
@@ -584,50 +583,48 @@ $email_sender = new NCD_Email_Sender();
                                 name="confirm_reset" 
                                 value="1" 
                                 required>
-                            <?php _e('Ich verstehe, dass diese Aktion nicht rückgängig gemacht werden kann.', 'newcustomer-discount'); ?>
+                            <?php _e('I understand that this action cannot be undone.', 'newcustomer-discount'); ?>
                         </label>
                     </div>
 
                     <p class="submit">
                         <button type="submit" class="button button-danger">
-                            <?php _e('Ausgewählte Daten zurücksetzen', 'newcustomer-discount'); ?>
+                            <?php _e('Reset Selected Data', 'newcustomer-discount'); ?>
                         </button>
                     </p>
                 </form>
             </div>
         </div>
 
-        <!-- Donate Section -->
+        <!-- Support Section -->
         <div id="donate-settings" class="ncd-tab-content">
             <div class="ncd-card">
                 <h2>
                     <span class="dashicons dashicons-heart" style="color: #e25555;"></span>
-                    <?php _e('Entwickler unterstützen', 'newcustomer-discount'); ?>
+                    <?php _e('Support Development', 'newcustomer-discount'); ?>
                 </h2>
                 
                 <div class="ncd-donate-wrapper">
                     <div class="ncd-donate-text">
                         <p>
-                            <?php _e('Wenn dir dieses Plugin hilft, würde ich mich über eine kleine Spende zur Weiterentwicklung freuen.', 'newcustomer-discount'); ?>
+                            <?php _e('If this plugin helps you, I would appreciate a small donation for further development.', 'newcustomer-discount'); ?>
                         </p>
                         <p class="description">
-                            <?php _e('Jede Spende hilft dabei, das Plugin weiter zu verbessern und neue Funktionen zu entwickeln.', 'newcustomer-discount'); ?>
+                            <?php _e('Every donation helps to improve the plugin and develop new features.', 'newcustomer-discount'); ?>
                         </p>
                     </div>
 
                     <div class="ncd-donate-form">
                         <form action="https://www.paypal.com/donate" method="post" target="_blank" id="ncd-donation-form">
-                            <!-- PayPal Konfiguration -->
                             <input type="hidden" name="business" value="MXRUVUQFUYCXN">
                             <input type="hidden" name="currency_code" value="EUR">
-                            <input type="hidden" name="item_name" value="<?php echo esc_attr__('Cafe-Spende fuer New-Customer-Gutschein for WooCommerce :)', 'newcustomer-discount'); ?>">
+                            <input type="hidden" name="item_name" value="<?php echo esc_attr__('Coffee donation for New Customer Discount for WooCommerce :)', 'newcustomer-discount'); ?>">
                             <input type="hidden" name="no_shipping" value="1">
                             <input type="hidden" name="cmd" value="_donations">
                             <input type="hidden" name="return" value="<?php echo esc_url(admin_url('admin.php?page=new-customers-settings&tab=donate-settings&donation=success')); ?>">
                             <input type="hidden" name="cancel_return" value="<?php echo esc_url(admin_url('admin.php?page=new-customers-settings&tab=donate-settings')); ?>">
                             
-                            <!-- Vorausgewählte Beträge -->
-                            <div class="ncd-donate-amounts" role="group" aria-label="<?php esc_attr_e('Vorausgewählte Spendenbeträge', 'newcustomer-discount'); ?>">
+                            <div class="ncd-donate-amounts" role="group" aria-label="<?php esc_attr_e('Preset Donation Amounts', 'newcustomer-discount'); ?>">
                                 <?php
                                 $amounts = [5, 10, 25, 50];
                                 foreach ($amounts as $amount):
@@ -641,10 +638,9 @@ $email_sender = new NCD_Email_Sender();
                                 <?php endforeach; ?>
                             </div>
 
-                            <!-- Eigener Betrag -->
                             <div class="ncd-donate-custom">
                                 <label for="custom-amount">
-                                    <?php _e('Oder eigenen Betrag wählen:', 'newcustomer-discount'); ?>
+                                    <?php _e('Or choose custom amount:', 'newcustomer-discount'); ?>
                                 </label>
                                 <div class="ncd-donate-custom-input">
                                     <input type="number" 
@@ -652,12 +648,12 @@ $email_sender = new NCD_Email_Sender();
                                         id="custom-amount" 
                                         min="1" 
                                         step="1" 
-                                        placeholder="<?php esc_attr_e('Betrag in Euro', 'newcustomer-discount'); ?>"
-                                        aria-label="<?php esc_attr_e('Eigener Spendenbetrag', 'newcustomer-discount'); ?>">
+                                        placeholder="<?php esc_attr_e('Amount in Euro', 'newcustomer-discount'); ?>"
+                                        aria-label="<?php esc_attr_e('Custom donation amount', 'newcustomer-discount'); ?>">
                                     <button type="submit" 
                                             class="button button-primary"
                                             disabled>
-                                        <?php _e('Spenden', 'newcustomer-discount'); ?>
+                                        <?php _e('Donate', 'newcustomer-discount'); ?>
                                     </button>
                                 </div>
                             </div>
@@ -666,7 +662,7 @@ $email_sender = new NCD_Email_Sender();
                         <?php if (isset($_GET['donation']) && $_GET['donation'] === 'success'): ?>
                             <div class="ncd-donation-success">
                                 <p>
-                                    <?php _e('Vielen Dank für deine Unterstützung!', 'newcustomer-discount'); ?>
+                                    <?php _e('Thank you for your support!', 'newcustomer-discount'); ?>
                                 </p>
                             </div>
                         <?php endif; ?>
@@ -686,7 +682,7 @@ $email_sender = new NCD_Email_Sender();
                 <div class="ncd-feedback-wrapper">
                     <div class="ncd-feedback-text">
                         <p>
-                            <?php _e('Helfen Sie uns, das Plugin zu verbessern! Senden Sie uns Ihre Vorschläge oder melden Sie Fehler.', 'newcustomer-discount'); ?>
+                            <?php _e('Help us improve the plugin! Send us your suggestions or report bugs.', 'newcustomer-discount'); ?>
                         </p>
                     </div>
 
@@ -697,19 +693,20 @@ $email_sender = new NCD_Email_Sender();
                             <tr>
                                 <th scope="row">
                                     <label for="feedback_type">
-                                        <?php _e('Feedback-Typ', 'newcustomer-discount'); ?>
+                                        <?php _e('Feedback Type', 'newcustomer-discount'); ?>
                                     </label>
                                 </th>
                                 <td>
                                     <select name="feedback_type" id="feedback_type" class="ncd-select">
+                                    <select name="feedback_type" id="feedback_type" class="ncd-select">
                                         <option value="suggestion">
-                                            <?php _e('Verbesserungsvorschlag', 'newcustomer-discount'); ?>
+                                            <?php _e('Improvement Suggestion', 'newcustomer-discount'); ?>
                                         </option>
                                         <option value="bug">
-                                            <?php _e('Fehlermeldung', 'newcustomer-discount'); ?>
+                                            <?php _e('Bug Report', 'newcustomer-discount'); ?>
                                         </option>
                                         <option value="question">
-                                            <?php _e('Frage', 'newcustomer-discount'); ?>
+                                            <?php _e('Question', 'newcustomer-discount'); ?>
                                         </option>
                                     </select>
                                 </td>
@@ -718,7 +715,7 @@ $email_sender = new NCD_Email_Sender();
                             <tr class="bug-specific" style="display: none;">
                                 <th scope="row">
                                     <label for="bug_version">
-                                        <?php _e('Plugin-Version', 'newcustomer-discount'); ?>
+                                        <?php _e('Plugin Version', 'newcustomer-discount'); ?>
                                     </label>
                                 </th>
                                 <td>
@@ -734,7 +731,7 @@ $email_sender = new NCD_Email_Sender();
                             <tr>
                                 <th scope="row">
                                     <label for="feedback_content">
-                                        <?php _e('Ihre Nachricht', 'newcustomer-discount'); ?>
+                                        <?php _e('Your Message', 'newcustomer-discount'); ?>
                                     </label>
                                 </th>
                                 <td>
@@ -744,13 +741,13 @@ $email_sender = new NCD_Email_Sender();
                                             class="large-text ncd-textarea"
                                             required></textarea>
                                     <p class="description feedback-hint suggestion" style="display: none;">
-                                        <?php _e('Beschreiben Sie Ihren Verbesserungsvorschlag so detailliert wie möglich.', 'newcustomer-discount'); ?>
+                                        <?php _e('Describe your improvement suggestion in as much detail as possible.', 'newcustomer-discount'); ?>
                                     </p>
                                     <p class="description feedback-hint bug" style="display: none;">
-                                        <?php _e('Bitte beschreiben Sie: 1. Was Sie getan haben 2. Was Sie erwartet haben 3. Was stattdessen passiert ist', 'newcustomer-discount'); ?>
+                                        <?php _e('Please describe: 1. What you did 2. What you expected 3. What happened instead', 'newcustomer-discount'); ?>
                                     </p>
                                     <p class="description feedback-hint question" style="display: none;">
-                                        <?php _e('Was möchten Sie wissen? Je detaillierter Ihre Frage, desto besser können wir helfen.', 'newcustomer-discount'); ?>
+                                        <?php _e('What would you like to know? The more detailed your question, the better we can help.', 'newcustomer-discount'); ?>
                                     </p>
                                 </td>
                             </tr>
@@ -758,7 +755,7 @@ $email_sender = new NCD_Email_Sender();
                             <tr>
                                 <th scope="row">
                                     <label for="include_system_info">
-                                        <?php _e('System-Informationen', 'newcustomer-discount'); ?>
+                                        <?php _e('System Information', 'newcustomer-discount'); ?>
                                     </label>
                                 </th>
                                 <td>
@@ -768,7 +765,7 @@ $email_sender = new NCD_Email_Sender();
                                             id="include_system_info" 
                                             value="1" 
                                             checked>
-                                        <?php _e('System-Informationen beifügen (empfohlen für Fehlermeldungen)', 'newcustomer-discount'); ?>
+                                        <?php _e('Include system information (recommended for bug reports)', 'newcustomer-discount'); ?>
                                     </label>
                                     <div id="system-info-preview" class="ncd-system-info" style="display: none;">
                                         <pre><?php
@@ -789,16 +786,16 @@ $email_sender = new NCD_Email_Sender();
                             <button type="submit" 
                                     name="submit_feedback" 
                                     class="button button-primary">
-                                <?php _e('Feedback senden', 'newcustomer-discount'); ?>
+                                <?php _e('Send Feedback', 'newcustomer-discount'); ?>
                             </button>
                         </p>
                     </form>
 
                     <div class="ncd-feedback-alternative">
-                        <h3><?php _e('Alternatives Feedback', 'newcustomer-discount'); ?></h3>
+                        <h3><?php _e('Alternative Feedback', 'newcustomer-discount'); ?></h3>
                         <p>
                             <?php printf(
-                                __('Sie können auch einen Bug Report oder Feature Request auf der %sWordPress.org Plugin-Seite%s erstellen.', 'newcustomer-discount'),
+                                __('You can also create a bug report or feature request on the %sWordPress.org plugin page%s.', 'newcustomer-discount'),
                                 '<a href="https://wordpress.org/support/plugin/newcustomer-discount/" target="_blank">',
                                 '</a>'
                             ); ?>
@@ -807,14 +804,11 @@ $email_sender = new NCD_Email_Sender();
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
 <script>
 jQuery(document).ready(function($) {
-
-    // File Input Preview
     $('#ncd-logo-file').on('change', function() {
         const file = this.files[0];
         if (file) {

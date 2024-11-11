@@ -49,7 +49,6 @@
         }
     }
 
-    // Exportiere für andere Module
     window.NCDTabManager = NCDTabManager;
 
 })(jQuery);

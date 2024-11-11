@@ -1,4 +1,3 @@
-// Neue Datei: assets/js/core/ajax-handler.js
 (function($) {
     'use strict';
 
@@ -36,7 +35,7 @@
             alert(message);
         }
 
-        // Template-bezogene AJAX Methoden
+
         getTemplateSettings(templateId) {
             return this.post('get_template_settings', { template_id: templateId });
         }

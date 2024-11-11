@@ -2,7 +2,7 @@
 /**
 * Admin Statistics Class
 *
-* Verwaltet die Statistik-Funktionalität im WordPress Admin-Bereich
+* Manages the statistics page
 *
 * @package NewCustomerDiscount
 * @subpackage Admin\Statistics
@@ -24,7 +24,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
    }
 
    /**
-    * Rendert die Statistik-Seite
+    * Renders the statistics page
     */
     public function render_page() {
         if (!$this->check_admin_permissions()) {
@@ -41,7 +41,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
     }
 
    /**
-    * Holt Gutschein-Statistiken
+    * Gets coupon statistics
     *
     * @return array
     */
@@ -50,19 +50,19 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
            error_log('======= Starting Gutschein statistics calculation =======');
        }
 
-       $Gutscheine = $this->coupon_generator->get_generated_coupons();
+       $discounte = $this->coupon_generator->get_generated_coupons();
 
        $stats = [
-           'total' => count($Gutscheine),
+           'total' => count($discounte),
            'used' => 0,
            'expired' => 0,
            'active' => 0,
            'total_amount' => 0
        ];
 
-       foreach ($Gutscheine as $Gutschein) {
-           if (!$Gutschein['status']['valid']) {
-               if ($Gutschein['status']['is_expired']) {
+       foreach ($discounte as $discount) {
+           if (!$discount['status']['valid']) {
+               if ($discount['status']['is_expired']) {
                    $stats['expired']++;
                } else {
                    $stats['used']++;
@@ -70,22 +70,22 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
            } else {
                $stats['active']++;
            }
-           $stats['total_amount'] += floatval($Gutschein['discount_amount']);
+           $stats['total_amount'] += floatval($discount['discount_amount']);
        }
 
        $stats['avg_order_value'] = $this->calculate_average_order_value();
 
        if (WP_DEBUG) {
-           error_log('Gutschein statistics calculated:');
+           error_log('Discount statistics calculated:');
            error_log(print_r($stats, true));
-           error_log('======= End Gutschein statistics calculation =======');
+           error_log('======= End Discount statistics calculation =======');
        }
 
        return $stats;
    }
 
    /**
-    * Holt E-Mail-Statistiken
+    * Gets email statistics
     *
     * @return array
     */
@@ -101,7 +101,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
    }
 
    /**
-    * Berechnet die E-Mail-Erfolgsrate
+    * Calculates the email success rate
     *
     * @param array $logs
     * @return float
@@ -119,7 +119,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
    }
 
    /**
-    * Erstellt monatliche E-Mail-Statistiken
+    * Creates monthly email statistics
     *
     * @param array $logs
     * @return array
@@ -150,7 +150,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
    }
 
    /**
-    * Berechnet den durchschnittlichen Bestellwert
+    * Calculates the average order value
     *
     * @return float
     */
@@ -191,7 +191,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
    }
 
    /**
-    * Berechnet den ROI
+    * Calculates the ROI
     *
     * @return float
     */
@@ -214,7 +214,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
    }
 
    /**
-    * Analysiert Trends
+    * Analyzes trends
     *
     * @return array
     */
@@ -229,7 +229,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
    }
 
    /**
-    * Berechnet einen Trend
+    * Calculates the trend for a given data set
     *
     * @param array $data
     * @param string $key
@@ -247,7 +247,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
            ];
        }, array_keys($data), array_values($data));
 
-       // Lineare Regression
+       // Linear Regression
        $n = count($points);
        $sum_x = array_sum(array_column($points, 'x'));
        $sum_y = array_sum(array_column($points, 'y'));
@@ -262,7 +262,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
    }
 
    /**
-    * Berechnet den Konversionstrend
+    * Calculates the conversion trend
     *
     * @return float
     */
@@ -272,7 +272,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
    }
 
    /**
-    * Generiert Empfehlungen basierend auf den Statistiken
+    * Generates recommendations
     *
     * @return array
     */
@@ -282,18 +282,18 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
        $conversion_rate = $this->calculate_conversion_trend();
 
        if ($conversion_rate < 10) {
-           $recommendations[] = __('Die Konversionsrate ist niedrig. Erwägen Sie eine Erhöhung des Rabatts oder eine Verlängerung der Gültigkeitsdauer.', 'newcustomer-discount');
+           $recommendations[] = __('The conversion rate is low. Consider increasing the discount or extending the validity period.', 'newcustomer-discount');
        }
 
        if ($stats['expired'] > $stats['used']) {
-           $recommendations[] = __('Viele Gutscheine laufen ungenutzt ab. Überdenken Sie die Gültigkeitsdauer oder senden Sie Erinnerungen.', 'newcustomer-discount');
+           $recommendations[] = __('Many vouchers expire unused. Consider revising the validity period or sending reminders', 'newcustomer-discount');
        }
 
        return $recommendations;
    }
 
    /**
-    * Exportiert Statistiken als CSV
+    * Exports the statistics as CSV
     */
    public function handle_export_statistics() {
        if (!$this->check_admin_permissions()) {
@@ -321,7 +321,7 @@ class NCD_Admin_Statistics extends NCD_Admin_Base {
            __('Wert', 'newcustomer-discount')
        ]);
 
-       // Daten schreiben
+       // write data
        foreach ($stats as $category => $metrics) {
            foreach ($metrics as $key => $value) {
                if (!is_array($value)) {

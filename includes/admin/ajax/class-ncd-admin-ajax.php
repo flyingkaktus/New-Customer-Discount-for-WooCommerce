@@ -2,7 +2,7 @@
 /**
  * Admin Ajax Class
  *
- * Zentraler AJAX-Handler für Admin-Funktionen
+ * Central AJAX handler for admin functions
  *
  * @package NewCustomerDiscount
  * @subpackage Admin\Ajax
@@ -14,8 +14,9 @@ if (!defined('ABSPATH')) {
 }
 
 class NCD_Admin_Ajax {
+class NCD_Admin_Ajax {
     /**
-     * Handler-Instanzen
+     * Handler-Instance
      * 
      * @var array
      */
@@ -25,13 +26,27 @@ class NCD_Admin_Ajax {
      * Constructor
      */
     public function __construct() {
-        // Registriere die AJAX Handler erst wenn sie gebraucht werden
         add_action('admin_init', [$this, 'init_ajax_handlers']);
     }
 
     /**
-     * Lazy Loading für Handler
+     * Lazy Loading for Handler
      */
+    private function get_handler($type) {
+        if (!isset($this->handlers[$type])) {
+            switch ($type) {
+                case 'templates':
+                    $this->handlers[$type] = new NCD_Admin_Templates();
+                    break;
+                case 'customers':
+                    $this->handlers[$type] = new NCD_Admin_Customers();
+                    break;
+                case 'settings':
+                    $this->handlers[$type] = new NCD_Admin_Settings();
+                    break;
+            }
+        }
+        return $this->handlers[$type];
     private function get_handler($type) {
         if (!isset($this->handlers[$type])) {
             switch ($type) {
@@ -50,8 +65,9 @@ class NCD_Admin_Ajax {
     }
 
     /**
-     * Initialisiert die AJAX Handler
+     * Init AJAX Handler
      */
+    public function init_ajax_handlers() {
     public function init_ajax_handlers() {
         // Template bezogene Aktionen
         $this->register_ajax_action('ncd_preview_template', 'templates', 'handle_preview_template');
@@ -69,8 +85,14 @@ class NCD_Admin_Ajax {
     }
 
     /**
-     * Registriert eine AJAX Action
+     * Register an AJAX Action
      */
+    private function register_ajax_action($action, $handler_type, $method) {
+        add_action('wp_ajax_' . $action, function() use ($handler_type, $method) {
+            try {
+                if (!$this->check_ajax_request()) {
+                    return;
+                }
     private function register_ajax_action($action, $handler_type, $method) {
         add_action('wp_ajax_' . $action, function() use ($handler_type, $method) {
             try {
@@ -87,7 +109,17 @@ class NCD_Admin_Ajax {
                     error_log("Handling AJAX request: $handler_type::$method");
                     error_log("POST data: " . print_r($_POST, true));
                 }
+                $handler = $this->get_handler($handler_type);
+                if (!$handler) {
+                    throw new Exception(__('Ungültiger Handler.', 'newcustomer-discount'));
+                }
 
+                if (WP_DEBUG) {
+                    error_log("Handling AJAX request: $handler_type::$method");
+                    error_log("POST data: " . print_r($_POST, true));
+                }
+
+                call_user_func([$handler, $method], $_POST);
                 call_user_func([$handler, $method], $_POST);
 
             } catch (Exception $e) {
@@ -100,19 +132,19 @@ class NCD_Admin_Ajax {
     }
 
     /**
-     * Überprüft AJAX-Anfragen
+     * Checks AJAX-Requests
      */
     public function check_ajax_request($action = 'ncd-admin-nonce', $nonce_field = 'nonce') {
         if (!check_ajax_referer($action, $nonce_field, false)) {
             wp_send_json_error([
-                'message' => __('Sicherheitsüberprüfung fehlgeschlagen.', 'newcustomer-discount')
+                'message' => __('Security check failed.', 'newcustomer-discount')
             ]);
             return false;
         }
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error([
-                'message' => __('Keine Berechtigung.', 'newcustomer-discount')
+                'message' => __('Permission denied.', 'newcustomer-discount')
             ]);
             return false;
         }
@@ -121,7 +153,7 @@ class NCD_Admin_Ajax {
     }
 
     /**
-     * Hilfsmethode für AJAX-Erfolgsantwort
+     * Helper method for AJAX-Success response
      */
     public function send_ajax_success($message, $data = []) {
         wp_send_json_success(array_merge(
@@ -131,7 +163,7 @@ class NCD_Admin_Ajax {
     }
 
     /**
-     * Hilfsmethode für AJAX-Fehlerantwort
+     * Helper method for AJAX-Error response
      */
     public function send_ajax_error($message, $data = []) {
         wp_send_json_error(array_merge(

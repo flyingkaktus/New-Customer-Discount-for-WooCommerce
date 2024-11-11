@@ -2,7 +2,7 @@
 /**
  * Customer Tracker Class
  *
- * Verwaltet das Tracking von Neukunden und deren Rabatt-Status
+ * Manage customer tracking for new customer discounts
  *
  * @package NewCustomerDiscount
  * @since 0.0.1
@@ -15,14 +15,14 @@ if (!defined('ABSPATH')) {
 class NCD_Customer_Tracker
 {
     /**
-     * Name der Datenbank-Tabelle
+     * Name of the table
      *
      * @var string
      */
     private static $table_name;
 
     /**
-     * Gibt den Tabellennamen zurück
+     * Returns the table name
      *
      * @return string
      */
@@ -44,7 +44,7 @@ class NCD_Customer_Tracker
     }
 
     /**
-     * Plugin-Aktivierung
+     * Plugin-activation
      *
      * @return void
      */
@@ -55,7 +55,7 @@ class NCD_Customer_Tracker
     }
 
     /**
-     * Plugin-Deaktivierung
+     * Plugin-deactivation
      *
      * @return void
      */
@@ -65,7 +65,7 @@ class NCD_Customer_Tracker
     }
 
     /**
-     * Erstellt die Tracking-Tabelle in der Datenbank
+     * creates the database table
      *
      * @return void
      */
@@ -96,13 +96,12 @@ class NCD_Customer_Tracker
     }
 
     /**
-     * Prüft ob ein Kunde ein Neukunde ist
+     * Checks if a customer is a new customer
      *
-     * @param string $email E-Mail-Adresse des Kunden
-     * @param string $cutoff_date Optional. Stichtag für die Prüfung
+     * @param string $email Customer email
+     * @param string $cutoff_date Optional. Cutoff date for orders
      * @return bool
      */
-    // In class-ncd-customer-tracker.php
     public function is_new_customer($email)
     {
         global $wpdb;
@@ -124,12 +123,12 @@ class NCD_Customer_Tracker
     }
 
     /**
-     * Fügt einen neuen Kunden zum Tracking hinzu
+     * Adds a new customer to the tracking table
      *
-     * @param string $email E-Mail-Adresse
-     * @param string $first_name Vorname
-     * @param string $last_name Nachname
-     * @return int|false ID des Eintrags oder false bei Fehler
+     * @param string $email E-Mail-address
+     * @param string $first_name firstname
+     * @param string $last_name lastname
+     * @return int|false ID entry or false
      */
     public function add_customer($email, $first_name = '', $last_name = '')
     {
@@ -162,11 +161,11 @@ class NCD_Customer_Tracker
     }
 
     /**
-     * Aktualisiert den Status eines Kunden
+     * Refreshes the customer status
      *
-     * @param string $email E-Mail-Adresse
-     * @param string $status Neuer Status
-     * @param string $coupon_code Optional. Gutscheincode
+     * @param string $email E-Mail-address
+     * @param string $status new status
+     * @param string $coupon_code Optional. Discount code
      * @return bool
      */
     public function update_customer_status($email, $status, $coupon_code = '')
@@ -183,23 +182,20 @@ class NCD_Customer_Tracker
             $data['coupon_code'] = $coupon_code;
         }
     
-        // Debug logging
         if (WP_DEBUG) {
             error_log('Updating customer status:');
             error_log('Email: ' . $email);
             error_log('Status: ' . $status);
-            error_log('Gutschein: ' . $coupon_code);
+            error_log('Discount: ' . $coupon_code);
             error_log('Data: ' . print_r($data, true));
         }
     
-        // Prüfen ob der Kunde bereits existiert
         $exists = $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM " . self::get_table_name() . " WHERE customer_email = %s",
             $email
         ));
     
         if (!$exists) {
-            // Kunde existiert nicht, füge ihn hinzu
             $data['customer_email'] = $email;
             $result = $wpdb->insert(
                 self::get_table_name(),
@@ -207,7 +203,6 @@ class NCD_Customer_Tracker
                 ['%s', '%s', '%s', '%s']
             );
         } else {
-            // Kunde existiert, update
             $result = $wpdb->update(
                 self::get_table_name(),
                 $data,
@@ -228,9 +223,9 @@ class NCD_Customer_Tracker
     }
 
     /**
-     * Holt Kundeninformationen
+     * Gets the tracking info for a customer
      *
-     * @param array $args Query-Argumente
+     * @param array $args Query-Argument
      * @return array
      */
     public function get_customers($args = [])
@@ -250,7 +245,7 @@ class NCD_Customer_Tracker
         $args = wp_parse_args($args, $defaults);
         $tracking_table = self::get_table_name();
 
-        // Neue WooCommerce 8.0+ Tabellenstruktur
+        // new WordPress table structure (WooCommerce 8.0+)
         if ($wpdb->get_var("SHOW TABLES LIKE '{$wpdb->prefix}wc_orders'") === "{$wpdb->prefix}wc_orders") {
             $query = $wpdb->prepare("
                 SELECT 
@@ -272,7 +267,7 @@ class NCD_Customer_Tracker
                 LIMIT %d OFFSET %d
             ", $args['days'], $args['limit'], $args['offset']);
         } else {
-            // Alte WordPress Tabellenstruktur
+            // old WordPress table structure
             $query = $wpdb->prepare("
                 SELECT 
                     o.ID as order_id,
@@ -313,9 +308,9 @@ class NCD_Customer_Tracker
     }
 
     /**
-     * Bereinigt alte Einträge
+     * Cleanup old entries
      *
-     * @return int Anzahl der gelöschten Einträge
+     * @return int Number of deleted entries
      */
     public function cleanup_old_entries()
     {
@@ -325,14 +320,14 @@ class NCD_Customer_Tracker
             DELETE FROM " . self::get_table_name() . "
             WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)
             AND (status = 'used' OR status = 'expired')
-        ", 1460)); // Einträge älter als 4 Jahr
+        ", 1460)); // Older than 4 years
     }
 
     /**
-     * Loggt Fehler für Debugging
+     * Logging for Debugging
      *
-     * @param string $message Fehlermeldung
-     * @param array $context Zusätzliche Kontext-Informationen
+     * @param string $message error message
+     * @param array $context additional context
      * @return void
      */
     private function log_error($message, $context = [])
@@ -347,7 +342,7 @@ class NCD_Customer_Tracker
     }
 
     /**
-     * Gibt die Tabellen-Statistiken zurück
+     * Returns the statistics
      *
      * @return array
      */
@@ -355,7 +350,6 @@ class NCD_Customer_Tracker
     {
         global $wpdb;
 
-        // Prüfe ob Tabelle existiert
         $table_exists = $wpdb->get_var(
             "SHOW TABLES LIKE '" . self::get_table_name() . "'"
         ) === self::get_table_name();

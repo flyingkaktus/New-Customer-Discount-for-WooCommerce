@@ -2,7 +2,7 @@
 /**
  * Admin Base Class
  *
- * Grundlegende Admin-Funktionalität und Initialisierung
+ * Basic functionality for admin classes
  *
  * @package NewCustomerDiscount
  * @subpackage Admin\Core
@@ -15,28 +15,28 @@ if (!defined('ABSPATH')) {
 
 class NCD_Admin_Base {
     /**
-     * Customer Tracker Instanz
+     * Customer Tracker Instance
      * 
      * @var NCD_Customer_Tracker
      */
     protected $customer_tracker;
 
     /**
-     * Gutschein Generator Instanz
+     * Discound Generator Instance
      * 
      * @var NCD_Discount_Generator
      */
     protected $coupon_generator;
 
     /**
-     * Email Sender Instanz
+     * Email Sender Instance
      * 
      * @var NCD_Email_Sender
      */
     protected $email_sender;
 
     /**
-     * AJAX Handler Instanz
+     * AJAX Handler Instance
      * 
      * @var NCD_Admin_Ajax
      */
@@ -46,13 +46,15 @@ class NCD_Admin_Base {
      */
     public function __construct() {
         $this->ajax_handler = new NCD_Admin_Ajax();
+        $this->ajax_handler = new NCD_Admin_Ajax();
         $this->init_dependencies();
         $this->init_hooks();
+
 
     }
 
     /**
-     * Initialisiert die Abhängigkeiten
+     * Init Admin Base Dependencies
      */
     protected function init_dependencies() {
         try {
@@ -71,34 +73,33 @@ class NCD_Admin_Base {
     }
 
     /**
-     * Initialisiert die WordPress Hooks
+     * Init Admin Base Hooks
      */
     protected function init_hooks() {
         add_action('admin_notices', [$this, 'display_admin_notices']);
     }
 
     /**
-     * Lädt seitenspezifische Assets
+     * Loads Admin Assets
      *
      * @param string $hook Der aktuelle Admin-Seiten-Hook
      */
     public function enqueue_assets($hook) {
-        // Diese Methode kann von Unterklassen überschrieben werden
-        // um seitenspezifische Assets zu laden
+
     }
 
     /**
-     * Zeigt Admin-Benachrichtigungen an
+     * Shows Admin Notices
      */
     public function display_admin_notices() {
         settings_errors('ncd_messages');
     }
 
     /**
-     * Fügt Admin-Benachrichtigung hinzu
+     * Add an Admin Notice
      *
-     * @param string $message Nachricht
-     * @param string $type Typ der Nachricht (success, error, warning, info)
+     * @param string $message Message to display
+     * @param string $type Message type (success, error, warning, info)
      */
     protected function add_admin_notice($message, $type = 'success') {
         add_settings_error(
@@ -110,10 +111,10 @@ class NCD_Admin_Base {
     }
 
     /**
-     * Loggt Fehler für Debugging
+     * Logging for Debugging
      *
-     * @param string $message Fehlermeldung
-     * @param array $context Zusätzliche Kontext-Informationen
+     * @param string $message Error message
+     * @param array $context Additional context
      */
     protected function log_error($message, $context = []) {
         if (WP_DEBUG) {
@@ -126,22 +127,22 @@ class NCD_Admin_Base {
     }
 
     /**
-     * Prüft die Admin-Berechtigung
+     * Checks if the current user has the required permissions
      *
      * @return bool
      */
     protected function check_admin_permissions() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('Sie haben nicht die erforderlichen Berechtigungen für diese Aktion.', 'newcustomer-discount'));
+            wp_die(__('You do not have the required permissions for this action.', 'newcustomer-discount'));
             return false;
         }
         return true;
     }
 
     /**
-     * Gibt eine Instanz einer Admin-Komponente zurück
+     * Returns a component by name
      *
-     * @param string $component Name der Komponente
+     * @param string $component component name
      * @return mixed|null
      */
     protected function get_component($component) {
@@ -155,7 +156,7 @@ class NCD_Admin_Base {
     }
 
     /**
-     * Debug-Ausgabe der geladenen Stylesheets
+     * Debug-Output for loaded styles
      */
     protected function debug_loaded_styles() {
         if (!WP_DEBUG) {

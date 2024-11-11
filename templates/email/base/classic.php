@@ -9,39 +9,37 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Stelle sicher dass settings definiert ist
 if (!isset($settings)) {
     $settings = [];
 }
 
-// Stelle sicher dass settings ein Array ist
 if (!is_array($settings)) {
     $settings = [];
 }
 
 $translations = [
-    'coupon_details' => esc_html__('Gutschein-Details', 'newcustomer-discount'),
+    'coupon_details' => esc_html__('Coupon Details', 'newcustomer-discount'),
     'discount_text' => sprintf(
         /* translators: %s: discount amount */
-        esc_html__('✨ %s%% Rabatt auf Ihren Einkauf', 'newcustomer-discount'),
+        esc_html__('✨ %s%% off your purchase', 'newcustomer-discount'),
         '{discount_amount}'
     ),
     'expiry_text' => sprintf(
         /* translators: %s: expiry date */
-        esc_html__('⏰ Einlösbar bis %s', 'newcustomer-discount'),
+        esc_html__('⏰ Valid until %s', 'newcustomer-discount'),
         '{expiry_date}'
     ),
     'min_order_text' => sprintf(
         /* translators: %s: minimum order amount */
-        esc_html__('💰 Ab einem Bestellwert von %s', 'newcustomer-discount'),
+        esc_html__('💰 Minimum order value of %s', 'newcustomer-discount'),
         '{min_order_amount}'
     ),
-    'shop_button' => esc_html__('Zum Online-Shop', 'newcustomer-discount')
+    'shop_button' => esc_html__('To Online Shop', 'newcustomer-discount')
 ];
 
 return [
     'name' => 'Classic',
-    'description' => __('Ein zeitlos-elegantes Design', 'newcustomer-discount'),
+    'description' => __('A timeless elegant design', 'newcustomer-discount'),
     'settings' => $settings,
     'styles' => <<<CSS
     .classic-template {

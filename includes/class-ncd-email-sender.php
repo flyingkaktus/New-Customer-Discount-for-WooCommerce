@@ -2,7 +2,7 @@
 /**
  * Email Sender Class
  *
- * Verwaltet das Erstellen und Versenden von E-Mails
+ * Manage email sending and templates
  *
  * @package NewCustomerDiscount
  * @since 1.0.0
@@ -14,14 +14,14 @@ if (!defined('ABSPATH')) {
 
 class NCD_Email_Sender {
     /**
-     * Template Verzeichnis
+     * Template Directory
      *
      * @var string
      */
     private $template_directory;
 
     /**
-     * Default E-Mail-Einstellungen
+     * Default E-Mail-Settings
      *
      * @var array
      */
@@ -33,7 +33,7 @@ class NCD_Email_Sender {
     ];
 
     /**
-     * Default E-Mail-Texte
+     * Default E-Mail-Text
      *
      * @var array
      */
@@ -49,15 +49,14 @@ class NCD_Email_Sender {
      * Constructor
      */
     public function __construct() {
-        // Hier die Übersetzungen initialisieren
-        $this->default_settings['subject'] = __('Ihr Rabattgutschein', 'newcustomer-discount');
-        
+        $this->default_settings['subject'] = __('Your Discount Coupon', 'newcustomer-discount');
+
         $this->default_email_texts = [
-            'heading' => __('Ihr exklusiver Willkommensrabatt', 'newcustomer-discount'),
-            'greeting' => __('Sehr geehrter Kunde,', 'newcustomer-discount'),
-            'intro' => __('vielen Dank für Ihr Interesse an {shop_name}. Als besonderes Willkommensgeschenk haben wir einen exklusiven Rabattgutschein für Sie erstellt.', 'newcustomer-discount'),
-            'coupon_info' => __('Besuchen Sie unseren Shop und geben Sie den Gutscheincode beim Checkout ein.', 'newcustomer-discount'),
-            'footer' => __('Dies ist eine automatisch generierte E-Mail.', 'newcustomer-discount')
+            'heading' => __('Your Exclusive Welcome Discount', 'newcustomer-discount'),
+            'greeting' => __('Dear Customer,', 'newcustomer-discount'),
+            'intro' => __('thank you for your interest in {shop_name}. As a special welcome gift, we have created an exclusive discount coupon for you.', 'newcustomer-discount'),
+            'coupon_info' => __('Visit our shop and enter the coupon code at checkout.', 'newcustomer-discount'),
+            'footer' => __('This is an automatically generated email.', 'newcustomer-discount')
         ];
 
         $this->template_directory = NCD_PLUGIN_DIR . 'templates/email/base/';
@@ -72,7 +71,7 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Gibt verfügbare Templates zurück
+     * Returns a list of available templates
      *
      * @return array
      */
@@ -91,25 +90,24 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Lädt ein Template
+     * Loads a template
      *
      * @param string $template_id Template ID
-     * @return array Template-Daten
+     * @return array Template-Data
      */
     public function load_template($template_id) {
         try {
             $templates = $this->get_template_list();
             
             if (!isset($templates[$template_id])) {
-                throw new Exception("Template '$template_id' nicht gefunden");
+                throw new Exception("Template '$template_id' not found");
             }
             
             $template_file = $templates[$template_id]['file'];
             if (!file_exists($template_file)) {
-                throw new Exception("Template-Datei nicht gefunden: $template_file");
+                throw new Exception("Template file not found: $template_file");
             }
             
-            // Standard-Settings definieren
             $default_settings = [
                 'primary_color' => '#4F46E5',
                 'secondary_color' => '#818CF8',
@@ -119,11 +117,9 @@ class NCD_Email_Sender {
                 'layout_type' => 'full-width',
                 'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
             ];
-            
-            // Hole die gespeicherten Template-Einstellungen
+
             $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
             
-            // Merge die Settings
             $settings = wp_parse_args($saved_settings, $default_settings);
             
             if (WP_DEBUG) {
@@ -133,11 +129,10 @@ class NCD_Email_Sender {
                 error_log("Final settings: " . print_r($settings, true));
             }
             
-            // Stelle sicher dass $settings definiert ist bevor das Template geladen wird
             $template = include $template_file;
             
             if ($template === false) {
-                throw new Exception("Fehler beim Laden des Templates");
+                throw new Exception("Error loading the template");
             }
             
             return $template;
@@ -146,16 +141,16 @@ class NCD_Email_Sender {
             if (WP_DEBUG) {
                 error_log('Template loading error: ' . $e->getMessage());
             }
-            throw $e; // Werfe den Fehler weiter
+            throw $e;
         }
     }
 
     /**
-     * Sendet eine Rabatt-E-Mail
+     * Sends a discount email
      *
-     * @param string $email Empfänger E-Mail
-     * @param array $data E-Mail-Daten
-     * @param array $settings Optionale E-Mail-Einstellungen
+     * @param string $email Recipient E-Mail
+     * @param array $data E-Mail-data
+     * @param array $settings optional E-Mail settings
      * @return bool|WP_Error
      */
     public function send_discount_email($email, $data, $settings = []) {
@@ -165,16 +160,9 @@ class NCD_Email_Sender {
             }
     
             $settings = wp_parse_args($settings, $this->default_settings);
-            
-            // Hole das aktive Template und seine gespeicherten Einstellungen
             $template_id = get_option('ncd_active_template', 'modern');
             $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
-            
-            // Lade das Template
             $template = $this->load_template($template_id);
-            
-            // Merge die Einstellungen in der richtigen Reihenfolge:
-            // Gespeicherte Einstellungen haben Vorrang vor Template-Standards
             $template_settings = wp_parse_args($saved_settings, $template['settings']); 
             
             // Debug-Logging hinzufügen
@@ -184,8 +172,7 @@ class NCD_Email_Sender {
                 error_log('Saved custom settings: ' . print_r($saved_settings, true));
                 error_log('Final merged settings: ' . print_r($template_settings, true));
             }
-    
-            // Template mit den gemergten Einstellungen rendern
+
             $content = $this->render_template($template_id, $data, $template_settings);
             if (is_wp_error($content)) {
                 throw new Exception($content->get_error_message());
@@ -197,7 +184,7 @@ class NCD_Email_Sender {
             $sent = wp_mail($email, $subject, $content, $headers);
     
             if (!$sent) {
-                throw new Exception(__('E-Mail konnte nicht gesendet werden', 'newcustomer-discount'));
+                throw new Exception(__('Email could not be sent', 'newcustomer-discount'));
             }
     
             $this->log_email_sent($email, $data, $template_id);
@@ -215,16 +202,15 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Rendert ein Template
+     * Renders a template
      *
      * @param string $template_id Template ID
-     * @param array $data Template-Daten
-     * @return string Gerendertes Template
+     * @param array $data Template-Data
+     * @return string Rendered HTML
      */
     public function render_template($template_id, $data, $settings = []) {
         $template = $this->load_template($template_id);
-        
-        // Stelle sicher dass alle erforderlichen Settings vorhanden sind
+
         $default_settings = [
             'primary_color' => '#4F46E5',
             'secondary_color' => '#818CF8',
@@ -234,11 +220,9 @@ class NCD_Email_Sender {
             'layout_type' => 'centered',
             'font_family' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
         ];
-        
-        // Merge die Default-Settings mit den Template-Settings
+
         $settings = wp_parse_args($settings, wp_parse_args($template['settings'], $default_settings));
-        
-        // Ersetze die CSS-Variablen
+
         $styles = strtr($template['styles'], [
             'var(--primary-color)' => $settings['primary_color'],
             'var(--secondary-color)' => $settings['secondary_color'],
@@ -249,7 +233,6 @@ class NCD_Email_Sender {
     
         $body_style = "background-color: " . $settings['background_color'] . ";";
         
-        // Ersetze die Settings-Variablen im HTML
         $html = str_replace(
             [
                 '{$settings[\'font_family\']}',
@@ -270,7 +253,7 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Parst das Template und ersetzt Variablen
+     * Parses a template string
      *
      * @param string $template Template-String
      * @param array $data Template-Daten
@@ -316,9 +299,9 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Generiert E-Mail-Header
+     * Generates E-Mail-Header
      *
-     * @param array $settings E-Mail-Einstellungen
+     * @param array $settings E-Mail-Settings
      * @return array
      */
     private function generate_email_headers($settings) {
@@ -331,7 +314,7 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Setzt den Content-Type auf HTML
+     * Sets the content type for HTML E-Mails
      *
      * @return string
      */
@@ -340,9 +323,9 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Sendet eine Test-E-Mail
+     * Sends a test E-Mail
      *
-     * @param string $email Test-Empfänger
+     * @param string $email Test-Recipient
      * @param string $template_id Template ID
      * @return bool|WP_Error
      */
@@ -359,23 +342,22 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Speichert Template-Einstellungen
+     * Saves template settings
      *
      * @param string $template_id Template ID
-     * @param array $settings Einstellungen
+     * @param array $settings Settings to save
      * @return bool
      */
     public function save_template_settings($template_id, $settings) {
         $option_name = 'ncd_template_' . $template_id . '_settings';
-        // Bestehende Einstellungen laden
         $existing_settings = get_option($option_name, []);
-        // Neue Einstellungen mit bestehenden zusammenführen
         $settings = wp_parse_args($settings, $existing_settings);
+
         return update_option($option_name, $settings);
     }
 
     /**
-     * Holt Template-Einstellungen
+     * Gets template settings
      *
      * @param string $template_id Template ID
      * @return array
@@ -386,9 +368,9 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Speichert E-Mail-Texte
+     * Saves E-Mail-Texts
      *
-     * @param array $texts Die zu speichernden Texte
+     * @param array $texts to save E-Mail-Texts
      * @return bool
      */
     public function save_email_texts($texts) {
@@ -396,7 +378,7 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Gibt die aktuellen E-Mail-Texte zurück
+     * Returns E-Mail-Texts
      *
      * @return array
      */
@@ -405,29 +387,29 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Gibt die verfügbaren Template-Variablen zurück
+     * Returns available variables
      *
      * @return array
      */
     public function get_available_variables() {
         return [
-            '{coupon_code}' => __('Der generierte Gutscheincode', 'newcustomer-discount'),
-            '{shop_name}' => __('Name des Shops', 'newcustomer-discount'),
-            '{discount_amount}' => __('Rabatthöhe in Prozent', 'newcustomer-discount'),
-            '{expiry_date}' => __('Ablaufdatum des Gutscheins', 'newcustomer-discount'),
-            '{shop_url}' => __('URL des Shops', 'newcustomer-discount'),
-            '{logo_url}' => __('URL des Shop-Logos', 'newcustomer-discount'),
-            '{current_year}' => __('Aktuelles Jahr', 'newcustomer-discount'),
-            '{min_order_amount}' => __('Mindestbestellwert', 'newcustomer-discount'),
-            '{currency_symbol}' => __('Währungssymbol', 'newcustomer-discount')
+            '{coupon_code}' => __('The generated coupon code', 'newcustomer-discount'),
+            '{shop_name}' => __('Shop name', 'newcustomer-discount'),
+            '{discount_amount}' => __('Discount percentage', 'newcustomer-discount'),
+            '{expiry_date}' => __('Coupon expiry date', 'newcustomer-discount'),
+            '{shop_url}' => __('Shop URL', 'newcustomer-discount'),
+            '{logo_url}' => __('Shop logo URL', 'newcustomer-discount'),
+            '{current_year}' => __('Current year', 'newcustomer-discount'),
+            '{min_order_amount}' => __('Minimum order amount', 'newcustomer-discount'),
+            '{currency_symbol}' => __('Currency symbol', 'newcustomer-discount')
         ];
     }
 
     /**
-     * Speichert E-Mail-Versand in der Datenbank
+     * Saves E-Mail-Databased on E-Mail-Log
      *
-     * @param string $email Empfänger E-Mail
-     * @param array $data E-Mail-Daten
+     * @param string $email E-Mail-Recipient
+     * @param array $data E-Mail-Data
      * @return void
      */
     private function log_email_sent($email, $data, $template_id) {
@@ -441,14 +423,14 @@ class NCD_Email_Sender {
                 'coupon_code' => $data['coupon_code'],
                 'sent_date' => current_time('mysql'),
                 'status' => 'sent',
-                'template_version' => $template_id // Template-ID speichern
+                'template_version' => $template_id
             ],
             ['%s', '%s', '%s', '%s', '%s']
         );
     }
 
     /**
-     * Erstellt die E-Mail-Log Tabelle
+     * Creates the E-Mail-Log table
      *
      * @return void
      */
@@ -476,7 +458,7 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Gibt die E-Mail-Logs zurück
+     * Returns E-Mail-Logs
      *
      * @param array $args Query-Argumente
      * @return array
@@ -504,10 +486,10 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Bereinigt alte Log-Einträge
+     * Cleans up old E-Mail-Logs
      *
-     * @param int $days Alter in Tagen
-     * @return int Anzahl der gelöschten Einträge
+     * @param int $days Age in days
+     * @return int Number of deleted logs
      */
     public function cleanup_logs($days = 90) {
         global $wpdb;
@@ -521,10 +503,10 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Loggt Fehler für Debugging
+     * Error logging for debugging
      *
-     * @param string $message Fehlermeldung
-     * @param array $context Zusätzliche Kontext-Informationen
+     * @param string $message Error message
+     * @param array $context additional context
      * @return void
      */
     private function log_error($message, $context = []) {
@@ -538,21 +520,20 @@ class NCD_Email_Sender {
     }
 
     /**
-     * Rendert eine Template-Vorschau
+     * Renders a template preview
      *
      * @param string $template_id Template ID
-     * @param array $settings Temporäre Einstellungen
-     * @return string HTML der Vorschau
+     * @param array $settings temporary settings
+     * @return string HTML preview
      */
     public function render_preview($template_id, $settings = []) {
         try {
             $template = $this->load_template($template_id);
             
             if (empty($template)) {
-                throw new Exception('Template nicht gefunden');
+                throw new Exception('Template not found');
             }
 
-            // Wenn keine benutzerdefinierten Einstellungen, verwende die Template-Standardeinstellungen
             $settings = !empty($settings) ? $settings : $template['settings'];
 
             $test_data = [
@@ -560,7 +541,6 @@ class NCD_Email_Sender {
                 'expiry_date' => date('Y-m-d', strtotime('+30 days'))
             ];
 
-            // Wende die Template-spezifischen Styles an
             $styles = strtr($template['styles'], [
                 'var(--primary-color)' => $settings['primary_color'],
                 'var(--secondary-color)' => $settings['secondary_color'],
@@ -582,7 +562,7 @@ class NCD_Email_Sender {
             if (WP_DEBUG) {
                 error_log('Template preview error: ' . $e->getMessage());
             }
-            return '<div class="error">Fehler beim Laden der Vorschau</div>';
+            return '<div class="error">Error loading preview</div>';
         }
     }
 }

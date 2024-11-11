@@ -9,39 +9,35 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Stelle sicher dass settings definiert ist
-if (!isset($settings)) {
-    $settings = [];
-}
+$settings = $settings ?? [];
 
-// Stelle sicher dass settings ein Array ist
 if (!is_array($settings)) {
     $settings = [];
 }
 
 $translations = [
-    'benefits' => esc_html__('Ihre Vorteile', 'newcustomer-discount'),
+    'benefits' => esc_html__('Your Benefits', 'newcustomer-discount'),
     'discount_text' => sprintf(
         /* translators: %s: discount amount */
-        esc_html__('✨ %s%% Rabatt auf Ihre Bestellung', 'newcustomer-discount'),
+        esc_html__('✨ %s%% discount on your order', 'newcustomer-discount'),
         '{discount_amount}'
     ),
     'expiry_text' => sprintf(
         /* translators: %s: expiry date */
-        esc_html__('⏰ Gültig bis %s', 'newcustomer-discount'),
+        esc_html__('⏰ Valid until %s', 'newcustomer-discount'),
         '{expiry_date}'
     ),
     'min_order_text' => sprintf(
         /* translators: %s: minimum order amount */
-        esc_html__('💰 Mindestbestellwert: %s', 'newcustomer-discount'),
+        esc_html__('💰 Minimum order value: %s', 'newcustomer-discount'),
         '{min_order_amount}'
     ),
-    'redeem_button' => esc_html__('Jetzt einlösen', 'newcustomer-discount')
+    'redeem_button' => esc_html__('Redeem Now', 'newcustomer-discount')
 ];
 
 return [
     'name' => 'Modern',
-    'description' => __('Ein modernes, dynamisches Design mit klaren Linien', 'newcustomer-discount'),
+    'description' => __('A modern, dynamic design with clean lines', 'newcustomer-discount'),
     'settings' => $settings,
     'styles' => <<<CSS
         .modern-template {
@@ -145,7 +141,7 @@ return [
             line-height: 1.3;
         }
 
-        .modern-template .Gutschein-code {
+        .modern-template .coupon-code {
             background: var(--background-color);
             padding: 24px;
             text-align: center;
@@ -160,7 +156,7 @@ return [
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .modern-template .Gutschein-code::before {
+        .modern-template .coupon-code::before {
             content: '';
             position: absolute;
             top: 0;
@@ -252,7 +248,7 @@ return [
                 font-size: 24px;
             }
 
-            .modern-template .Gutschein-code {
+            .modern-template .coupon-code {
                 font-size: 24px;
                 padding: 20px;
                 letter-spacing: 2px;
@@ -281,7 +277,7 @@ CSS,
                 
                 <p style="text-align: center;">{email_intro}</p>
 
-                <div class="Gutschein-code">
+                <div class="coupon-code">
                     {coupon_code}
                 </div>
 

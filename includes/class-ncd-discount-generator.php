@@ -1,8 +1,8 @@
 <?php
 /**
- * Gutschein Generator Class
+ * Discount Generator Class
  *
- * Verwaltet die Erstellung und Verwaltung von WooCommerce Gutscheinen
+ * Manage discount code generation 
  *
  * @package NewCustomerDiscount
  * @since 0.0.1
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 class NCD_Discount_Generator {
     /**
-     * Verfügbare Zeichen für Gutscheincodes
+     * Character sets for code generation
      *
      * @var array
      */
@@ -25,28 +25,28 @@ class NCD_Discount_Generator {
     ];
 
     /**
-     * Aktuell verwendete Zeichen
+     * Characters for code generation
      *
      * @var string
      */
     private $characters;
 
     /**
-     * Gutschein-Präfix
+     * Discount code prefix
      *
      * @var string
      */
     private $prefix;
 
     /**
-     * Gutschein-Länge
+     * Discount code length
      *
      * @var int
      */
     private $code_length;
 
     /**
-     * Standard-Gutscheineinstellungen
+     * Default coupon settings
      *
      * @var array
      */
@@ -61,24 +61,19 @@ class NCD_Discount_Generator {
     /**
      * Constructor
      *
-     * @param array $settings Optionale Überschreibung der Standardeinstellungen
+     * @param array $settings Optional settings to override defaults
      */
     public function __construct($settings = []) {
-        // Hole gespeicherte Einstellungen
         $saved_discount = get_option('ncd_discount_amount', 20);
         $saved_expiry = get_option('ncd_expiry_days', 30);
-        
-        // Überschreibe Defaults mit gespeicherten Werten
+
         $this->default_coupon_settings['discount_amount'] = $saved_discount;
         $this->default_coupon_settings['expiry_days'] = $saved_expiry;
-        
-        // Merge mit übergebenen Einstellungen
+
         $this->default_coupon_settings = wp_parse_args($settings, $this->default_coupon_settings);
-    
-        // Initialisiere Code-Einstellungen
+
         $this->init_code_settings();
-    
-        // Debug Logging
+
         if (WP_DEBUG) {
             error_log('NCD Gutschein Generator initialized with settings:');
             error_log('Prefix: ' . $this->prefix);
@@ -90,15 +85,13 @@ class NCD_Discount_Generator {
     }
 
     /**
-     * Initialisiert Code-Einstellungen
+     * Initializes code settings
      */
     private function init_code_settings() {
-        // Hole gespeicherte Einstellungen
         $this->prefix = get_option('ncd_code_prefix', 'NL');
         $this->code_length = (int)get_option('ncd_code_length', 6);
         $char_types = (array)get_option('ncd_code_chars', ['numbers', 'uppercase']);
 
-        // Erstelle Zeichensatz
         $this->characters = '';
         foreach ($char_types as $type) {
             if (isset($this->character_sets[$type])) {
@@ -106,19 +99,18 @@ class NCD_Discount_Generator {
             }
         }
 
-        // Fallback wenn keine Zeichen ausgewählt
         if (empty($this->characters)) {
             $this->characters = $this->character_sets['numbers'] . $this->character_sets['uppercase'];
         }
     }
 
     /**
-     * Generiert einen einzigartigen Gutscheincode
+     * Generates a unique discount code
      *
      * @return string
      */
     public function generate_unique_code() {
-        $max_attempts = 100; // Verhindert Endlosschleife
+        $max_attempts = 20;
         $attempt = 0;
 
         do {
@@ -131,30 +123,29 @@ class NCD_Discount_Generator {
         } while ($exists && $attempt < $max_attempts);
 
         if ($attempt >= $max_attempts) {
-            throw new Exception(__('Konnte keinen einzigartigen Code generieren.', 'newcustomer-discount'));
+            throw new Exception(__('Could not generate a unique code.', 'newcustomer-discount'));
         }
 
         return $code;
     }
 
     /**
-     * Erstellt einen neuen WooCommerce Gutschein
+     * Creates a new coupon
      *
-     * @param string $email E-Mail des Kunden für Tracking
-     * @param array $settings Optionale Überschreibung der Standardeinstellungen
-     * @return array|WP_Error Array mit Gutscheindaten oder WP_Error bei Fehler
+     * @param string $email E-Mail of the customer
+     * @param array $settings Optional coupon settings
+     * @return array|WP_Error Array with coupon details or WP_Error on failure
      */
     public function create_coupon($email, $settings = []) {
         try {
             if (!is_email($email)) {
-                throw new Exception(__('Ungültige E-Mail-Adresse.', 'newcustomer-discount'));
+                throw new Exception(__('Invalid email address.', 'newcustomer-discount'));
             }
 
             $settings = wp_parse_args($settings, $this->default_coupon_settings);
             $code = $this->generate_unique_code();
 
-            // Erstelle WooCommerce Gutschein
-            $Gutschein = [
+            $discount = [
                 'post_title' => $code,
                 'post_content' => '',
                 'post_status' => 'publish',
@@ -162,22 +153,19 @@ class NCD_Discount_Generator {
                 'post_type' => 'shop_coupon'
             ];
 
-            $coupon_id = wp_insert_post($Gutschein, true);
+            $coupon_id = wp_insert_post($discount, true);
 
             if (is_wp_error($coupon_id)) {
                 throw new Exception($coupon_id->get_error_message());
             }
 
-            // Setze Gutschein
             $this->set_coupon_meta($coupon_id, $email, $settings);
 
-            // Hole Mindestbestellwert
             $min_amount = get_option('ncd_min_order_amount', 0);
             if ($min_amount > 0) {
                 update_post_meta($coupon_id, 'minimum_amount', $min_amount);
             }
 
-            // Hole ausgeschlossene Kategorien
             $excluded_cats = get_option('ncd_excluded_categories', []);
             if (!empty($excluded_cats)) {
                 update_post_meta($coupon_id, 'exclude_product_categories', $excluded_cats);
@@ -200,11 +188,11 @@ class NCD_Discount_Generator {
     }
 
     /**
-     * Setzt die Meta-Daten für einen Gutschein
+     * Sets coupon meta data
      *
-     * @param int $coupon_id Post ID des Gutscheins
-     * @param string $email E-Mail des Kunden
-     * @param array $settings Gutscheineinstellungen
+     * @param int $coupon_id Post ID of the discount
+     * @param string $email E-Mail of the customer
+     * @param array $settings Discount settings
      */
     private function set_coupon_meta($coupon_id, $email, $settings) {
         $meta_data = [
@@ -227,9 +215,9 @@ class NCD_Discount_Generator {
     }
 
     /**
-     * Prüft ob ein Gutschein bereits existiert
+     * Checks if a coupon exists
      *
-     * @param string $code Gutscheincode
+     * @param string $code Discount code
      * @return bool
      */
     public function coupon_exists($code) {
@@ -247,49 +235,49 @@ class NCD_Discount_Generator {
     }
 
     /**
-     * Prüft den Status eines Gutscheins
+     * Checks if a coupon is valid
      *
-     * @param string $code Gutscheincode
-     * @return array Status-Informationen
+     * @param string $code coupon code
+     * @return array status-information
      */
     public function get_coupon_status($code) {
-        $Gutschein = new WC_Coupon($code);
+        $discount = new WC_Coupon($code);
         
-        if (!$Gutschein->get_id()) {
+        if (!$discount->get_id()) {
             return [
                 'exists' => false,
                 'valid' => false,
-                'message' => __('Gutschein existiert nicht.', 'newcustomer-discount')
+                'message' => __('Coupon does not exist.', 'newcustomer-discount')
             ];
         }
 
         $status = [
             'exists' => true,
             'valid' => true,
-            'usage_count' => $Gutschein->get_usage_count(),
-            'usage_limit' => $Gutschein->get_usage_limit(),
-            'expiry_date' => $Gutschein->get_date_expires() ? $Gutschein->get_date_expires()->date('Y-m-d') : null,
-            'is_expired' => $Gutschein->get_date_expires() && $Gutschein->get_date_expires()->getTimestamp() < time(),
-            'customer_email' => $Gutschein->get_email_restrictions(),
-            'minimum_amount' => $Gutschein->get_minimum_amount(),
-            'excluded_categories' => $Gutschein->get_excluded_product_categories()
+            'usage_count' => $discount->get_usage_count(),
+            'usage_limit' => $discount->get_usage_limit(),
+            'expiry_date' => $discount->get_date_expires() ? $discount->get_date_expires()->date('Y-m-d') : null,
+            'is_expired' => $discount->get_date_expires() && $discount->get_date_expires()->getTimestamp() < time(),
+            'customer_email' => $discount->get_email_restrictions(),
+            'minimum_amount' => $discount->get_minimum_amount(),
+            'excluded_categories' => $discount->get_excluded_product_categories()
         ];
 
         if ($status['is_expired']) {
             $status['valid'] = false;
-            $status['message'] = __('Gutschein ist abgelaufen.', 'newcustomer-discount');
+            $status['message'] = __('Coupon has expired.', 'newcustomer-discount');
         } elseif ($status['usage_count'] >= $status['usage_limit']) {
             $status['valid'] = false;
-            $status['message'] = __('Gutschein wurde bereits eingelöst.', 'newcustomer-discount');
+            $status['message'] = __('Coupon has already been redeemed.', 'newcustomer-discount');
         }
 
         return $status;
     }
 
     /**
-     * Deaktiviert einen Gutschein
+     * Deactivates a coupon
      *
-     * @param string $code Gutscheincode
+     * @param string $code coupon code
      * @return bool
      */
     public function deactivate_coupon($code) {
@@ -305,7 +293,7 @@ class NCD_Discount_Generator {
     }
 
     /**
-     * Gibt alle vom Plugin erstellten Gutscheine zurück
+     * Returns all generated coupons
      *
      * @param array $args Query-Argumente
      * @return array
@@ -326,26 +314,26 @@ class NCD_Discount_Generator {
         ];
 
         $args = wp_parse_args($args, $defaults);
-        $Gutscheine = get_posts($args);
+        $discounte = get_posts($args);
 
-        return array_map(function($Gutschein) {
+        return array_map(function($discount) {
             return [
-                'id' => $Gutschein->ID,
-                'code' => $Gutschein->post_title,
-                'email' => get_post_meta($Gutschein->ID, '_ncd_customer_email', true),
-                'created' => get_post_meta($Gutschein->ID, '_ncd_creation_date', true),
-                'discount_amount' => get_post_meta($Gutschein->ID, 'coupon_amount', true),
-                'minimum_amount' => get_post_meta($Gutschein->ID, 'minimum_amount', true),
-                'expiry_date' => get_post_meta($Gutschein->ID, 'expiry_date', true),
-                'status' => $this->get_coupon_status($Gutschein->post_title)
+                'id' => $discount->ID,
+                'code' => $discount->post_title,
+                'email' => get_post_meta($discount->ID, '_ncd_customer_email', true),
+                'created' => get_post_meta($discount->ID, '_ncd_creation_date', true),
+                'discount_amount' => get_post_meta($discount->ID, 'coupon_amount', true),
+                'minimum_amount' => get_post_meta($discount->ID, 'minimum_amount', true),
+                'expiry_date' => get_post_meta($discount->ID, 'expiry_date', true),
+                'status' => $this->get_coupon_status($discount->post_title)
             ];
-        }, $Gutscheine);
+        }, $discounte);
     }
 
     /**
-     * Bereinigt abgelaufene Gutscheine
+     * Cleans up expired coupons
      *
-     * @return int Anzahl der bereinigten Gutscheine
+     * @return int Number of deleted coupons
      */
     public function cleanup_expired_coupons() {
         $expired_coupons = get_posts([
@@ -367,8 +355,8 @@ class NCD_Discount_Generator {
         ]);
 
         $count = 0;
-        foreach ($expired_coupons as $Gutschein) {
-            if (wp_update_post(['ID' => $Gutschein->ID, 'post_status' => 'trash'])) {
+        foreach ($expired_coupons as $discount) {
+            if (wp_update_post(['ID' => $discount->ID, 'post_status' => 'trash'])) {
                 $count++;
             }
         }
@@ -377,16 +365,16 @@ class NCD_Discount_Generator {
     }
 
     /**
-     * Loggt Fehler für Debugging
+     * Logging for errors
      *
-     * @param string $message Fehlermeldung
-     * @param array $context Zusätzliche Kontext-Informationen
+     * @param string $message error message
+     * @param array $context additional context
      * @return void
      */
     private function log_error($message, $context = []) {
         if (WP_DEBUG) {
             error_log(sprintf(
-                '[NewCustomerDiscount] Gutschein Generator Error: %s | Context: %s',
+                '[NewCustomerDiscount] Discount Generator Error: %s | Context: %s',
                 $message,
                 json_encode($context)
             ));
@@ -394,7 +382,7 @@ class NCD_Discount_Generator {
     }
 
     /**
-     * Gibt die verfügbaren Zeichensätze zurück
+     * Returns available character sets
      *
      * @return array
      */
@@ -403,34 +391,31 @@ class NCD_Discount_Generator {
     }
 
     /**
-     * Validiert einen Gutscheincode
+     * Validates a coupon code format
      *
-     * @param string $code Zu validierender Code
+     * @param string $code to validate code
      * @return bool|WP_Error
      */
     public function validate_code_format($code) {
-        // Prüfe Länge
         if (strlen($code) < strlen($this->prefix) + 4 || strlen($code) > strlen($this->prefix) + 12) {
             return new WP_Error(
                 'invalid_length',
-                __('Ungültige Gutschein-Länge.', 'newcustomer-discount')
+                __('Invalid coupon length', 'newcustomer-discount')
             );
         }
 
-        // Prüfe Präfix
         if (strpos($code, $this->prefix) !== 0) {
             return new WP_Error(
                 'invalid_prefix',
-                __('Ungültiger Gutschein-Präfix.', 'newcustomer-discount')
+                __('Invalid coupon prefix', 'newcustomer-discount')
             );
         }
 
-        // Prüfe Zeichen
         $code_part = substr($code, strlen($this->prefix));
         if (!preg_match('/^[' . preg_quote($this->characters, '/') . ']+$/', $code_part)) {
             return new WP_Error(
                 'invalid_characters',
-                __('Ungültige Zeichen im Code.', 'newcustomer-discount')
+                __('Invalid characters in code', 'newcustomer-discount')
             );
         }
 

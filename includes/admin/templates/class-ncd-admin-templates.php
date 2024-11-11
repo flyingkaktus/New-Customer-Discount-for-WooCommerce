@@ -2,7 +2,7 @@
 /**
 * Admin Templates Class
 *
-* Verwaltet die E-Mail-Templates im WordPress Admin-Bereich
+* Manages the templates admin page
 *
 * @package NewCustomerDiscount
 * @subpackage Admin\Templates
@@ -23,7 +23,7 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
    }
 
    /**
-    * Überschreibt die Asset-Einbindung der Basisklasse
+    * Overrides the parent method to enqueue additional assets
     *
     * @param string $hook
     */
@@ -53,7 +53,7 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
    }
 
    /**
-    * Rendert die Templates-Verwaltungsseite
+    * Renders the templates page
     */
     public function render_page() {
         if (!$this->check_admin_permissions()) {
@@ -62,7 +62,7 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     
         if ($this->handle_template_post()) {
             $this->add_admin_notice(
-                __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
+                __('Template settings have been saved.', 'newcustomer-discount'),
                 'success'
             );
         }
@@ -75,7 +75,7 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     }
 
     /**
-     * Handler für Template-Vorschau - wird von AJAX aufgerufen
+     * handler for preview template - called by AJAX
      * 
      * @param array $data Die POST-Daten
      */
@@ -87,7 +87,6 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
         try {
             parse_str($data['data'], $form_data);
             
-            // Korrekte Template-ID aus dem Formular holen
             $template_id = isset($form_data['template_id']) ? 
                 sanitize_text_field($form_data['template_id']) : 'modern';
                 
@@ -111,7 +110,7 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     }
 
     /**
-     * Handler für Template-Wechsel - wird von AJAX aufgerufen
+     * Handler for template switch - called by AJAX
      * 
      * @param array $data Die POST-Daten
      */
@@ -128,7 +127,7 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
             update_option('ncd_active_template', $template_id);
 
             wp_send_json_success([
-                'message' => __('Template erfolgreich gewechselt.', 'newcustomer-discount')
+                'message' => __('Template successfully changed.', 'newcustomer-discount')
             ]);
         } catch (Exception $e) {
             $this->log_error('Template switch failed', [
@@ -146,20 +145,17 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     
         try {
             if (!isset($data['template_id'])) {
-                throw new Exception(__('Keine Template-ID angegeben.', 'newcustomer-discount'));
+                throw new Exception(__('No template ID specified.', 'newcustomer-discount'));
             }
     
             $template_id = sanitize_text_field($data['template_id']);
             
-            // Debug Log
             if (WP_DEBUG) {
                 error_log('Getting settings for template: ' . $template_id);
             }
     
-            // Lade das Template mit seinen Einstellungen
             $template = $this->email_sender->load_template($template_id);
             
-            // Sende die Template-Einstellungen zurück
             wp_send_json_success([
                 'settings' => $template['settings']
             ]);
@@ -175,7 +171,7 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     }
     
     /**
-     * Handler für Template-Einstellungen speichern - wird von AJAX aufgerufen
+     * Handler for saving template settings - called by AJAX
      * 
      * @param array $data Die POST-Daten
      */
@@ -188,18 +184,15 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
             $template_id = sanitize_text_field($data['template_id']);
             parse_str($data['settings'], $settings);
             
-            // Nur die relevanten Einstellungen extrahieren
             $template_settings = isset($settings['settings']) ? $settings['settings'] : [];
             $sanitized_settings = $this->sanitize_template_settings($template_settings);
     
-            // Template-spezifisch speichern
             $this->email_sender->save_template_settings($template_id, $sanitized_settings);
             
-            // Vorschau mit den gespeicherten Einstellungen rendern
             $preview = $this->email_sender->render_preview($template_id);
     
             wp_send_json_success([
-                'message' => __('Template-Einstellungen gespeichert.', 'newcustomer-discount'),
+                'message' => __('Template settings saved.', 'newcustomer-discount'),
                 'html' => $preview
             ]);
         } catch (Exception $e) {
@@ -208,7 +201,7 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     }
 
    /**
-    * Verarbeitet Template POST-Anfragen
+    * Process template POST data
     *
     * @return bool
     */
@@ -219,31 +212,25 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     
         $template_id = sanitize_text_field($_POST['template_id']);
         
-        // Hole aktuelle gespeicherte Einstellungen
         $saved_settings = get_option('ncd_template_' . $template_id . '_settings', []);
         
-        // Hole das Template mit Standardeinstellungen
         $template = $this->email_sender->load_template($template_id);
         $default_settings = $template['settings'];
-        
-        // Wenn neue Einstellungen gesendet wurden, diese verwenden
+
         if (isset($_POST['settings'])) {
             $new_settings = $this->sanitize_template_settings($_POST['settings']);
-            // Merge in der richtigen Reihenfolge: defaults -> saved -> new
             $settings = wp_parse_args($new_settings, wp_parse_args($saved_settings, $default_settings));
         } else {
-            // Ansonsten nur gespeicherte mit defaults mergen
             $settings = wp_parse_args($saved_settings, $default_settings);
         }
-        
-        // Speichere die gemergten Einstellungen
+
         update_option('ncd_template_' . $template_id . '_settings', $settings);
         
         return true;
     }
 
    /**
-    * Sanitiert Template-Einstellungen
+    * Sanitize template settings
     *
     * @param array $settings
     * @return array
@@ -252,7 +239,6 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
        $sanitized = [];
        
        if (is_array($settings)) {
-           // Farben
            $color_keys = ['primary_color', 'secondary_color', 'text_color', 'background_color'];
            foreach ($color_keys as $key) {
                if (isset($settings[$key])) {
@@ -260,7 +246,6 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
                }
            }
 
-           // Schriftart
            if (isset($settings['font_family'])) {
                $allowed_fonts = [
                    'Arial, sans-serif',
@@ -274,14 +259,12 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
                    : 'Arial, sans-serif';
            }
 
-           // Button Style
            if (isset($settings['button_style'])) {
                $sanitized['button_style'] = in_array($settings['button_style'], ['rounded', 'square', 'pill'])
                    ? $settings['button_style']
                    : 'rounded';
            }
 
-           // Layout Type
            if (isset($settings['layout_type'])) {
                $sanitized['layout_type'] = in_array($settings['layout_type'], ['centered', 'full-width'])
                    ? $settings['layout_type']
@@ -295,7 +278,7 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
    public function handle_activate_template($data) {
     if (!isset($data['template_id'])) {
         wp_send_json_error([
-            'message' => __('Keine Template-ID angegeben.', 'newcustomer-discount')
+            'message' => __('No template ID specified.', 'newcustomer-discount')
         ]);
         return;
     }
@@ -303,15 +286,13 @@ class NCD_Admin_Templates extends NCD_Admin_Base {
     $template_id = sanitize_text_field($data['template_id']);
 
     try {
-        // Lade Template um zu prüfen ob es existiert
         $template = $this->email_sender->load_template($template_id);
-        
-        // Aktiviere Template
+
         update_option('ncd_active_template', $template_id);
         
         wp_send_json_success([
             'message' => sprintf(
-                __('Template "%s" wurde aktiviert und wird nun für alle E-Mails verwendet.', 'newcustomer-discount'),
+                __('Template "%s" has been activated and will now be used for all emails.', 'newcustomer-discount'),
                 $template['name']
             ),
             'template_name' => $template['name']

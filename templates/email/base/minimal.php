@@ -9,12 +9,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Stelle sicher dass settings definiert ist
 if (!isset($settings)) {
     $settings = [];
 }
 
-// Stelle sicher dass settings ein Array ist
 if (!is_array($settings)) {
     $settings = [];
 }
@@ -23,25 +21,25 @@ $translations = [
     'details' => esc_html__('Details', 'newcustomer-discount'),
     'discount_text' => sprintf(
         /* translators: %s: discount amount */
-        esc_html__('%s%% Rabatt auf Ihre Bestellung', 'newcustomer-discount'),
+        esc_html__('%s%% Discount on your order', 'newcustomer-discount'),
         '{discount_amount}'
     ),
     'expiry_text' => sprintf(
         /* translators: %s: expiry date */
-        esc_html__('Gültig bis %s', 'newcustomer-discount'),
+        esc_html__('Valid until %s', 'newcustomer-discount'),
         '{expiry_date}'
     ),
     'min_order_text' => sprintf(
         /* translators: %s: minimum order amount */
-        esc_html__('Mindestbestellwert: %s', 'newcustomer-discount'),
+        esc_html__('Minimum order value: %s', 'newcustomer-discount'),
         '{min_order_amount}'
     ),
-    'shop_button' => esc_html__('Zum Shop', 'newcustomer-discount')
+    'shop_button' => esc_html__('Go to Shop', 'newcustomer-discount')
 ];
 
 return [
     'name' => 'Minimal',
-    'description' => __('Ein reduziertes, minimalistisches Design', 'newcustomer-discount'),
+    'description' => __('A reduced, minimalistic design', 'newcustomer-discount'),
     'settings' => $settings,
     'styles' => <<<CSS
         .minimal-template {
@@ -52,7 +50,6 @@ return [
             --font-family: {$settings['font_family']};
         }
 
-        /* Button Styles - mit Scope */
         .minimal-template .button.rounded {
             border-radius: 4px;
         }
@@ -72,7 +69,6 @@ return [
             font-size: 12px;
         }
 
-        /* Layout Styles - mit Scope */
         .minimal-template .email-wrapper.centered {
             margin: 0 auto;
             max-width: 500px;

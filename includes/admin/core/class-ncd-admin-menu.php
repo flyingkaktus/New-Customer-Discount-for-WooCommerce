@@ -2,7 +2,7 @@
 /**
  * Admin Menu Class
  *
- * Verwaltet die Menüstruktur im WordPress Admin-Bereich
+ * Manages the admin menu and pages
  *
  * @package NewCustomerDiscount
  * @subpackage Admin\Core
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 
 class NCD_Admin_Menu {
     /**
-     * Registrierte Seiten
+     * Register Pages
      * 
      * @var array
      */
@@ -38,10 +38,10 @@ class NCD_Admin_Menu {
     }
 
     /**
-     * Fügt eine neue Seite hinzu
+     * Adds a page to the menu
      * 
-     * @param string $key Seitenidentifikator
-     * @param object $page Seitenobjekt
+     * @param string $key pages identifier
+     * @param object $page page object
      * @return void
      */
     public function add_page($key, $page) {
@@ -58,7 +58,7 @@ class NCD_Admin_Menu {
     }
 
     /**
-     * Registriert die Menüs
+     * Register Menus
      * 
      * @return void
      */
@@ -68,43 +68,39 @@ class NCD_Admin_Menu {
             error_log('Registered pages: ' . print_r(array_keys($this->pages), true));
         }
 
-        // Hauptmenü
         add_menu_page(
-            __('Neukunden', 'newcustomer-discount'),
-            __('Neukunden', 'newcustomer-discount'),
+            __('New-Customers', 'newcustomer-discount'),
+            __('New-Customers', 'newcustomer-discount'),
             'manage_options',
             'new-customers',
-            [$this->pages['customers'], 'render_page'], // Geändert von render_customers_page
+            [$this->pages['customers'], 'render_page'],
             'dashicons-groups',
             30
         );
 
-
-        // Erste Seite als Hauptseite
         if (isset($this->pages['customers'])) {
             add_submenu_page(
                 $this->menu_prefix,
-                __('Übersicht', 'newcustomer-discount'),
-                __('Übersicht', 'newcustomer-discount'),
+                __('Overview', 'newcustomer-discount'),
+                __('Overview', 'newcustomer-discount'),
                 'manage_options',
                 $this->menu_prefix,
                 [$this->pages['customers'], 'render_page']
             );
         }
 
-        // Untermenüs
         $submenus = [
             'templates' => [
                 'title' => __('E-Mail Templates', 'newcustomer-discount'),
                 'menu_title' => __('Templates', 'newcustomer-discount')
             ],
             'settings' => [
-                'title' => __('Einstellungen', 'newcustomer-discount'),
-                'menu_title' => __('Einstellungen', 'newcustomer-discount')
+                'title' => __('Settings', 'newcustomer-discount'),
+                'menu_title' => __('Settings', 'newcustomer-discount')
             ],
             'statistics' => [
-                'title' => __('Statistiken', 'newcustomer-discount'),
-                'menu_title' => __('Statistiken', 'newcustomer-discount')
+                'title' => __('Statistics', 'newcustomer-discount'),
+                'menu_title' => __('Statistics', 'newcustomer-discount')
             ]
         ];
 
@@ -127,8 +123,8 @@ class NCD_Admin_Menu {
     }
 
     /**
-     * Rendert die Hauptseite
-     * Wird nur aufgerufen, wenn keine Unterseite definiert ist
+     * Render Main Page
+     * 
      * 
      * @return void
      */
@@ -141,17 +137,17 @@ class NCD_Admin_Menu {
     }
 
     /**
-     * Rendert eine Fallback-Seite wenn keine Hauptseite verfügbar ist
+     * Render Fallback Page
      * 
      * @return void
      */
     private function render_fallback_page() {
         ?>
         <div class="wrap">
-            <h1><?php _e('New-Customer-Gutschein for WooCommerce', 'newcustomer-discount'); ?></h1>
+            <h1><?php _e('New-Customer-Discount for WooCommerce', 'newcustomer-discount'); ?></h1>
             <div class="notice notice-warning">
                 <p>
-                    <?php _e('Die Hauptseite konnte nicht geladen werden. Bitte überprüfen Sie die Installation.', 'newcustomer-discount'); ?>
+                    <?php _e('The main page could not be loaded. Please check the installation.', 'newcustomer-discount'); ?>
                 </p>
             </div>
         </div>
@@ -159,7 +155,7 @@ class NCD_Admin_Menu {
     }
 
     /**
-     * Prüft ob eine bestimmte Seite existiert
+     * Checks if a page exists
      * 
      * @param string $key Seitenidentifikator
      * @return bool
@@ -169,7 +165,7 @@ class NCD_Admin_Menu {
     }
 
     /**
-     * Gibt eine registrierte Seite zurück
+     * Returns a page by key
      * 
      * @param string $key Seitenidentifikator
      * @return object|null
@@ -179,7 +175,7 @@ class NCD_Admin_Menu {
     }
 
     /**
-     * Gibt alle registrierten Seiten zurück
+     * Returns all pages
      * 
      * @return array
      */
@@ -188,9 +184,9 @@ class NCD_Admin_Menu {
     }
 
     /**
-     * Gibt den aktuellen Menü-Slug zurück
+     * Returns the menu slug
      * 
-     * @param string $page Optional. Seitenidentifikator
+     * @param string $page Optional. Page identifier
      * @return string
      */
     public function get_menu_slug($page = '') {

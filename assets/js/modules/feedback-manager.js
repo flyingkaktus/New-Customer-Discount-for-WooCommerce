@@ -3,7 +3,6 @@
 
     class NCDFeedbackManager {
         constructor() {
-            // Überprüfe ob ncdAdmin verfügbar ist
             if (typeof window.ncdAdmin === 'undefined') {
                 console.error('ncdAdmin object not found');
                 return;
@@ -22,13 +21,7 @@
             this.$submitButton = this.$form.find('button[type="submit"]');
             this.maxLength = 2000;
 
-            // Messages aus ncdAdmin übernehmen
-            this.messages = window.ncdAdmin.messages || {
-                error: 'Ein Fehler ist aufgetreten',
-                sending: 'Sende...',
-                feedback_required: 'Bitte geben Sie Ihr Feedback ein.',
-                submit_feedback: 'Feedback senden'
-            };
+            this.messages = window.ncdAdmin.messages;
 
             this.bindEvents();
             this.init();
@@ -69,7 +62,11 @@
             if (!$counter.length) {
                 this.$content.after(`
                     <p class="description" id="feedback-char-counter">
-                        <span class="count">${currentLength}</span>/${this.maxLength} Zeichen
+                        ${sprintf(
+                            __('%1$s/%2$s characters', 'newcustomer-discount'),
+                            '<span class="count">' + currentLength + '</span>',
+                            this.maxLength
+                        )}
                     </p>
                 `);
                 $counter = $('#feedback-char-counter');
@@ -142,10 +139,8 @@
         }
     }
 
-    // Globale Verfügbarkeit für andere Module
     window.NCDFeedbackManager = NCDFeedbackManager;
 
-    // Initialisierung nur wenn ncdAdmin verfügbar ist
     $(document).ready(() => {
         if (typeof window.ncdAdmin !== 'undefined' && window.ncdAdmin.nonce) {
             window.ncdFeedbackManager = new NCDFeedbackManager();

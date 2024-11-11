@@ -5,6 +5,8 @@
         constructor() {
             this.ajax = new NCDAjaxHandler();
             
+            this.ajax = new NCDAjaxHandler();
+            
             this.$templateSelector = $('#template-selector');
             this.$activateButton = $('#activate-template');
             this.$previewFrame = $('.ncd-preview-frame');
@@ -23,6 +25,7 @@
             this.$templateSelector.find('option').each((_, option) => {
                 const $option = $(option);
                 if ($option.val() === this.activeTemplateId) {
+                if ($option.val() === this.activeTemplateId) {
                     $option.addClass('active-template');
                 }
             });
@@ -32,6 +35,7 @@
             this.$templateSelector.on('change', (e) => this.handleTemplateChange(e));
             this.$activateButton.on('click', (e) => this.handleTemplateActivation(e));
             this.$settingsForm.on('submit', (e) => this.handleSettingsSave(e));
+            this.$settingsForm.find('input, select').on('change input', () => this.updatePreviewWithDelay());
             this.$settingsForm.find('input, select').on('change input', () => this.updatePreviewWithDelay());
             $('.preview-mode').on('click', (e) => this.handlePreviewMode(e));
             $('.preview-test-email').on('click', () => this.handleTestEmailClick());
@@ -43,13 +47,19 @@
             const emailForm = `
             <div class="notice notice-info inline" style="margin-top: 15px;">
                 <p>
-                    <input type="email" 
-                           id="quick-test-email" 
-                           placeholder="${ncdAdmin.messages.enter_email || 'E-Mail Adresse eingeben'}"
-                           class="regular-text"
+                    <input type="email"
+                        id="quick-test-email"
+                        placeholder="${
+                            ncdAdmin.messages.enter_email || 
+                            esc_attr__('Enter email address', 'newcustomer-discount')
+                        }"
+                        class="regular-text"
                     />
                     <button type="button" class="button button-primary" id="send-quick-test">
-                        ${ncdAdmin.messages.send_test || 'Test-E-Mail senden'}
+                        ${
+                            ncdAdmin.messages.send_test || 
+                            esc_html__('Send test email', 'newcustomer-discount')
+                        }
                     </button>
                 </p>
             </div>
@@ -84,22 +94,32 @@
         updatePreviewWithDelay() {
             clearTimeout(this.previewTimer);
             this.previewTimer = setTimeout(() => this.updatePreview(), 300);
+            this.previewTimer = setTimeout(() => this.updatePreview(), 300);
         }
 
         handleTemplateChange(e) {
             const templateId = $(e.target).val();
             this.currentTemplateId = templateId;
+            this.currentTemplateId = templateId;
             this.$previewFrame.addClass('ncd-preview-loading');
             
             $('input[name="template_id"]').val(templateId);
             this.updateActivateButtonState();
+            this.updateActivateButtonState();
             
+            this.ajax.post('get_template_settings', {
             this.ajax.post('get_template_settings', {
                 template_id: templateId
             }).then(response => {
                 this.ajax.handleResponse(response, data => {
                     this.updateSettingsForm(data.settings);
+            }).then(response => {
+                this.ajax.handleResponse(response, data => {
+                    this.updateSettingsForm(data.settings);
                     this.updatePreview();
+                }, error => {
+                    NCDBase.showNotice(error, 'error');
+                });
                 }, error => {
                     NCDBase.showNotice(error, 'error');
                 });
@@ -112,18 +132,27 @@
             $('.notice.inline').remove();
 
             const confirmationNotice = `
-                <div class="notice notice-warning inline">
-                    <p>
-                        ${ncdAdmin.messages.confirm_template_activation}
-                        <button type="button" class="button button-primary confirm-activation">
-                            ${ncdAdmin.messages.yes}
-                        </button>
-                        <button type="button" class="button cancel-activation">
-                            ${ncdAdmin.messages.no}
-                        </button>
-                    </p>
-                </div>
-            `;
+            <div class="notice notice-warning inline">
+                <p>
+                    ${
+                        ncdAdmin.messages.confirm_template_activation || 
+                        esc_html__('Do you want to activate this template?', 'newcustomer-discount')
+                    }
+                    <button type="button" class="button button-primary confirm-activation">
+                        ${
+                            ncdAdmin.messages.yes || 
+                            esc_html__('Yes', 'newcustomer-discount')
+                        }
+                    </button>
+                    <button type="button" class="button cancel-activation">
+                        ${
+                            ncdAdmin.messages.no || 
+                            esc_html__('No', 'newcustomer-discount')
+                        }
+                    </button>
+                </p>
+            </div>
+        `;
             
             $(e.target).after(confirmationNotice);
             
@@ -149,6 +178,11 @@
                 }, error => {
                     NCDBase.showNotice(error, 'error');
                 });
+                    this.updateActiveTemplateInfo(data.template_name);
+                    NCDBase.showNotice(data.message, 'success');
+                }, error => {
+                    NCDBase.showNotice(error, 'error');
+                });
             });
         }
 
@@ -163,7 +197,19 @@
             }).then(response => {
                 this.ajax.handleResponse(response, () => {
                     NCDBase.showNotice(ncdAdmin.messages.settings_saved, 'success');
+
+            $('.notice').remove();
+            
+            this.ajax.post('save_template_settings', {
+                template_id: this.$templateSelector.val(),
+                settings: this.$settingsForm.serialize()
+            }).then(response => {
+                this.ajax.handleResponse(response, () => {
+                    NCDBase.showNotice(ncdAdmin.messages.settings_saved, 'success');
                     this.updatePreview();
+                }, error => {
+                    NCDBase.showNotice(error, 'error');
+                });
                 }, error => {
                     NCDBase.showNotice(error, 'error');
                 });
@@ -175,11 +221,35 @@
             $('.preview-mode').removeClass('active');
             $button.addClass('active');
             this.$previewFrame.removeClass('desktop mobile').addClass($button.data('mode'));
+            this.$previewFrame.removeClass('desktop mobile').addClass($button.data('mode'));
         }
 
         updatePreview() {
             this.$previewFrame.addClass('ncd-preview-loading');
             
+            this.ajax.post('preview_template', {
+                data: this.$settingsForm.serialize()
+            }).then(response => {
+                this.ajax.handleResponse(response, data => {
+                    this.$previewFrame.html(data.html);
+                    this.applyPreviewStyles(this.getCurrentSettings());
+                    this.$previewFrame.removeClass('ncd-preview-loading');
+                }, error => {
+                    NCDBase.showNotice(error, 'error');
+                    this.$previewFrame.removeClass('ncd-preview-loading');
+                });
+            });
+        }
+
+        updateSettingsForm(settings) {
+            Object.keys(settings).forEach(key => {
+                const $input = $(`[name="settings[${key}]"]`);
+                if ($input.length) {
+                    $input.val(settings[key]);
+                }
+            });
+        }
+
             this.ajax.post('preview_template', {
                 data: this.$settingsForm.serialize()
             }).then(response => {
@@ -227,11 +297,19 @@
             this.$previewFrame.find('.button')
                 .removeClass('minimal rounded pill')
                 .addClass(settings.buttonStyle);
+            this.$previewFrame.find('.button')
+                .removeClass('minimal rounded pill')
+                .addClass(settings.buttonStyle);
         
             this.$previewFrame.find('.email-wrapper')
                 .removeClass('centered full-width')
                 .addClass(settings.layoutType);
+            this.$previewFrame.find('.email-wrapper')
+                .removeClass('centered full-width')
+                .addClass(settings.layoutType);
         
+            this.$previewFrame.find('.ncd-email')
+                .css('font-family', settings.fontFamily);
             this.$previewFrame.find('.ncd-email')
                 .css('font-family', settings.fontFamily);
         }
@@ -251,8 +329,12 @@
                 
                 $option.text($option.text().replace(' (Aktiv)', ''))
                       .removeClass('active-template');
+                $option.text($option.text().replace(' (Aktiv)', ''))
+                      .removeClass('active-template');
                 
                 if (isActive) {
+                    $option.text($option.text() + ' (Aktiv)')
+                          .addClass('active-template');
                     $option.text($option.text() + ' (Aktiv)')
                           .addClass('active-template');
                 }

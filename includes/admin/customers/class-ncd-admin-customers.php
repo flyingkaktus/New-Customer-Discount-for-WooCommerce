@@ -2,7 +2,7 @@
 /**
 * Admin Customers Class
 *
-* Verwaltet die Kundenverwaltung im WordPress Admin-Bereich
+* Manages the customers admin page
 *
 * @package NewCustomerDiscount
 * @subpackage Admin\Customers
@@ -23,7 +23,7 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
    }
 
      /**
-     * Rendert die Admin-Seite
+     * renders the customers page
      */
     public function render_page() {
         if (!$this->check_admin_permissions()) {
@@ -44,57 +44,11 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
     }
 
     /**
-     * Handler für Test-E-Mail Versand
+     * Handler for the send discount AJAX request
      * 
-     * @param array $data Die POST-Daten
-     */
-    public function handle_send_test_email($data) {
-        if (!$this->ajax_handler->check_ajax_request()) {
-            return;
-        }
-
-        $email = sanitize_email($data['email']);
-        if (!is_email($email)) {
-            wp_send_json_error([
-                'message' => __('Ungültige E-Mail-Adresse.', 'newcustomer-discount')
-            ]);
-            return;
-        }
-
-        try {
-            $result = $this->email_sender->send_test_email($email);
-
-            if (is_wp_error($result)) {
-                throw new Exception($result->get_error_message());
-            }
-
-            wp_send_json_success([
-                'message' => sprintf(
-                    __('Test-E-Mail wurde an %s gesendet.', 'newcustomer-discount'),
-                    $email
-                )
-            ]);
-        } catch (Exception $e) {
-            $this->log_error('Test email sending failed', [
-                'email' => $email,
-                'error' => $e->getMessage()
-            ]);
-            wp_send_json_error(['message' => $e->getMessage()]);
-        }
-    }
-
-    /**
-     * Handler für Rabatt-E-Mail Versand
-     * 
-     * @param array $data Die POST-Daten
+     * @param array $data AJAX request data
      */
     public function handle_send_discount($data) {
-
-        if (WP_DEBUG) {
-            error_log('Starting handle_send_discount');
-            error_log('Posted data: ' . print_r($data, true));
-        }
-    
         if (!$this->ajax_handler->check_ajax_request()) {
             return;
         }
@@ -110,32 +64,32 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
     
             if (!$this->customer_tracker->is_new_customer($email)) {
                 error_log('Not a new customer: ' . $email);
-                throw new Exception(__('Der Kunde ist kein Neukunde.', 'newcustomer-discount'));
+                throw new Exception(__('The customer is not a new customer.', 'newcustomer-discount'));
             }
     
             if (WP_DEBUG) {
-                error_log('Creating Gutschein for: ' . $email);
+                error_log('Creating discount for: ' . $email);
             }
     
-            $Gutschein = $this->coupon_generator->create_coupon($email);
-            if (is_wp_error($Gutschein)) {
-                error_log('Gutschein creation failed: ' . $Gutschein->get_error_message());
-                throw new Exception($Gutschein->get_error_message());
+            $discount = $this->coupon_generator->create_coupon($email);
+            if (is_wp_error($discount)) {
+                error_log('Discount creation failed: ' . $discount->get_error_message());
+                throw new Exception($discount->get_error_message());
             }
     
             if (WP_DEBUG) {
-                error_log('Sending email with Gutschein: ' . print_r($Gutschein, true));
+                error_log('Sending email with discount: ' . print_r($discount, true));
             }
     
             $result = $this->email_sender->send_discount_email($email, [
-                'coupon_code' => $Gutschein['code'],
+                'coupon_code' => $discount['code'],
                 'first_name' => $first_name,
                 'last_name' => $last_name
             ]);
     
             if (is_wp_error($result)) {
                 error_log('Email sending failed: ' . $result->get_error_message());
-                $this->coupon_generator->deactivate_coupon($Gutschein['code']);
+                $this->coupon_generator->deactivate_coupon($discount['code']);
                 throw new Exception($result->get_error_message());
             }
     
@@ -143,13 +97,18 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
                 error_log('Updating customer status');
             }
     
-            $this->customer_tracker->update_customer_status($email, 'sent', $Gutschein['code']);
+            $this->customer_tracker->update_customer_status($email, 'sent', $discount['code']);
     
             wp_send_json_success([
                 'message' => sprintf(
-                    __('Rabattcode %s wurde an %s gesendet.', 'newcustomer-discount'),
-                    $Gutschein['code'],
+                    __('The discount code %s was successfully sent to %s.', 'newcustomer-discount'),
+                    $discount['code'],
                     $email
+                ),
+                'coupon_code' => $discount['code'],
+                'sent_date' => date_i18n(
+                    get_option('date_format') . ' ' . get_option('time_format'),
+                    current_time('timestamp')
                 )
             ]);
     
@@ -160,7 +119,7 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
     }
 
    /**
-    * Markiert einen Kunden als Neukunde
+    * Marks a customer as new customer
     *
     * @param string $email
     * @return bool|WP_Error
@@ -168,12 +127,12 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
    public function mark_as_new_customer($email) {
        try {
            if (!is_email($email)) {
-               throw new Exception(__('Ungültige E-Mail-Adresse.', 'newcustomer-discount'));
+               throw new Exception(__('Invalid email address.', 'newcustomer-discount'));
            }
 
            $result = $this->customer_tracker->add_customer($email);
            if (!$result) {
-               throw new Exception(__('Kunde konnte nicht hinzugefügt werden.', 'newcustomer-discount'));
+               throw new Exception(__('Customer could not be added.', 'newcustomer-discount'));
            }
 
            return true;
@@ -188,7 +147,7 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
    }
 
    /**
-    * Entfernt einen Kunden aus der Neukundenliste
+    * Removes a customer from the new customer list
     *
     * @param string $email
     * @return bool|WP_Error
@@ -196,7 +155,7 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
    public function remove_new_customer($email) {
        try {
            if (!is_email($email)) {
-               throw new Exception(__('Ungültige E-Mail-Adresse.', 'newcustomer-discount'));
+               throw new Exception(__('Invalid email address.', 'newcustomer-discount'));
            }
 
            global $wpdb;
@@ -224,10 +183,10 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
    }
 
    /**
-    * Prüft den Neukunden-Status eines Kunden
+    * Checks if a customer is a new customer
     *
     * @param string $email
-    * @return array Status-Informationen
+    * @return array status
     */
    public function get_customer_status($email) {
        $is_new = $this->customer_tracker->is_new_customer($email);
@@ -243,7 +202,7 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
    }
 
    /**
-    * Holt die Tracking-Informationen eines Kunden
+    * Gets the tracking info for a customer
     *
     * @param string $email
     * @return array|null

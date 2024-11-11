@@ -2,7 +2,7 @@
 /**
  * Admin Tab Manager Class
  *
- * Verwaltet die Tab-Navigation im WordPress Admin-Bereich
+ * Manages admin tabs
  *
  * @package NewCustomerDiscount
  * @subpackage Admin\Core
@@ -15,26 +15,26 @@ if (!defined('ABSPATH')) {
 
 class NCD_Admin_Tab_Manager {
     /**
-     * Registrierte Tabs
+     * Registerd Tabs
      *
      * @var array
      */
     private $tabs = [];
 
     /**
-     * Aktiver Tab
+     * Active Tab
      *
      * @var string
      */
     private $active_tab;
 
     /**
-     * Registriert einen neuen Tab
+     * Register a new tab
      *
      * @param string $id Tab ID
      * @param string $title Tab Titel
-     * @param string $content_callback Callback für Tab-Inhalt
-     * @param array $args Optionale Argumente
+     * @param string $content_callback Callback for tab content
+     * @param array $args Optionale arguemnts
      */
     public function add_tab($id, $title, $content_callback, $args = []) {
         $this->tabs[$id] = [
@@ -49,14 +49,13 @@ class NCD_Admin_Tab_Manager {
     }
 
     /**
-     * Rendert die Tab Navigation
+     * Renders the tabs
      *
      * @param string $default_tab Standard aktiver Tab
      */
     public function render_tabs($default_tab = '') {
         $this->active_tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : $default_tab;
         
-        // Sortiere Tabs nach Priorität
         uasort($this->tabs, function($a, $b) {
             return $a['args']['priority'] - $b['args']['priority'];
         });
@@ -86,7 +85,7 @@ class NCD_Admin_Tab_Manager {
     }
 
     /**
-     * Gibt den aktiven Tab zurück
+     * Returns the active tab
      *
      * @return string
      */
@@ -95,7 +94,7 @@ class NCD_Admin_Tab_Manager {
     }
 
     /**
-     * Prüft ob ein Tab existiert
+     * checks if a tab exists
      *
      * @param string $id Tab ID
      * @return bool
