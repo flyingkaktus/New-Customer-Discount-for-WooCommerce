@@ -544,7 +544,7 @@ $email_sender = new NCD_Email_Sender();
                     <p><?php _e('Diese Aktionen können nicht rückgängig gemacht werden. Bitte erstellen Sie vorher ein Backup Ihrer Datenbank.', 'newcustomer-discount'); ?></p>
                 </div>
 
-                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="ncd-reset-form">
+                <form method="post" class="ncd-reset-form">
                     <input type="hidden" name="action" value="ncd_reset_data">
                     <?php wp_nonce_field('ncd_reset_settings', 'ncd_reset_nonce'); ?>
                     

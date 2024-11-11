@@ -23,7 +23,6 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
         
         // Zusätzliche Hooks für Einstellungen
         add_action('admin_init', [$this, 'register_settings']);
-        add_action('admin_post_ncd_reset_data', [$this, 'handle_reset_data']);
     }
 
     /**
@@ -105,6 +104,25 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
             return;
         }
     
+        if (isset($_POST['ncd_reset_nonce']) && check_admin_referer('ncd_reset_settings', 'ncd_reset_nonce')) {
+            $reset_count = $this->perform_reset_actions();
+            
+            if($reset_count > 0) {
+                $this->add_admin_notice(
+                    sprintf(
+                        __('Erfolgreich %d Einträge zurückgesetzt.', 'newcustomer-discount'), 
+                        $reset_count
+                    ),
+                    'success'
+                );
+            } else {
+                $this->add_admin_notice(
+                    __('Keine Daten zum Zurücksetzen gefunden.', 'newcustomer-discount'),
+                    'info'
+                );
+            }
+        }
+
         if ($this->handle_settings_post()) {
             $this->add_admin_notice(
                 __('Einstellungen wurden gespeichert.', 'newcustomer-discount'),
@@ -276,7 +294,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     }
 
     /**
-     * Verarbeitet Reset-Anfragen
+     * Handler für Reset-Anfragen
      */
     public function handle_reset_data() {
         if (!$this->check_admin_permissions()) {
@@ -289,13 +307,21 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
 
         $reset_count = $this->perform_reset_actions();
 
-        wp_redirect(add_query_arg([
-            'page' => 'new-customers-settings',
-            'tab' => 'reset',
-            'message' => $reset_count > 0 ? 'reset-success' : 'no-data',
-            'count' => $reset_count
-        ], admin_url('admin.php')));
-        exit;
+        // Nutze die existierende add_admin_notice Methode aus NCD_Admin_Base
+        if($reset_count > 0) {
+            $this->add_admin_notice(
+                sprintf(
+                    __('Erfolgreich %d Einträge zurückgesetzt.', 'newcustomer-discount'), 
+                    $reset_count
+                ),
+                'success'
+            );
+        } else {
+            $this->add_admin_notice(
+                __('Keine Daten zum Zurücksetzen gefunden.', 'newcustomer-discount'),
+                'info'
+            );
+        }
     }
 
     /**
