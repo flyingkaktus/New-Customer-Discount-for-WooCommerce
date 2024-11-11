@@ -19,8 +19,13 @@ $email_sender = new NCD_Email_Sender();
 ?>
 
 <div class="wrap ncd-wrap">
+<<<<<<< Updated upstream
     <h1><?php _e('New Customer Discount Settings', 'newcustomer-discount'); ?></h1>
     <?php settings_errors(); ?>
+=======
+    <h1><?php _e('Neukunden-Gutschein Einstellungen', 'newcustomer-discount'); ?></h1>
+
+>>>>>>> Stashed changes
     <div class="ncd-tabs">
         <nav class="nav-tab-wrapper">
             <a href="#logo-settings" class="nav-tab nav-tab-active">

@@ -57,6 +57,7 @@ class NCD_Admin {
                'settings' => new NCD_Admin_Settings(),
                'statistics' => new NCD_Admin_Statistics()
            ];
+<<<<<<< Updated upstream
    private function init_pages() {
        try {
            $pages = [
@@ -65,15 +66,20 @@ class NCD_Admin {
                'settings' => new NCD_Admin_Settings(),
                'statistics' => new NCD_Admin_Statistics()
            ];
+=======
+>>>>>>> Stashed changes
     
            foreach ($pages as $key => $page) {
                $this->pages[$key] = $page;
                $this->menu->add_page($key, $page);
            }
+<<<<<<< Updated upstream
            foreach ($pages as $key => $page) {
                $this->pages[$key] = $page;
                $this->menu->add_page($key, $page);
            }
+=======
+>>>>>>> Stashed changes
     
            if (WP_DEBUG) {
                error_log('Admin pages initialized: ' . implode(', ', array_keys($this->pages)));
@@ -85,6 +91,7 @@ class NCD_Admin {
            throw $e;
        }
    }
+<<<<<<< Updated upstream
            if (WP_DEBUG) {
                error_log('Admin pages initialized: ' . implode(', ', array_keys($this->pages)));
            }
@@ -95,6 +102,8 @@ class NCD_Admin {
            throw $e;
        }
    }
+=======
+>>>>>>> Stashed changes
 
    private function init_hooks() {
        add_action('admin_menu', [$this->menu, 'register_menus']);
@@ -108,29 +117,39 @@ class NCD_Admin {
    public function get_tab_manager() {
        return $this->tab_manager;
    }
+<<<<<<< Updated upstream
    public function get_tab_manager() {
        return $this->tab_manager;
    }
+=======
+>>>>>>> Stashed changes
 
    public function enqueue_common_assets($hook) {
        if (strpos($hook, 'new-customers') === false) {
            return;
        }
+<<<<<<< Updated upstream
    public function enqueue_common_assets($hook) {
        if (strpos($hook, 'new-customers') === false) {
            return;
        }
+=======
+>>>>>>> Stashed changes
 
        if (WP_DEBUG) {
            error_log('Loading admin assets for hook: ' . $hook);
        }
+<<<<<<< Updated upstream
        if (WP_DEBUG) {
            error_log('Loading admin assets for hook: ' . $hook);
        }
+=======
+>>>>>>> Stashed changes
 
        $asset_version = WP_DEBUG ? time() : NCD_VERSION;
        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
 
+<<<<<<< Updated upstream
 
        $this->register_core_scripts($asset_version);
 
@@ -138,6 +157,18 @@ class NCD_Admin {
 
        $this->register_page_specific_assets($current_page, $asset_version);
 
+=======
+       // Core Scripts registrieren
+       $this->register_core_scripts($asset_version);
+
+       // Styles registrieren
+       $this->register_styles($asset_version);
+
+       // Seitenspezifische Assets
+       $this->register_page_specific_assets($current_page, $asset_version);
+
+       // Scripts enqueuen
+>>>>>>> Stashed changes
        $this->enqueue_required_scripts($current_page);
 
        if (WP_DEBUG) {
@@ -147,6 +178,10 @@ class NCD_Admin {
    }
 
    private function register_core_scripts($version) {
+<<<<<<< Updated upstream
+=======
+       // Base Script
+>>>>>>> Stashed changes
        wp_register_script(
            'ncd-admin-base',
            NCD_ASSETS_URL . 'js/core/admin-base.js',
@@ -155,6 +190,10 @@ class NCD_Admin {
            true
        );
 
+<<<<<<< Updated upstream
+=======
+       // Ajax Handler
+>>>>>>> Stashed changes
        wp_register_script(
            'ncd-ajax-handler',
            NCD_ASSETS_URL . 'js/core/ajax-handler.js',
@@ -163,8 +202,15 @@ class NCD_Admin {
            true
        );
 
+<<<<<<< Updated upstream
        wp_localize_script('ncd-admin-base', 'ncdAdmin', $this->get_admin_localization());
 
+=======
+       // Lokalisierung
+       wp_localize_script('ncd-admin-base', 'ncdAdmin', $this->get_admin_localization());
+
+       // Base Script aktivieren
+>>>>>>> Stashed changes
        wp_enqueue_script('ncd-admin-base');
        wp_enqueue_script('ncd-ajax-handler');
    }
@@ -176,6 +222,7 @@ class NCD_Admin {
            [],
            $version
        );
+<<<<<<< Updated upstream
    private function register_styles($version) {
        wp_register_style(
            'ncd-admin-base', 
@@ -183,6 +230,8 @@ class NCD_Admin {
            [],
            $version
        );
+=======
+>>>>>>> Stashed changes
 
        wp_register_style(
            'ncd-admin-tabs', 
@@ -190,12 +239,15 @@ class NCD_Admin {
            ['ncd-admin-base'],
            $version
        );
+<<<<<<< Updated upstream
        wp_register_style(
            'ncd-admin-tabs', 
            NCD_ASSETS_URL . 'css/admin/tabs.css',
            ['ncd-admin-base'],
            $version
        );
+=======
+>>>>>>> Stashed changes
 
        wp_register_style(
            'ncd-admin-customers',
@@ -203,12 +255,15 @@ class NCD_Admin {
            ['ncd-admin-base'],
            $version
        );
+<<<<<<< Updated upstream
        wp_register_style(
            'ncd-admin-customers',
            NCD_ASSETS_URL . 'css/admin/customers.css',
            ['ncd-admin-base'],
            $version
        );
+=======
+>>>>>>> Stashed changes
 
        wp_register_style(
            'ncd-admin-templates',
@@ -216,12 +271,15 @@ class NCD_Admin {
            ['ncd-admin-base'],
            $version
        );
+<<<<<<< Updated upstream
        wp_register_style(
            'ncd-admin-templates',
            NCD_ASSETS_URL . 'css/admin/templates.css',
            ['ncd-admin-base'],
            $version
        );
+=======
+>>>>>>> Stashed changes
 
        wp_register_style(
            'ncd-admin-settings',
@@ -229,12 +287,15 @@ class NCD_Admin {
            ['ncd-admin-base'],
            $version
        );
+<<<<<<< Updated upstream
        wp_register_style(
            'ncd-admin-settings',
            NCD_ASSETS_URL . 'css/admin/settings.css',
            ['ncd-admin-base'],
            $version
        );
+=======
+>>>>>>> Stashed changes
 
        wp_register_style(
            'ncd-admin-statistics',
@@ -243,12 +304,20 @@ class NCD_Admin {
            $version
        );
 
+<<<<<<< Updated upstream
+=======
+       // Base Styles aktivieren
+>>>>>>> Stashed changes
        wp_enqueue_style('ncd-admin-base');
        wp_enqueue_style('ncd-admin-tabs');
        wp_enqueue_style('dashicons');
    }
 
    private function register_page_specific_assets($current_page, $version) {
+<<<<<<< Updated upstream
+=======
+       // Page Manager Scripts
+>>>>>>> Stashed changes
        wp_register_script(
            'ncd-customer-manager',
            NCD_ASSETS_URL . 'js/modules/customer-manager.js',
@@ -281,10 +350,18 @@ class NCD_Admin {
            true
        );
 
+<<<<<<< Updated upstream
+=======
+       // Template spezifische Lokalisierung
+>>>>>>> Stashed changes
        if ($current_page === 'new-customers-templates') {
            wp_localize_script('ncd-template-manager', 'ncdTemplates', $this->get_template_localization());
        }
 
+<<<<<<< Updated upstream
+=======
+       // Tab spezifische Lokalisierung
+>>>>>>> Stashed changes
        if ($this->needs_tabs($current_page)) {
            wp_localize_script('ncd-tab-manager', 'ncdTabs', $this->get_tab_localization());
        }
@@ -322,6 +399,10 @@ class NCD_Admin {
                break;
        }
 
+<<<<<<< Updated upstream
+=======
+       // Haupt Admin Script
+>>>>>>> Stashed changes
        wp_enqueue_script(
            'ncd-admin',
            NCD_ASSETS_URL . 'js/admin.js',
@@ -349,6 +430,7 @@ class NCD_Admin {
    }
 
    private function get_admin_messages() {
+<<<<<<< Updated upstream
     return [
         'error' => __('An error occurred. Please try again.', 'newcustomer-discount'),
         'email_required' => __('Please enter an email address.', 'newcustomer-discount'),
@@ -389,6 +471,43 @@ class NCD_Admin {
             ]
         ];
     }
+=======
+       return [
+           'error' => __('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', 'newcustomer-discount'),
+           'email_required' => __('Bitte geben Sie eine E-Mail-Adresse ein.', 'newcustomer-discount'),
+           'confirm_test' => __('Möchten Sie eine Test-E-Mail an diese Adresse senden?', 'newcustomer-discount'),
+           'confirm_send' => __('Möchten Sie einen Rabattcode senden?', 'newcustomer-discount'),
+           'sending' => __('Sende...', 'newcustomer-discount'),
+           'success' => __('Erfolgreich gespeichert.', 'newcustomer-discount'),
+           'loading' => __('Laden...', 'newcustomer-discount'),
+           'confirm_template_activation' => __('Möchten Sie dieses Template wirklich aktivieren?', 'newcustomer-discount'),
+           'settings_saved' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
+           'feedback_required' => __('Bitte geben Sie Ihr Feedback ein.', 'newcustomer-discount'),
+           'submit_feedback' => __('Feedback senden', 'newcustomer-discount'),
+           'feedback_success' => __('Vielen Dank für Ihr Feedback!', 'newcustomer-discount'),
+       ];
+   }
+
+   private function get_template_localization() {
+       return [
+           'messages' => [
+               'save_success' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
+               'save_error' => __('Fehler beim Speichern der Einstellungen.', 'newcustomer-discount'),
+               'preview_error' => __('Fehler beim Generieren der Vorschau.', 'newcustomer-discount')
+           ]
+       ];
+   }
+
+   private function get_tab_localization() {
+       return [
+           'defaultTab' => 'logo-settings',
+           'messages' => [
+               'loading' => __('Laden...', 'newcustomer-discount'),
+               'error' => __('Fehler beim Laden des Tabs', 'newcustomer-discount')
+           ]
+       ];
+   }
+>>>>>>> Stashed changes
 
    private function debug_loaded_assets() {
        global $wp_scripts, $wp_styles;
@@ -399,12 +518,15 @@ class NCD_Admin {
                error_log(' - ' . $handle);
            }
        }
+<<<<<<< Updated upstream
        error_log('Loaded NCD Admin Scripts:');
        foreach ($wp_scripts->queue as $handle) {
            if (strpos($handle, 'ncd-') !== false) {
                error_log(' - ' . $handle);
            }
        }
+=======
+>>>>>>> Stashed changes
         
        error_log('Loaded NCD Admin Styles:');
        foreach ($wp_styles->queue as $handle) {
@@ -413,6 +535,7 @@ class NCD_Admin {
            }
        }
    }
+<<<<<<< Updated upstream
        error_log('Loaded NCD Admin Styles:');
        foreach ($wp_styles->queue as $handle) {
            if (strpos($handle, 'ncd-') !== false) {
@@ -420,6 +543,8 @@ class NCD_Admin {
            }
        }
    }
+=======
+>>>>>>> Stashed changes
 
    public function get_page($page_key) {
        return isset($this->pages[$page_key]) ? $this->pages[$page_key] : null;

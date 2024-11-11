@@ -814,7 +814,11 @@ msgid "You can also create a bug report or feature request on the %sWordPress.or
 msgstr ""
 
 #: templates/admin/statistics-page.php:15
+<<<<<<< Updated upstream
 msgid "New Customer Discount Statistics"
+=======
+msgid "Neukunden-Gutschein Statistiken"
+>>>>>>> Stashed changes
 msgstr ""
 
 #: templates/admin/statistics-page.php:19

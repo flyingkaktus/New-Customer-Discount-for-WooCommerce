@@ -46,9 +46,61 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
     /**
      * Handler for the send discount AJAX request
      * 
+<<<<<<< Updated upstream
      * @param array $data AJAX request data
      */
     public function handle_send_discount($data) {
+=======
+     * @param array $data Die POST-Daten
+     */
+    public function handle_send_test_email($data) {
+        if (!$this->ajax_handler->check_ajax_request()) {
+            return;
+        }
+
+        $email = sanitize_email($data['email']);
+        if (!is_email($email)) {
+            wp_send_json_error([
+                'message' => __('Ungültige E-Mail-Adresse.', 'newcustomer-discount')
+            ]);
+            return;
+        }
+
+        try {
+            $result = $this->email_sender->send_test_email($email);
+
+            if (is_wp_error($result)) {
+                throw new Exception($result->get_error_message());
+            }
+
+            wp_send_json_success([
+                'message' => sprintf(
+                    __('Test-E-Mail wurde an %s gesendet.', 'newcustomer-discount'),
+                    $email
+                )
+            ]);
+        } catch (Exception $e) {
+            $this->log_error('Test email sending failed', [
+                'email' => $email,
+                'error' => $e->getMessage()
+            ]);
+            wp_send_json_error(['message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Handler für Rabatt-E-Mail Versand
+     * 
+     * @param array $data Die POST-Daten
+     */
+    public function handle_send_discount($data) {
+
+        if (WP_DEBUG) {
+            error_log('Starting handle_send_discount');
+            error_log('Posted data: ' . print_r($data, true));
+        }
+    
+>>>>>>> Stashed changes
         if (!$this->ajax_handler->check_ajax_request()) {
             return;
         }

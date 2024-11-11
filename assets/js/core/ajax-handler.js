@@ -1,3 +1,7 @@
+<<<<<<< Updated upstream
+=======
+// Neue Datei: assets/js/core/ajax-handler.js
+>>>>>>> Stashed changes
 (function($) {
     'use strict';
 
@@ -35,7 +39,11 @@
             alert(message);
         }
 
+<<<<<<< Updated upstream
 
+=======
+        // Template-bezogene AJAX Methoden
+>>>>>>> Stashed changes
         getTemplateSettings(templateId) {
             return this.post('get_template_settings', { template_id: templateId });
         }

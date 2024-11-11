@@ -12,8 +12,14 @@ if (!defined('ABSPATH')) {
 ?>
 
 <div class="wrap ncd-wrap">
+<<<<<<< Updated upstream
     <h1><?php _e('New Customer Discount Statistics', 'newcustomer-discount'); ?></h1>
     <?php settings_errors(); ?>
+=======
+    <h1><?php _e('Neukunden-Gutschein Statistiken', 'newcustomer-discount'); ?></h1>
+
+    <!-- Übersichts-Karten -->
+>>>>>>> Stashed changes
     <div class="ncd-stats-grid">
         <div class="ncd-stats-card">
             <h2><?php _e('Customers', 'newcustomer-discount'); ?></h2>

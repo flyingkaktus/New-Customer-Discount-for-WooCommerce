@@ -456,7 +456,10 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
                 throw new Exception(__('Please enter your feedback.', 'newcustomer-discount'));
             }
     
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
             $feedback = [
                 'type' => sanitize_text_field($data['feedback_type']),
                 'content' => wp_kses_post($data['feedback_content']),
@@ -465,10 +468,17 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
                 'user_email' => wp_get_current_user()->user_email,
                 'site_url' => get_site_url()
             ];
+<<<<<<< Updated upstream
 
             $sent = $this->send_feedback($feedback);
     
     
+=======
+    
+            // Sende Feedback
+            $sent = $this->send_feedback($feedback);
+    
+>>>>>>> Stashed changes
             if ($sent) {
                 // WordPress Notice-System verwenden
                 wp_send_json_success([
@@ -479,8 +489,14 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
                 throw new Exception(__('Feedback could not be sent', 'newcustomer-discount'));
             }
     
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
         } catch (Exception $e) {
+            if (WP_DEBUG) {
+                error_log('Feedback submission error: ' . $e->getMessage());
+            }
             wp_send_json_error([
                 'message' => $e->getMessage(),
                 'type' => 'error'

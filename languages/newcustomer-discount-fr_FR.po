@@ -814,8 +814,13 @@ msgid "You can also create a bug report or feature request on the %sWordPress.or
 msgstr "Vous pouvez également créer un rapport de bug ou une demande de fonctionnalité sur la %spage de l'extension WordPress.org%s."
 
 #: templates/admin/statistics-page.php:15
+<<<<<<< Updated upstream
 msgid "New Customer Discount Statistics"
 msgstr "Statistiques des réductions nouveaux clients"
+=======
+msgid "Neukunden-Gutschein Statistiken"
+msgstr "Statistiques des remises nouveaux clients"
+>>>>>>> Stashed changes
 
 #: templates/admin/statistics-page.php:19
 msgid "Customers"
