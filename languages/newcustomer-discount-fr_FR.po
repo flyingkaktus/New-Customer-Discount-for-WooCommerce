@@ -696,7 +696,7 @@ msgid "Ausgewählte Daten zurücksetzen"
 msgstr "Réinitialiser les données sélectionnées"
 
 #: templates/admin/statistics-page.php:15
-msgid "Neukunden Rabatt Statistiken"
+msgid "Neukunden-Gutschein Statistiken"
 msgstr "Statistiques des remises nouveaux clients"
 
 #: templates/admin/statistics-page.php:21

@@ -695,7 +695,7 @@ msgid "Ausgewählte Daten zurücksetzen"
 msgstr ""
 
 #: templates/admin/statistics-page.php:15
-msgid "Neukunden Rabatt Statistiken"
+msgid "Neukunden-Gutschein Statistiken"
 msgstr ""
 
 #: templates/admin/statistics-page.php:21

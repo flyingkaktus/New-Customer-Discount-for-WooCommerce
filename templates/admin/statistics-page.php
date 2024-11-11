@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 ?>
 
 <div class="wrap ncd-wrap">
-    <h1><?php _e('Neukunden Rabatt Statistiken', 'newcustomer-discount'); ?></h1>
+    <h1><?php _e('Neukunden-Gutschein Statistiken', 'newcustomer-discount'); ?></h1>
 
     <!-- Übersichts-Karten -->
     <div class="ncd-stats-grid">

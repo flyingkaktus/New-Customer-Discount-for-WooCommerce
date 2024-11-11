@@ -3,6 +3,10 @@
 
     class NCDTemplateManager {
         constructor() {
+            // Ajax Handler initialisieren
+            this.ajax = new NCDAjaxHandler();
+            
+            // DOM-Elemente
             this.$templateSelector = $('#template-selector');
             this.$activateButton = $('#activate-template');
             this.$previewFrame = $('.ncd-preview-frame');
@@ -14,42 +18,27 @@
             
             this.initializeTemplateStatus();
             this.bindEvents();
-
             this.updatePreview();
         }
 
         initializeTemplateStatus() {
-            // Setze Button Status
             this.updateActivateButtonState();
-            
-            // Setze Dropdown Status
             this.$templateSelector.find('option').each((_, option) => {
                 const $option = $(option);
-                const isActive = $option.val() === this.activeTemplateId;
-                
-                if (isActive) {
+                if ($option.val() === this.activeTemplateId) {
                     $option.addClass('active-template');
                 }
             });
         }
 
         bindEvents() {
-            // Template Selector und Aktivierung
             this.$templateSelector.on('change', (e) => this.handleTemplateChange(e));
             this.$activateButton.on('click', (e) => this.handleTemplateActivation(e));
-            
-            // Settings Form und Preview - vereinfachte Version
             this.$settingsForm.on('submit', (e) => this.handleSettingsSave(e));
-            
-            // Einheitliches Event-Handling für alle Einstellungsänderungen
-            this.$settingsForm.find('input, select').on('change input', () => {
-                this.updatePreviewWithDelay();
-            });
-        
-            // Preview Modi
+            this.$settingsForm.find('input, select').on('change input', () => this.updatePreviewWithDelay());
             $('.preview-mode').on('click', (e) => this.handlePreviewMode(e));
-        
-            // Test Email Modal
+            
+            // Test Email Modal Events
             $('.preview-test-email').on('click', () => this.$testEmailModal.fadeIn(200));
             $('.ncd-modal-close').on('click', () => this.$testEmailModal.fadeOut(200));
             $(window).on('click', (e) => {
@@ -57,50 +46,29 @@
                     this.$testEmailModal.fadeOut(200);
                 }
             });
-        
-            // Test Email Formular
             $('#test-email-form').on('submit', (e) => this.handleTestEmailSubmit(e));
         }
-        
-        // Neue Methode für verzögerte Aktualisierung
+
         updatePreviewWithDelay() {
             clearTimeout(this.previewTimer);
-            this.previewTimer = setTimeout(() => {
-                this.updatePreview();
-            }, 300); // 300ms Verzögerung zur Performance-Optimierung
+            this.previewTimer = setTimeout(() => this.updatePreview(), 300);
         }
 
         handleTemplateChange(e) {
             const templateId = $(e.target).val();
-            this.currentTemplateId = templateId; // Diese Zeile fehlt aktuell
+            this.currentTemplateId = templateId;
             this.$previewFrame.addClass('ncd-preview-loading');
             
-            // Aktualisiere verstecktes Template-ID Feld
             $('input[name="template_id"]').val(templateId);
+            this.updateActivateButtonState();
             
-            // Update Button Status
-            this.updateActivateButtonState(); // Diese Zeile sollte direkt nach der ID-Aktualisierung kommen
-            
-            // Hole Template-spezifische Einstellungen
-            $.post(ajaxurl, {
-                action: 'ncd_get_template_settings',
-                nonce: $('#ncd_template_nonce').val(),
+            this.ajax.post('get_template_settings', {
                 template_id: templateId
-            }, (response) => {
-                if (response.success) {
-                    this.updateSettingsForm(response.data.settings);
+            }).then(response => {
+                this.ajax.handleResponse(response, data => {
+                    this.updateSettingsForm(data.settings);
                     this.updatePreview();
-                }
-            });
-        }
-
-        updateSettingsForm(settings) {
-            // Aktualisiere alle Einstellungsfelder mit den template-spezifischen Werten
-            Object.keys(settings).forEach(key => {
-                const $input = $(`[name="settings[${key}]"]`);
-                if ($input.length) {
-                    $input.val(settings[key]);
-                }
+                });
             });
         }
 
@@ -111,34 +79,43 @@
                 return;
             }
         
-            const templateId = this.currentTemplateId; // Nutze die gespeicherte currentTemplateId
-            
-            $.post(ajaxurl, {
-                action: 'ncd_activate_template',
-                nonce: $('#ncd_template_nonce').val(),
-                template_id: templateId
-            }, (response) => {
-                if (response.success) {
-                    this.activeTemplateId = templateId;
+            this.ajax.post('activate_template', {
+                template_id: this.currentTemplateId
+            }).then(response => {
+                this.ajax.handleResponse(response, data => {
+                    this.activeTemplateId = this.currentTemplateId;
                     this.updateActivateButtonState();
-                    this.updateActiveTemplateInfo(response.data.template_name);
-                    this.showNotice(response.data.message, 'success');
-                } else {
-                    this.showNotice(response.data.message || ncdAdmin.messages.error, 'error');
-                }
+                    this.updateActiveTemplateInfo(data.template_name);
+                    this.showNotice(data.message, 'success');
+                });
             });
         }
 
         handleSettingsSave(e) {
             e.preventDefault();
             
-            this.saveTemplateSettings().then((response) => {
-                if (response.success) {
+            this.ajax.post('save_template_settings', {
+                template_id: this.$templateSelector.val(),
+                settings: this.$settingsForm.serialize()
+            }).then(response => {
+                this.ajax.handleResponse(response, () => {
                     this.showNotice(ncdAdmin.messages.settings_saved, 'success');
                     this.updatePreview();
-                } else {
-                    this.showNotice(response.data.message, 'error');
-                }
+                });
+            });
+        }
+
+        handleTestEmailSubmit(e) {
+            e.preventDefault();
+            
+            this.ajax.post('send_test_email', {
+                email: $('#test-email').val(),
+                template_id: $('input[name="template_id"]').val()
+            }).then(response => {
+                this.ajax.handleResponse(response, data => {
+                    alert(data.message);
+                    this.$testEmailModal.fadeOut(200);
+                });
             });
         }
 
@@ -146,61 +123,32 @@
             const $button = $(e.target);
             $('.preview-mode').removeClass('active');
             $button.addClass('active');
-            
-            const mode = $button.data('mode');
-            this.$previewFrame.removeClass('desktop mobile').addClass(mode);
-        }
-
-        handleTestEmailSubmit(e) {
-            e.preventDefault();
-            const email = $('#test-email').val();
-            
-            $.post(ajaxurl, {
-                action: 'ncd_send_test_email',
-                nonce: $('#ncd_template_nonce').val(),
-                email: email,
-                template_id: $('input[name="template_id"]').val()
-            }, (response) => {
-                if (response.success) {
-                    alert(response.data.message);
-                    this.$testEmailModal.fadeOut(200);
-                } else {
-                    alert(response.data.message || ncdAdmin.messages.error);
-                }
-            });
-        }
-
-        saveTemplateSettings() {
-            return $.post(ajaxurl, {
-                action: 'ncd_save_template_settings',
-                nonce: $('#ncd_template_nonce').val(),
-                template_id: this.$templateSelector.val(),
-                settings: this.$settingsForm.serialize()
-            });
+            this.$previewFrame.removeClass('desktop mobile').addClass($button.data('mode'));
         }
 
         updatePreview() {
-            const formData = this.$settingsForm.serialize();
             this.$previewFrame.addClass('ncd-preview-loading');
             
-            $.post(ajaxurl, {
-                action: 'ncd_preview_template',
-                nonce: $('#ncd_template_nonce').val(),
-                data: formData
-            }, (response) => {
-                if (response.success) {
-                    this.$previewFrame.html(response.data.html);
-                    
-                    // Wende die aktuellen Einstellungen direkt auf die Preview an
-                    const settings = this.getCurrentSettings();
-                    this.applyPreviewStyles(settings);
-                }
-                this.$previewFrame.removeClass('ncd-preview-loading');
+            this.ajax.post('preview_template', {
+                data: this.$settingsForm.serialize()
+            }).then(response => {
+                this.ajax.handleResponse(response, data => {
+                    this.$previewFrame.html(data.html);
+                    this.applyPreviewStyles(this.getCurrentSettings());
+                    this.$previewFrame.removeClass('ncd-preview-loading');
+                });
             });
         }
 
+        updateSettingsForm(settings) {
+            Object.keys(settings).forEach(key => {
+                const $input = $(`[name="settings[${key}]"]`);
+                if ($input.length) {
+                    $input.val(settings[key]);
+                }
+            });
+        }
 
-        // Neue Methode zum Sammeln der aktuellen Einstellungen
         getCurrentSettings() {
             return {
                 primaryColor: $('#primary_color').val(),
@@ -213,9 +161,7 @@
             };
         }
 
-        // Neue Methode zum direkten Anwenden der Styles
         applyPreviewStyles(settings) {
-            // Setze die CSS-Variablen am äußersten Container
             this.$previewFrame.css({
                 '--primary-color': settings.primaryColor,
                 '--secondary-color': settings.secondaryColor,
@@ -224,16 +170,16 @@
                 '--font-family': settings.fontFamily
             });
         
-            // Button-Style anpassen
-            const $button = this.$previewFrame.find('.button');
-            $button.removeClass('minimal rounded pill').addClass(settings.buttonStyle);
+            this.$previewFrame.find('.button')
+                .removeClass('minimal rounded pill')
+                .addClass(settings.buttonStyle);
         
-            // Layout-Type am email-wrapper anpassen, nicht am .ncd-email
-            const $wrapper = this.$previewFrame.find('.email-wrapper');
-            $wrapper.removeClass('centered full-width').addClass(settings.layoutType);
+            this.$previewFrame.find('.email-wrapper')
+                .removeClass('centered full-width')
+                .addClass(settings.layoutType);
         
-            // Font-Family explizit setzen
-            this.$previewFrame.find('.ncd-email').css('font-family', settings.fontFamily);
+            this.$previewFrame.find('.ncd-email')
+                .css('font-family', settings.fontFamily);
         }
 
         updateActivateButtonState() {
@@ -242,23 +188,19 @@
         }
 
         updateActiveTemplateInfo(templateName) {
-            // Aktualisiere Status-Anzeige
             $('.ncd-active-template-info strong').text(templateName);
             
-            // Aktualisiere Dropdown-Markierungen
             const currentId = this.$templateSelector.val();
             this.$templateSelector.find('option').each(function() {
                 const $option = $(this);
                 const isActive = $option.val() === currentId;
                 
-                // Entferne "(Aktiv)" von allen Optionen und CSS-Klasse
-                $option.text($option.text().replace(' (Aktiv)', ''));
-                $option.removeClass('active-template');
+                $option.text($option.text().replace(' (Aktiv)', ''))
+                      .removeClass('active-template');
                 
-                // Füge "(Aktiv)" und CSS-Klasse zur neu aktivierten Option hinzu
                 if (isActive) {
-                    $option.text($option.text() + ' (Aktiv)');
-                    $option.addClass('active-template');
+                    $option.text($option.text() + ' (Aktiv)')
+                          .addClass('active-template');
                 }
             });
         }
@@ -272,12 +214,13 @@
             
             $('.ncd-notices').html($notice);
             
-            if (window.wp && window.wp.notices) {
+            if (window.wp?.notices) {
                 window.wp.notices.initialize();
             }
         }
     }
 
+    // Globale Verfügbarkeit
     window.NCDTemplateManager = NCDTemplateManager;
 
 })(jQuery);

@@ -19,7 +19,7 @@ $email_sender = new NCD_Email_Sender();
 ?>
 
 <div class="wrap ncd-wrap">
-    <h1><?php _e('Neukunden Rabatt Einstellungen', 'newcustomer-discount'); ?></h1>
+    <h1><?php _e('Neukunden-Gutschein Einstellungen', 'newcustomer-discount'); ?></h1>
 
     <div class="ncd-tabs">
         <nav class="nav-tab-wrapper">

@@ -36,15 +36,19 @@ class NCD_Admin_Base {
     protected $email_sender;
 
     /**
+     * AJAX Handler Instanz
+     * 
+     * @var NCD_Admin_Ajax
+     */
+    protected $ajax_handler;
+    /**
      * Constructor
      */
     public function __construct() {
-        if (WP_DEBUG) {
-            error_log('Initializing NCD Admin Base');
-        }
-
+        $this->ajax_handler = new NCD_Admin_Ajax();
         $this->init_dependencies();
         $this->init_hooks();
+
     }
 
     /**
@@ -148,57 +152,6 @@ class NCD_Admin_Base {
         ];
 
         return isset($components[$component]) ? $components[$component] : null;
-    }
-
-    /**
-     * Überprüft AJAX-Anfragen
-     *
-     * @param string $action Optional. Die Nonce-Action.
-     * @param string $nonce_field Optional. Das Nonce-Feld.
-     * @return bool
-     */
-    protected function check_ajax_request($action = 'ncd-admin-nonce', $nonce_field = 'nonce') {
-        if (!check_ajax_referer($action, $nonce_field, false)) {
-            wp_send_json_error([
-                'message' => __('Sicherheitsüberprüfung fehlgeschlagen.', 'newcustomer-discount')
-            ]);
-            return false;
-        }
-
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error([
-                'message' => __('Keine Berechtigung.', 'newcustomer-discount')
-            ]);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Sendet AJAX Erfolg
-     *
-     * @param string $message
-     * @param array $data
-     */
-    protected function send_ajax_success($message, $data = []) {
-        wp_send_json_success(array_merge(
-            ['message' => $message],
-            $data
-        ));
-    }
-
-    /**
-     * Sendet AJAX Fehler
-     *
-     * @param string $message
-     * @param array $data
-     */
-    protected function send_ajax_error($message, $data = []) {
-        wp_send_json_error(array_merge(
-            ['message' => $message],
-            $data
-        ));
     }
 
     /**

@@ -49,7 +49,7 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
      * @param array $data Die POST-Daten
      */
     public function handle_send_test_email($data) {
-        if (!$this->check_ajax_request()) {
+        if (!$this->ajax_handler->check_ajax_request()) {
             return;
         }
 
@@ -89,13 +89,13 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
      * @param array $data Die POST-Daten
      */
     public function handle_send_discount($data) {
+
         if (WP_DEBUG) {
             error_log('Starting handle_send_discount');
             error_log('Posted data: ' . print_r($data, true));
         }
     
-        if (!$this->check_ajax_request()) {
-            error_log('AJAX request check failed');
+        if (!$this->ajax_handler->check_ajax_request()) {
             return;
         }
     
@@ -157,40 +157,6 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
             error_log('Discount email sending failed: ' . $e->getMessage());
             wp_send_json_error(['message' => $e->getMessage()]);
         }
-    }
-
-    /**
-     * Überprüft AJAX-Anfragen
-     *
-     * @param string $action Optional. Die Nonce-Action.
-     * @param string $nonce_field Optional. Das Nonce-Feld.
-     * @return bool
-     */
-    protected function check_ajax_request($action = 'ncd-admin-nonce', $nonce_field = 'nonce') {
-        // Logging für Debugging
-        if (WP_DEBUG) {
-            error_log('AJAX request check:');
-            error_log('Nonce: ' . (isset($_POST[$nonce_field]) ? 'set' : 'not set'));
-            error_log('Action: ' . $action);
-        }
-
-        // Nonce Validierung
-        if (!check_ajax_referer($action, $nonce_field, false)) {
-            wp_send_json_error([
-                'message' => __('Sicherheitsüberprüfung fehlgeschlagen.', 'newcustomer-discount')
-            ]);
-            return false;
-        }
-
-        // Berechtigungsprüfung
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error([
-                'message' => __('Keine Berechtigung.', 'newcustomer-discount')
-            ]);
-            return false;
-        }
-
-        return true;
     }
 
    /**

@@ -420,16 +420,12 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
      * @param array $data POST-Daten
      */
     public function handle_submit_feedback($data) {
-        if (!$this->check_ajax_request()) {
-            return;
-        }
-
         try {
             // Validiere Felder
             if (empty($data['feedback_content'])) {
                 throw new Exception(__('Bitte geben Sie Ihr Feedback ein.', 'newcustomer-discount'));
             }
-
+    
             $feedback = [
                 'type' => sanitize_text_field($data['feedback_type']),
                 'content' => wp_kses_post($data['feedback_content']),
@@ -438,10 +434,10 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
                 'user_email' => wp_get_current_user()->user_email,
                 'site_url' => get_site_url()
             ];
-
+    
             // Sende Feedback
             $sent = $this->send_feedback($feedback);
-
+    
             if ($sent) {
                 wp_send_json_success([
                     'message' => __('Vielen Dank für Ihr Feedback!', 'newcustomer-discount')
@@ -449,8 +445,11 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
             } else {
                 throw new Exception(__('Feedback konnte nicht gesendet werden.', 'newcustomer-discount'));
             }
-
+    
         } catch (Exception $e) {
+            if (WP_DEBUG) {
+                error_log('Feedback submission error: ' . $e->getMessage());
+            }
             wp_send_json_error([
                 'message' => $e->getMessage()
             ]);
