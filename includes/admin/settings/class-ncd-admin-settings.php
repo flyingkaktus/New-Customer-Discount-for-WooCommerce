@@ -439,19 +439,19 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
             $sent = $this->send_feedback($feedback);
     
             if ($sent) {
+                // WordPress Notice-System verwenden
                 wp_send_json_success([
-                    'message' => __('Vielen Dank für Ihr Feedback!', 'newcustomer-discount')
+                    'message' => __('Vielen Dank für Ihr Feedback!', 'newcustomer-discount'),
+                    'type' => 'success'
                 ]);
             } else {
                 throw new Exception(__('Feedback konnte nicht gesendet werden.', 'newcustomer-discount'));
             }
     
         } catch (Exception $e) {
-            if (WP_DEBUG) {
-                error_log('Feedback submission error: ' . $e->getMessage());
-            }
             wp_send_json_error([
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'type' => 'error'
             ]);
         }
     }

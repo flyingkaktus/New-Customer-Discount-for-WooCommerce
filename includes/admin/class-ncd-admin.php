@@ -307,10 +307,14 @@ class NCD_Admin {
            'success' => __('Erfolgreich gespeichert.', 'newcustomer-discount'),
            'loading' => __('Laden...', 'newcustomer-discount'),
            'confirm_template_activation' => __('Möchten Sie dieses Template wirklich aktivieren?', 'newcustomer-discount'),
+           'yes' => __('Ja', 'newcustomer-discount'), 
+           'no' => __('Nein', 'newcustomer-discount'),
            'settings_saved' => __('Template-Einstellungen wurden gespeichert.', 'newcustomer-discount'),
            'feedback_required' => __('Bitte geben Sie Ihr Feedback ein.', 'newcustomer-discount'),
            'submit_feedback' => __('Feedback senden', 'newcustomer-discount'),
            'feedback_success' => __('Vielen Dank für Ihr Feedback!', 'newcustomer-discount'),
+           'enter_email' => __('E-Mail Adresse eingeben', 'newcustomer-discount'),
+           'send_test' => __('Test-E-Mail senden', 'newcustomer-discount')
        ];
    }
 

@@ -20,7 +20,7 @@ $stats = $this->customer_tracker->get_statistics();
 
 <div class="wrap ncd-wrap">
     <h1><?php _e('Neukunden Übersicht', 'newcustomer-discount'); ?></h1>
-
+    <?php settings_errors(); ?>
     <!-- Info Boxes -->
     <div class="ncd-info-boxes">
         <div class="ncd-info-box">

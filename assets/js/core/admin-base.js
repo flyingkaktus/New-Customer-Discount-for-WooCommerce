@@ -4,20 +4,28 @@
     class NCDBase {
         static showNotice(message, type = 'success') {
             const $notice = $(`
-                <div class="ncd-notice ncd-notice-${type} ncd-fade">
+                <div class="notice notice-${type} is-dismissible">
                     <p>${message}</p>
                 </div>
             `);
-
-            $('.ncd-notices').prepend($notice);
             
-            setTimeout(() => {
-                $notice.fadeOut(() => $notice.remove());
-            }, 5000);
+            const $target = $('#wpbody-content').find('.wrap:first');
+            if ($target.length) {
+                $target.prepend($notice);
+                
+                if (window.wp?.notices) {
+                    window.wp.notices.initialize();
+                }
+
+                setTimeout(() => {
+                    $notice.fadeOut(() => $notice.remove());
+                }, 5000);
+            } else {
+                $('#wpbody-content').prepend($notice);
+            }
         }
     }
 
-    // Exportiere für andere Module
     window.NCDBase = NCDBase;
 
 })(jQuery);

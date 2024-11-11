@@ -3,15 +3,12 @@
 
     class NCDTemplateManager {
         constructor() {
-            // Ajax Handler initialisieren
             this.ajax = new NCDAjaxHandler();
             
-            // DOM-Elemente
             this.$templateSelector = $('#template-selector');
             this.$activateButton = $('#activate-template');
             this.$previewFrame = $('.ncd-preview-frame');
             this.$settingsForm = $('#template-settings-form');
-            this.$testEmailModal = $('#test-email-modal');
 
             this.activeTemplateId = this.$templateSelector.data('active-template');
             this.currentTemplateId = this.$templateSelector.val();
@@ -37,16 +34,51 @@
             this.$settingsForm.on('submit', (e) => this.handleSettingsSave(e));
             this.$settingsForm.find('input, select').on('change input', () => this.updatePreviewWithDelay());
             $('.preview-mode').on('click', (e) => this.handlePreviewMode(e));
+            $('.preview-test-email').on('click', () => this.handleTestEmailClick());
+        }
+
+        handleTestEmailClick() {
+            $('.notice.inline').remove();
+
+            const emailForm = `
+            <div class="notice notice-info inline" style="margin-top: 15px;">
+                <p>
+                    <input type="email" 
+                           id="quick-test-email" 
+                           placeholder="${ncdAdmin.messages.enter_email || 'E-Mail Adresse eingeben'}"
+                           class="regular-text"
+                    />
+                    <button type="button" class="button button-primary" id="send-quick-test">
+                        ${ncdAdmin.messages.send_test || 'Test-E-Mail senden'}
+                    </button>
+                </p>
+            </div>
+        `;
             
-            // Test Email Modal Events
-            $('.preview-test-email').on('click', () => this.$testEmailModal.fadeIn(200));
-            $('.ncd-modal-close').on('click', () => this.$testEmailModal.fadeOut(200));
-            $(window).on('click', (e) => {
-                if ($(e.target).is('.ncd-modal')) {
-                    this.$testEmailModal.fadeOut(200);
+            $('.ncd-preview-header').after(emailForm);
+            
+            $('#send-quick-test').on('click', () => {
+                const email = $('#quick-test-email').val();
+                if (!email) {
+                    NCDBase.showNotice(ncdAdmin.messages.email_required, 'error');
+                    return;
                 }
+                this.sendTestEmail(email);
             });
-            $('#test-email-form').on('submit', (e) => this.handleTestEmailSubmit(e));
+        }
+
+        sendTestEmail(email) {
+            this.ajax.post('send_test_email', {
+                email: email,
+                template_id: $('input[name="template_id"]').val()
+            }).then(response => {
+                this.ajax.handleResponse(response, data => {
+                    NCDBase.showNotice(data.message, 'success');
+                    $('.notice.inline').slideUp(() => $(this).remove());
+                }, error => {
+                    NCDBase.showNotice(error, 'error');
+                });
+            });
         }
 
         updatePreviewWithDelay() {
@@ -68,17 +100,44 @@
                 this.ajax.handleResponse(response, data => {
                     this.updateSettingsForm(data.settings);
                     this.updatePreview();
+                }, error => {
+                    NCDBase.showNotice(error, 'error');
                 });
             });
         }
 
         handleTemplateActivation(e) {
             e.preventDefault();
+
+            $('.notice.inline').remove();
+
+            const confirmationNotice = `
+                <div class="notice notice-warning inline">
+                    <p>
+                        ${ncdAdmin.messages.confirm_template_activation}
+                        <button type="button" class="button button-primary confirm-activation">
+                            ${ncdAdmin.messages.yes}
+                        </button>
+                        <button type="button" class="button cancel-activation">
+                            ${ncdAdmin.messages.no}
+                        </button>
+                    </p>
+                </div>
+            `;
             
-            if (!confirm(ncdAdmin.messages.confirm_template_activation)) {
-                return;
-            }
-        
+            $(e.target).after(confirmationNotice);
+            
+            $('.confirm-activation').on('click', () => {
+                this.activateTemplate();
+                $('.notice.inline').remove();
+            });
+            
+            $('.cancel-activation').on('click', () => {
+                $('.notice.inline').remove();
+            });
+        }
+
+        activateTemplate() {
             this.ajax.post('activate_template', {
                 template_id: this.currentTemplateId
             }).then(response => {
@@ -86,35 +145,27 @@
                     this.activeTemplateId = this.currentTemplateId;
                     this.updateActivateButtonState();
                     this.updateActiveTemplateInfo(data.template_name);
-                    this.showNotice(data.message, 'success');
+                    NCDBase.showNotice(data.message, 'success');
+                }, error => {
+                    NCDBase.showNotice(error, 'error');
                 });
             });
         }
 
         handleSettingsSave(e) {
             e.preventDefault();
+
+            $('.notice').remove();
             
             this.ajax.post('save_template_settings', {
                 template_id: this.$templateSelector.val(),
                 settings: this.$settingsForm.serialize()
             }).then(response => {
                 this.ajax.handleResponse(response, () => {
-                    this.showNotice(ncdAdmin.messages.settings_saved, 'success');
+                    NCDBase.showNotice(ncdAdmin.messages.settings_saved, 'success');
                     this.updatePreview();
-                });
-            });
-        }
-
-        handleTestEmailSubmit(e) {
-            e.preventDefault();
-            
-            this.ajax.post('send_test_email', {
-                email: $('#test-email').val(),
-                template_id: $('input[name="template_id"]').val()
-            }).then(response => {
-                this.ajax.handleResponse(response, data => {
-                    alert(data.message);
-                    this.$testEmailModal.fadeOut(200);
+                }, error => {
+                    NCDBase.showNotice(error, 'error');
                 });
             });
         }
@@ -135,6 +186,9 @@
                 this.ajax.handleResponse(response, data => {
                     this.$previewFrame.html(data.html);
                     this.applyPreviewStyles(this.getCurrentSettings());
+                    this.$previewFrame.removeClass('ncd-preview-loading');
+                }, error => {
+                    NCDBase.showNotice(error, 'error');
                     this.$previewFrame.removeClass('ncd-preview-loading');
                 });
             });
@@ -204,23 +258,8 @@
                 }
             });
         }
-
-        showNotice(message, type = 'success') {
-            const $notice = $(`
-                <div class="notice notice-${type} is-dismissible">
-                    <p>${message}</p>
-                </div>
-            `);
-            
-            $('.ncd-notices').html($notice);
-            
-            if (window.wp?.notices) {
-                window.wp.notices.initialize();
-            }
-        }
     }
 
-    // Globale Verfügbarkeit
     window.NCDTemplateManager = NCDTemplateManager;
 
 })(jQuery);

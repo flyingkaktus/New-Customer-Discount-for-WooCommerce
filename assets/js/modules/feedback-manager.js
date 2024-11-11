@@ -117,14 +117,14 @@
             })
             .done((response) => {
                 if (response.success) {
-                    alert(response.data.message || 'Vielen Dank für Ihr Feedback!');
+                    NCDBase.showNotice(response.data.message, response.data.type);
                     this.resetForm();
                 } else {
-                    alert(response.data.message || this.messages.error);
+                    NCDBase.showNotice(response.data.message, response.data.type);
                 }
             })
             .fail(() => {
-                alert(this.messages.error);
+                NCDBase.showNotice(this.messages.error, 'error');
             })
             .always(() => {
                 this.$submitButton

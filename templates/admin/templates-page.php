@@ -21,7 +21,7 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
 <div class="wrap ncd-wrap">
     <h1><?php _e('E-Mail Template Design', 'newcustomer-discount'); ?></h1>
 
-    <?php settings_errors('ncd_template'); ?>
+    <?php settings_errors(); ?>
 
     <div class="ncd-template-manager">
         <!-- Template Selector Dropdown -->
@@ -203,29 +203,6 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Test Email Modal -->
-<div id="test-email-modal" class="ncd-modal">
-    <div class="ncd-modal-content">
-        <div class="ncd-modal-header">
-            <h3><?php _e('Test-E-Mail senden', 'newcustomer-discount'); ?></h3>
-            <button class="ncd-modal-close">&times;</button>
-        </div>
-        <form id="test-email-form">
-            <div class="ncd-modal-body">
-                <div class="ncd-form-group">
-                    <label for="test-email"><?php _e('E-Mail-Adresse', 'newcustomer-discount'); ?></label>
-                    <input type="email" id="test-email" required>
-                </div>
-            </div>
-            <div class="ncd-modal-footer">
-                <button type="submit" class="button button-primary">
-                    <?php _e('Senden', 'newcustomer-discount'); ?>
-                </button>
-            </div>
-        </form>
     </div>
 </div>
 
