@@ -1011,7 +1011,7 @@ msgid "💰 Minimum order value of %s"
 msgstr "💰 Mindestbestellwert von %s"
 
 #: templates/email/base/classic.php:37
-msgid "To Online Shop"
+msgid "Visit us"
 msgstr "Zum Online-Shop"
 
 #: templates/email/base/classic.php:42

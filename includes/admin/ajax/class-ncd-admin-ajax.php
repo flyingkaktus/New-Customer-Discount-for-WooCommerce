@@ -14,10 +14,6 @@ if (!defined('ABSPATH')) {
 }
 
 class NCD_Admin_Ajax {
-<<<<<<< Updated upstream
-class NCD_Admin_Ajax {
-=======
->>>>>>> Stashed changes
     /**
      * Handler-Instance
      * 
@@ -29,19 +25,12 @@ class NCD_Admin_Ajax {
      * Constructor
      */
     public function __construct() {
-<<<<<<< Updated upstream
-=======
         // Registriere die AJAX Handler erst wenn sie gebraucht werden
->>>>>>> Stashed changes
         add_action('admin_init', [$this, 'init_ajax_handlers']);
     }
 
     /**
-<<<<<<< Updated upstream
-     * Lazy Loading for Handler
-=======
      * Lazy Loading für Handler
->>>>>>> Stashed changes
      */
     private function get_handler($type) {
         if (!isset($this->handlers[$type])) {
@@ -58,34 +47,12 @@ class NCD_Admin_Ajax {
             }
         }
         return $this->handlers[$type];
-<<<<<<< Updated upstream
-    private function get_handler($type) {
-        if (!isset($this->handlers[$type])) {
-            switch ($type) {
-                case 'templates':
-                    $this->handlers[$type] = new NCD_Admin_Templates();
-                    break;
-                case 'customers':
-                    $this->handlers[$type] = new NCD_Admin_Customers();
-                    break;
-                case 'settings':
-                    $this->handlers[$type] = new NCD_Admin_Settings();
-                    break;
-            }
-        }
-        return $this->handlers[$type];
-=======
->>>>>>> Stashed changes
     }
 
     /**
      * Init AJAX Handler
      */
     public function init_ajax_handlers() {
-<<<<<<< Updated upstream
-    public function init_ajax_handlers() {
-=======
->>>>>>> Stashed changes
         // Template bezogene Aktionen
         $this->register_ajax_action('ncd_preview_template', 'templates', 'handle_preview_template');
         $this->register_ajax_action('ncd_switch_template', 'templates', 'handle_switch_template');
@@ -102,11 +69,7 @@ class NCD_Admin_Ajax {
     }
 
     /**
-<<<<<<< Updated upstream
-     * Register an AJAX Action
-=======
      * Registriert eine AJAX Action
->>>>>>> Stashed changes
      */
     private function register_ajax_action($action, $handler_type, $method) {
         add_action('wp_ajax_' . $action, function() use ($handler_type, $method) {
@@ -114,15 +77,6 @@ class NCD_Admin_Ajax {
                 if (!$this->check_ajax_request()) {
                     return;
                 }
-<<<<<<< Updated upstream
-    private function register_ajax_action($action, $handler_type, $method) {
-        add_action('wp_ajax_' . $action, function() use ($handler_type, $method) {
-            try {
-                if (!$this->check_ajax_request()) {
-                    return;
-                }
-=======
->>>>>>> Stashed changes
 
                 $handler = $this->get_handler($handler_type);
                 if (!$handler) {
@@ -133,25 +87,9 @@ class NCD_Admin_Ajax {
                     error_log("Handling AJAX request: $handler_type::$method");
                     error_log("POST data: " . print_r($_POST, true));
                 }
-<<<<<<< Updated upstream
-                $handler = $this->get_handler($handler_type);
-                if (!$handler) {
-                    throw new Exception(__('Ungültiger Handler.', 'newcustomer-discount'));
-                }
-
-                if (WP_DEBUG) {
-                    error_log("Handling AJAX request: $handler_type::$method");
-                    error_log("POST data: " . print_r($_POST, true));
-                }
-
-                call_user_func([$handler, $method], $_POST);
-                call_user_func([$handler, $method], $_POST);
-
-=======
 
                 call_user_func([$handler, $method], $_POST);
 
->>>>>>> Stashed changes
             } catch (Exception $e) {
                 if (WP_DEBUG) {
                     error_log("AJAX error in $handler_type::$method: " . $e->getMessage());
@@ -162,11 +100,7 @@ class NCD_Admin_Ajax {
     }
 
     /**
-<<<<<<< Updated upstream
-     * Checks AJAX-Requests
-=======
      * Überprüft AJAX-Anfragen
->>>>>>> Stashed changes
      */
     public function check_ajax_request($action = 'ncd-admin-nonce', $nonce_field = 'nonce') {
         if (!check_ajax_referer($action, $nonce_field, false)) {
@@ -187,11 +121,7 @@ class NCD_Admin_Ajax {
     }
 
     /**
-<<<<<<< Updated upstream
-     * Helper method for AJAX-Success response
-=======
      * Hilfsmethode für AJAX-Erfolgsantwort
->>>>>>> Stashed changes
      */
     public function send_ajax_success($message, $data = []) {
         wp_send_json_success(array_merge(
@@ -201,11 +131,7 @@ class NCD_Admin_Ajax {
     }
 
     /**
-<<<<<<< Updated upstream
-     * Helper method for AJAX-Error response
-=======
      * Hilfsmethode für AJAX-Fehlerantwort
->>>>>>> Stashed changes
      */
     public function send_ajax_error($message, $data = []) {
         wp_send_json_error(array_merge(

@@ -34,7 +34,7 @@ $translations = [
         esc_html__('💰 Minimum order value of %s', 'newcustomer-discount'),
         '{min_order_amount}'
     ),
-    'shop_button' => esc_html__('To Online Shop', 'newcustomer-discount')
+    'shop_button' => esc_html__('Visit us', 'newcustomer-discount')
 ];
 
 return [

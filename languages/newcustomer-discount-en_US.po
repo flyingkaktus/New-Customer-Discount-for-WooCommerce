@@ -902,7 +902,7 @@ msgstr "💰 For orders over %s"
 
 #: templates/email/base/classic.php:39
 msgid "Zum Online-Shop"
-msgstr "To Online Shop"
+msgstr "Visit us"
 
 #: templates/email/base/minimal.php:23
 msgid "Details"

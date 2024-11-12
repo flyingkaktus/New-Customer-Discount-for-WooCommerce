@@ -36,11 +36,7 @@ class NCD_Admin_Base {
     protected $email_sender;
 
     /**
-<<<<<<< Updated upstream
      * AJAX Handler Instance
-=======
-     * AJAX Handler Instanz
->>>>>>> Stashed changes
      * 
      * @var NCD_Admin_Ajax
      */
@@ -50,17 +46,8 @@ class NCD_Admin_Base {
      */
     public function __construct() {
         $this->ajax_handler = new NCD_Admin_Ajax();
-<<<<<<< Updated upstream
-        $this->ajax_handler = new NCD_Admin_Ajax();
         $this->init_dependencies();
         $this->init_hooks();
-
-
-=======
-        $this->init_dependencies();
-        $this->init_hooks();
-
->>>>>>> Stashed changes
     }
 
     /**
@@ -166,11 +153,7 @@ class NCD_Admin_Base {
     }
 
     /**
-<<<<<<< Updated upstream
      * Debug-Output for loaded styles
-=======
-     * Debug-Ausgabe der geladenen Stylesheets
->>>>>>> Stashed changes
      */
     protected function debug_loaded_styles() {
         if (!WP_DEBUG) {

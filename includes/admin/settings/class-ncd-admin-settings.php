@@ -30,10 +30,10 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
     public function register_settings() {
         // General Settings
         register_setting('ncd_general_settings', 'ncd_delete_all_on_uninstall');
-
+    
         // Email Settings
         register_setting('ncd_email_settings', 'ncd_email_subject');
-
+    
         // Discount Settings
         register_setting('ncd_coupon_settings', 'ncd_discount_amount', [
             'type' => 'integer',
@@ -43,7 +43,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
             'type' => 'integer',
             'sanitize_callback' => [$this, 'sanitize_expiry_days']
         ]);
-
+    
         // Code Settings
         register_setting('ncd_code_settings', 'ncd_code_prefix', [
             'type' => 'string',
@@ -54,7 +54,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
             'sanitize_callback' => [$this, 'sanitize_code_length']
         ]);
         register_setting('ncd_code_settings', 'ncd_code_chars');
-
+    
         // Customer Settings
         register_setting('ncd_customer_settings', 'ncd_cutoff_date', [
             'type' => 'string',
@@ -70,7 +70,7 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
             'sanitize_callback' => [$this, 'sanitize_min_order_amount']
         ]);
         register_setting('ncd_customer_settings', 'ncd_excluded_categories');
-
+    
         // Email Text Settings
         register_setting('ncd_email_settings', 'ncd_email_texts', [
             'type' => 'array',
@@ -456,10 +456,6 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
                 throw new Exception(__('Please enter your feedback.', 'newcustomer-discount'));
             }
     
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
             $feedback = [
                 'type' => sanitize_text_field($data['feedback_type']),
                 'content' => wp_kses_post($data['feedback_content']),
@@ -468,19 +464,10 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
                 'user_email' => wp_get_current_user()->user_email,
                 'site_url' => get_site_url()
             ];
-<<<<<<< Updated upstream
-
+    
             $sent = $this->send_feedback($feedback);
     
-    
-=======
-    
-            // Sende Feedback
-            $sent = $this->send_feedback($feedback);
-    
->>>>>>> Stashed changes
             if ($sent) {
-                // WordPress Notice-System verwenden
                 wp_send_json_success([
                     'message' => __('Thank you for your feedback!', 'newcustomer-discount'),
                     'type' => 'success'
@@ -489,17 +476,11 @@ class NCD_Admin_Settings extends NCD_Admin_Base {
                 throw new Exception(__('Feedback could not be sent', 'newcustomer-discount'));
             }
     
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
         } catch (Exception $e) {
             if (WP_DEBUG) {
                 error_log('Feedback submission error: ' . $e->getMessage());
             }
             wp_send_json_error([
-                'message' => $e->getMessage(),
-                'type' => 'error'
                 'message' => $e->getMessage(),
                 'type' => 'error'
             ]);

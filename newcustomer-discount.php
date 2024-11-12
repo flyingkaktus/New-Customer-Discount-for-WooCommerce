@@ -119,7 +119,6 @@ function ncd_activate() {
             NCD_PLUGIN_DIR . 'assets',
             NCD_PLUGIN_DIR . 'assets/css',
             NCD_PLUGIN_DIR . 'assets/css/admin',
-            NCD_PLUGIN_DIR . 'assets/images',
             NCD_ADMIN_DIR . 'core',
             NCD_ADMIN_DIR . 'settings',
             NCD_ADMIN_DIR . 'templates',
