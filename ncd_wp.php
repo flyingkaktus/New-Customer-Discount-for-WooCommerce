@@ -1,26 +1,12 @@
 <?php
 
 /**
-<<<<<<< Updated upstream:newcustomer-discount.php
- * Plugin Name: New-Customer-Discount for WooCommerce
- * Plugin URI: https://comingsoon.de
- * Description: Automatic discount system for new customers with email delivery
- * Version: 1.0.6
- * Author: Maciej Suchowski
- * Author URI: https://comingsoon.de
- * License: GPLv2 or later
- * Text Domain: newcustomer-discount
- * Domain Path: /languages
- * Requires at least: 5.8
- * Requires PHP: 7.4
-=======
  * The plugin bootstrap file
  *
  * This file is read by WordPress to generate the plugin information in the plugin
  * admin area. This file also includes all of the dependencies used by the plugin,
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
->>>>>>> Stashed changes:ncd_wp.php
  *
  * @link              https://github.com/flyingkaktus
  * @since             1.0.0
@@ -30,7 +16,11 @@
  * Plugin Name:       New-Customer-Discount-for-WooCommerce
  * Plugin URI:        https://https://github.com/flyingkaktus/New-Customer-Discount-for-WooCommerce
  * Description:       Meet New-Customer-Discount for WooCommerce - your handy tool for sending sweet deals to new customers with just a click! Spot new shoppers instantly, hit the send button to give them personalized discount codes via beautifully designed emails, and track how well those deals perform. Easy peasy!
+<<<<<<< Updated upstream:ncd_wp.php
  * Version: 1.0.6
+=======
+ * Version:           1.0.0
+>>>>>>> Stashed changes:newcustomer-discount.php
  * Author:            Suchowski
  * Author URI:        https://github.com/flyingkaktus/
  * License:           GPL-2.0+

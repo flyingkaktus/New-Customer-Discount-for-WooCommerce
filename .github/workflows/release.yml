@@ -13,8 +13,6 @@ on:
       - 'v*'
       - '*.zip'
       - '*.md'
-      - 'ncd_wp.php'
-      - 'readme.txt'
 
 jobs:
   update-patch-version:
@@ -50,23 +48,34 @@ jobs:
       - name: Update version in files
         run: |
           VERSION=${{ steps.new_version.outputs.NEW_VERSION }}
+          DATE=$(date +%Y-%m-%d)
           echo "Aktualisiere Version auf: $VERSION"
           
           # Update Plugin-Datei
           sed -i "s/Version: .*$/Version: $VERSION/" ncd_wp.php
           sed -i "s/define('NCD_VERSION'.*/define('NCD_VERSION', '$VERSION');/" ncd_wp.php
           
-          # Update readme.txt falls vorhanden
-          if [ -f "readme.txt" ]; then
-            sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" readme.txt
-          fi
+          # Update readme.txt
+          sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" readme.txt
+          
+          # Erstelle neuen Changelog Eintrag
+          CHANGELOG_ENTRY="= $VERSION - $DATE =\n* ${{ github.event.head_commit.message }}"
+          
+          # Füge den neuen Eintrag nach == Changelog == ein
+          awk -v entry="$CHANGELOG_ENTRY" '
+          /== Changelog ==/ {
+            print $0
+            print ""
+            print entry
+            next
+          }
+          {print}' readme.txt > readme.tmp && mv readme.tmp readme.txt
 
       - name: Commit version update
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add ncd_wp.php
-          git add readme.txt || true
+          git add ncd_wp.php readme.txt
           git commit -m "chore: update version to ${{ steps.new_version.outputs.NEW_VERSION }}"
           git push
 
@@ -115,23 +124,46 @@ jobs:
           echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
           echo "Neue Version: $NEW_VERSION"
 
-      - name: Update version in files
+      - name: Update version and changelog
         run: |
           VERSION=${{ steps.new_version.outputs.NEW_VERSION }}
+          DATE=$(date +%Y-%m-%d)
           echo "Aktualisiere Version auf: $VERSION"
           
+          # Update Plugin-Datei
           sed -i "s/Version: .*$/Version: $VERSION/" ncd_wp.php
           sed -i "s/define('NCD_VERSION'.*/define('NCD_VERSION', '$VERSION');/" ncd_wp.php
           
-          if [ -f "readme.txt" ]; then
-            sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" readme.txt
+          # Update readme.txt Version
+          sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" readme.txt
+          
+          # Erstelle neuen Changelog Eintrag für MINOR/MAJOR
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          CHANGELOG_ENTRY="= $VERSION - $DATE =\n"
+          
+          if [[ $COMMIT_MSG == *"MAJOR:"* ]]; then
+            CHANGELOG_ENTRY+="Major Release:\n"
+          elif [[ $COMMIT_MSG == *"MINOR:"* ]]; then
+            CHANGELOG_ENTRY+="Feature Release:\n"
           fi
+          
+          CHANGELOG_ENTRY+=$(git log -1 --pretty=format:"%b")
+          
+          # Füge den neuen Eintrag nach == Changelog == ein
+          awk -v entry="$CHANGELOG_ENTRY" '
+          /== Changelog ==/ {
+            print $0
+            print ""
+            print entry
+            next
+          }
+          {print}' readme.txt > readme.tmp && mv readme.tmp readme.txt
 
       - name: PHP Lint
         run: |
           find . -name "*.php" -exec php -l {} \;
 
-      - name: Generate changelog
+      - name: Generate changelog for release
         id: changelog
         run: |
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
@@ -139,41 +171,19 @@ jobs:
           
           if [ -n "$PREVIOUS_TAG" ]; then
             if [[ $COMMIT_MSG == *"MAJOR:"* ]]; then
-              # Für MAJOR: Hole alle Commits seit dem letzten MAJOR
-              LAST_MAJOR=$(git tag --list "v*" --sort=-version:refname | grep -E "v[0-9]+\.0\.0" | head -n1 || echo "")
-              if [ -n "$LAST_MAJOR" ]; then
-                echo "### Breaking Changes (MAJOR):" > changelog.md
-                git log -1 --pretty=format:"%b" >> changelog.md
-                echo -e "\n\n### Feature Updates (MINOR):" >> changelog.md
-                git log ${LAST_MAJOR}..HEAD --grep="MINOR:" --pretty=format:"* %b" >> changelog.md
-                echo -e "\n\n### Patches and Fixes:" >> changelog.md
-                git log ${LAST_MAJOR}..HEAD --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
-              else
-                # Falls es noch kein MAJOR Tag gibt
-                echo "### Breaking Changes (MAJOR):" > changelog.md
-                git log -1 --pretty=format:"%b" >> changelog.md
-                echo -e "\n\n### Feature Updates (MINOR):" >> changelog.md
-                git log --grep="MINOR:" --pretty=format:"* %b" >> changelog.md
-                echo -e "\n\n### Patches and Fixes:" >> changelog.md
-                git log --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
-              fi
+              echo "### Breaking Changes (MAJOR):" > changelog.md
+              git log -1 --pretty=format:"%b" >> changelog.md
+              echo -e "\n\n### Feature Updates (MINOR):" >> changelog.md
+              git log ${PREVIOUS_TAG}..HEAD --grep="MINOR:" --pretty=format:"* %b" >> changelog.md
+              echo -e "\n\n### Patches and Fixes:" >> changelog.md
+              git log ${PREVIOUS_TAG}..HEAD --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
             elif [[ $COMMIT_MSG == *"MINOR:"* ]]; then
-              # Für MINOR: Hole alle Commits seit dem letzten MINOR oder MAJOR
-              LAST_VERSION=$(git tag --list "v*" --sort=-version:refname | head -n1 || echo "")
-              if [ -n "$LAST_VERSION" ]; then
-                echo "### Feature Updates (MINOR):" > changelog.md
-                git log -1 --pretty=format:"%b" >> changelog.md
-                echo -e "\n\n### Patches and Fixes:" >> changelog.md
-                git log ${LAST_VERSION}..HEAD --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
-              else
-                echo "### Feature Updates (MINOR):" > changelog.md
-                git log -1 --pretty=format:"%b" >> changelog.md
-                echo -e "\n\n### Patches and Fixes:" >> changelog.md
-                git log --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
-              fi
+              echo "### Feature Updates (MINOR):" > changelog.md
+              git log -1 --pretty=format:"%b" >> changelog.md
+              echo -e "\n\n### Patches and Fixes:" >> changelog.md
+              git log ${PREVIOUS_TAG}..HEAD --grep="^[^(MAJOR|MINOR)]" --pretty=format:"* %s (%h)" --no-merges >> changelog.md
             fi
           else
-            # Falls es noch gar keine Tags gibt
             echo "### Initial Release" > changelog.md
             git log --pretty=format:"* %s (%h)" --no-merges >> changelog.md
           fi
@@ -215,8 +225,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          git add ncd_wp.php
-          git add readme.txt || true
+          git add ncd_wp.php readme.txt
           
           git commit -m "chore: update version to ${{ steps.new_version.outputs.NEW_VERSION }}"
           git tag "v${{ steps.new_version.outputs.NEW_VERSION }}"

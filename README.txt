@@ -1,3 +1,74 @@
+<<<<<<< Updated upstream
+=== New-Customer-Discount for WooCommerce ===
+Contributors: flyingkaktus
+Donate link: https://github.com/flyingkaktus/New-Customer-Discount-for-WooCommerce
+Tags: woocommerce, discount, new customers, email marketing, coupons
+Requires at least: 5.8
+Tested up to: 6.4
+Requires PHP: 7.4
+Stable tag: 1.0.5
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+
+Automatically send personalized discount codes to new customers via beautifully designed emails.
+
+== Description ==
+
+New-Customer-Discount for WooCommerce helps you attract and convert new customers by automatically identifying them and sending personalized discount codes through professionally designed email templates.
+
+Key Features:
+
+* Automatic new customer detection
+* Customizable discount codes and amounts
+* Beautiful email templates (Modern, Classic, Minimal)
+* Detailed statistics and tracking
+* Easy template customization
+* Multi-language support
+
+== Installation ==
+
+1. Upload the plugin files to `/wp-content/plugins/new-customer-discount-for-woocommerce`
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Go to New-Customers menu to configure settings and templates
+
+Requirements:
+* WordPress 5.8 or higher
+* WooCommerce installed and activated
+* PHP 7.4 or higher
+
+== Frequently Asked Questions ==
+
+= How are new customers identified? =
+
+New customers are identified based on configurable criteria including:
+- Order history before a specified cutoff date
+- Maximum number of previous orders
+- Order checking period
+- Minimum order amount
+- Excluded product categories
+
+= Can I customize the email templates? =
+
+Yes, the plugin includes three customizable templates (Modern, Classic, Minimal) with options for:
+- Colors
+- Typography
+- Layout
+- Button styles
+- Custom logo
+
+== Changelog ==
+
+
+== Upgrade Notice ==
+
+= 1.0.5 =
+Stable version with all core features implemented.
+
+== Support ==
+
+For support and feature requests, please visit:
+https://github.com/flyingkaktus/New-Customer-Discount-for-WooCommerce
+=======
 === Plugin Name ===
 Contributors: (this should be a list of wordpress.org userid's)
 Donate link: https://github.com/flyingkaktus/
@@ -112,3 +183,4 @@ Markdown uses email style notation for blockquotes and I've been told:
 > Asterisks for *emphasis*. Double it up  for **strong**.
 
 `<?php code(); // goes in backticks ?>`
+>>>>>>> Stashed changes
