@@ -146,6 +146,32 @@ class NCD_Admin_Customers extends NCD_Admin_Base {
        }
    }
 
+   public function handle_send_test_email($data) {
+        if (!$this->ajax_handler->check_ajax_request()) {
+            return;
+        }
+
+        $email = sanitize_email($data['email']);
+        $template_id = isset($data['template_id']) ? sanitize_text_field($data['template_id']) : 'modern';
+
+        try {
+            $result = $this->email_sender->send_test_email($email, $template_id);
+            
+            if (is_wp_error($result)) {
+                throw new Exception($result->get_error_message());
+            }
+
+            wp_send_json_success([
+                'message' => __('Test email sent successfully.', 'newcustomer-discount')
+            ]);
+
+        } catch (Exception $e) {
+            wp_send_json_error([
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
    /**
     * Removes a customer from the new customer list
     *

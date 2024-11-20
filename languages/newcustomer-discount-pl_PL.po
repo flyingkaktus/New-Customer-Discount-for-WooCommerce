@@ -16,23 +16,23 @@ msgstr ""
 "X-Domain: newcustomer-discount\n"
 
 #. Plugin Name of the plugin
-#: newcustomer-discount.php
+#: ncd_wp.php
 msgid "New-Customer-Discount for WooCommerce"
 msgstr "Rabat dla nowych klientów WooCommerce"
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
-#: newcustomer-discount.php
+#: ncd_wp.php
 msgid "https://comingsoon.de"
 msgstr "https://comingsoon.de"
 
 #. Description of the plugin
-#: newcustomer-discount.php
+#: ncd_wp.php
 msgid "Automatic discount system for new customers with email delivery"
 msgstr "Automatyczny system rabatów dla nowych klientów z dostawą e-mail"
 
 #. Author of the plugin
-#: newcustomer-discount.php
+#: ncd_wp.php
 msgid "Maciej Suchowski"
 msgstr "Maciej Suchowski"
 
