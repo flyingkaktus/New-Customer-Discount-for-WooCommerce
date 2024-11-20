@@ -55,8 +55,8 @@ jobs:
           sed -i "s/Version: .*$/Version: $VERSION/" ncd_wp.php
           sed -i "s/define('NCD_VERSION'.*/define('NCD_VERSION', '$VERSION');/" ncd_wp.php
           
-          # Update readme.txt
-          sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" readme.txt
+          # Update README.txt
+          sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" README.txt
           
           # Erstelle neuen Changelog Eintrag
           CHANGELOG_ENTRY="= $VERSION - $DATE =\n* ${{ github.event.head_commit.message }}"
@@ -69,13 +69,13 @@ jobs:
             print entry
             next
           }
-          {print}' readme.txt > readme.tmp && mv readme.tmp readme.txt
+          {print}' README.txt > readme.tmp && mv readme.tmp README.txt
 
       - name: Commit version update
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add ncd_wp.php readme.txt
+          git add ncd_wp.php README.txt
           git commit -m "chore: update version to ${{ steps.new_version.outputs.NEW_VERSION }}"
           git push
 
@@ -134,8 +134,8 @@ jobs:
           sed -i "s/Version: .*$/Version: $VERSION/" ncd_wp.php
           sed -i "s/define('NCD_VERSION'.*/define('NCD_VERSION', '$VERSION');/" ncd_wp.php
           
-          # Update readme.txt Version
-          sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" readme.txt
+          # Update README.txt Version
+          sed -i "s/Stable tag: .*$/Stable tag: $VERSION/" README.txt
           
           # Erstelle neuen Changelog Eintrag für MINOR/MAJOR
           COMMIT_MSG=$(git log -1 --pretty=%B)
@@ -157,7 +157,7 @@ jobs:
             print entry
             next
           }
-          {print}' readme.txt > readme.tmp && mv readme.tmp readme.txt
+          {print}' README.txt > readme.tmp && mv readme.tmp README.txt
 
       - name: PHP Lint
         run: |
@@ -225,7 +225,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          git add ncd_wp.php readme.txt
+          git add ncd_wp.php README.txt
           
           git commit -m "chore: update version to ${{ steps.new_version.outputs.NEW_VERSION }}"
           git tag "v${{ steps.new_version.outputs.NEW_VERSION }}"
