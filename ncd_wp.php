@@ -16,11 +16,7 @@
  * Plugin Name:       New-Customer-Discount-for-WooCommerce
  * Plugin URI:        https://https://github.com/flyingkaktus/New-Customer-Discount-for-WooCommerce
  * Description:       Meet New-Customer-Discount for WooCommerce - your handy tool for sending sweet deals to new customers with just a click! Spot new shoppers instantly, hit the send button to give them personalized discount codes via beautifully designed emails, and track how well those deals perform. Easy peasy!
-<<<<<<< Updated upstream:ncd_wp.php
  * Version: 1.0.6
-=======
- * Version:           1.0.0
->>>>>>> Stashed changes:newcustomer-discount.php
  * Author:            Suchowski
  * Author URI:        https://github.com/flyingkaktus/
  * License:           GPL-2.0+
