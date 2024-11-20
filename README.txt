@@ -6,7 +6,7 @@ Tags: woocommerce, discount, new customers, email marketing, coupons
 Requires at least: 5.8
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -58,6 +58,9 @@ Yes, the plugin includes three customizable templates (Modern, Classic, Minimal)
 
 == Changelog ==
 
+= 1.0.7 - 2024-11-20 =
+* FIX: rename files in workflow
+
 
 == Upgrade Notice ==
 
@@ -75,7 +78,7 @@ Donate link: https://github.com/flyingkaktus/
 Tags: comments, spam
 Requires at least: 3.0.1
 Tested up to: 3.4
-Stable tag: 4.3
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -137,6 +140,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 == Changelog ==
+
+= 1.0.7 - 2024-11-20 =
+* FIX: rename files in workflow
 
 = 1.0 =
 * A change since the previous version.
