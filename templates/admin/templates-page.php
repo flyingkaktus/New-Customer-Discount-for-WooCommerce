@@ -169,9 +169,19 @@ $initial_preview = $email_sender->render_preview($current_template_id, $saved_se
                         <button type="submit" name="save_template" class="button button-primary">
                             <?php _e('Save', 'newcustomer-discount'); ?>
                         </button>
-                        <button type="button" class="button preview-test-email">
-                            <?php _e('Test Email', 'newcustomer-discount'); ?>
-                        </button>
+                    </div>
+
+                    <div class="ncd-test-email-section">
+                        <div class="ncd-test-email-form">
+                            <input type="email"
+                                id="quick-test-email"
+                                placeholder="<?php echo esc_attr__('Enter email address', 'newcustomer-discount'); ?>"
+                                class="regular-text"
+                            />
+                            <button type="button" class="button button-secondary" id="send-quick-test">
+                                <?php echo esc_attr__('Send test email', 'newcustomer-discount'); ?>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>

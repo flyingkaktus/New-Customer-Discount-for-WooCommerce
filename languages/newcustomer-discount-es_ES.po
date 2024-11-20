@@ -4,13 +4,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: New-Customer-Discount for WooCommerce 1.0.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/New-Customer-Discount-for-WooCommerce\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: Maciej Suchowski <suchowski@aol.com>\n"
+"Language-Team: es_ES <suchowski@aol.com>\n"
+"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2024-11-11T23:43:45+01:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2024-11-20T23:43:45+01:00\n\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: newcustomer-discount\n"
 
@@ -164,10 +165,6 @@ msgstr "Configuración"
 #: includes/admin/core/class-ncd-admin-menu.php:103
 msgid "Statistics"
 msgstr "Estadísticas"
-
-#: includes/admin/core/class-ncd-admin-menu.php:147
-msgid "New-Customer-Discount for WooCommerce"
-msgstr "Descuento para Nuevos Clientes de WooCommerce"
 
 #: includes/admin/core/class-ncd-admin-menu.php:150
 msgid "The main page could not be loaded. Please check the installation."
@@ -814,13 +811,8 @@ msgid "You can also create a bug report or feature request on the %sWordPress.or
 msgstr "También puede crear un reporte de error o solicitud de función en la %spágina del plugin en WordPress.org%s."
 
 #: templates/admin/statistics-page.php:15
-<<<<<<< Updated upstream
 msgid "New Customer Discount Statistics"
 msgstr "Estadísticas de Descuento para Nuevos Clientes"
-=======
-msgid "Neukunden-Gutschein Statistiken"
-msgstr "Estadísticas de descuentos para nuevos clientes"
->>>>>>> Stashed changes
 
 #: templates/admin/statistics-page.php:19
 msgid "Customers"

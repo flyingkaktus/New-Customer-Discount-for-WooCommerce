@@ -1,5 +1,7 @@
 <?php
+
 /**
+<<<<<<< Updated upstream:newcustomer-discount.php
  * Plugin Name: New-Customer-Discount for WooCommerce
  * Plugin URI: https://comingsoon.de
  * Description: Automatic discount system for new customers with email delivery
@@ -11,8 +13,30 @@
  * Domain Path: /languages
  * Requires at least: 5.8
  * Requires PHP: 7.4
+=======
+ * The plugin bootstrap file
  *
- * @package NewCustomerDiscount
+ * This file is read by WordPress to generate the plugin information in the plugin
+ * admin area. This file also includes all of the dependencies used by the plugin,
+ * registers the activation and deactivation functions, and defines a function
+ * that starts the plugin.
+>>>>>>> Stashed changes:ncd_wp.php
+ *
+ * @link              https://github.com/flyingkaktus
+ * @since             1.0.0
+ * @package           NewCustomerDiscount
+ *
+ * @wordpress-plugin
+ * Plugin Name:       New-Customer-Discount-for-WooCommerce
+ * Plugin URI:        https://https://github.com/flyingkaktus/New-Customer-Discount-for-WooCommerce
+ * Description:       Meet New-Customer-Discount for WooCommerce - your handy tool for sending sweet deals to new customers with just a click! Spot new shoppers instantly, hit the send button to give them personalized discount codes via beautifully designed emails, and track how well those deals perform. Easy peasy!
+ * Version:           1.0.0
+ * Author:            Suchowski
+ * Author URI:        https://github.com/flyingkaktus/
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:       NewCustomerDiscount
+ * Domain Path:       /languages
  */
 
 if (!defined('ABSPATH')) {
@@ -297,17 +321,5 @@ function ncd_check_version() {
 }
 add_action('plugins_loaded', 'ncd_check_version');
 
-/**
- * Debugging Helper
- */
-function ncd_log($message, $context = []) {
-    if (WP_DEBUG) {
-        error_log(sprintf(
-            '[NewCustomerDiscount] %s | Context: %s',
-            $message,
-            json_encode($context)
-        ));
-    }
-}
 
 require_once NCD_PLUGIN_DIR . 'includes/woocommerce-integration.php';

@@ -25,7 +25,6 @@ class NCD_Admin_Ajax {
      * Constructor
      */
     public function __construct() {
-        // Registriere die AJAX Handler erst wenn sie gebraucht werden
         add_action('admin_init', [$this, 'init_ajax_handlers']);
     }
 

@@ -34,37 +34,17 @@
             this.$settingsForm.on('submit', (e) => this.handleSettingsSave(e));
             this.$settingsForm.find('input, select').on('change input', () => this.updatePreviewWithDelay());
             $('.preview-mode').on('click', (e) => this.handlePreviewMode(e));
-            $('.preview-test-email').on('click', () => this.handleTestEmailClick());
+            $('#send-quick-test').on('click', () => this.handleTestEmailClick());
         }
 
         handleTestEmailClick() {
-            $('.notice.inline').remove();
+            const email = $('#quick-test-email').val();
+            this.sendTestEmail(email);
 
-            const emailForm = `
-                <div class="notice notice-info inline" style="margin-top: 15px;">
-                    <p>
-                        <input type="email"
-                            id="quick-test-email"
-                            placeholder="${ncdAdmin.messages.enter_email || 'Enter email address'}"
-                            class="regular-text"
-                        />
-                        <button type="button" class="button button-primary" id="send-quick-test">
-                            ${ncdAdmin.messages.send_test || 'Send test email'}
-                        </button>
-                    </p>
-                </div>
-            `;
-            
-            $('.ncd-preview-header').after(emailForm);
-            
-            $('#send-quick-test').on('click', () => {
-                const email = $('#quick-test-email').val();
-                if (!email) {
-                    NCDBase.showNotice(ncdAdmin.messages.email_required, 'error');
-                    return;
-                }
-                this.sendTestEmail(email);
-            });
+            if (!email) {
+                NCDBase.showNotice(ncdAdmin.messages.email_required, 'error');
+                return;
+            }
         }
 
         sendTestEmail(email) {
